@@ -17,6 +17,14 @@ app.use(fileUpload ({
 }));
 app.use(bodyParser.json());
 
+// Rutas
+app.use('/api/login', require('./routes/auth.router'));
+app.use('/api/usuarios', require('./routes/usuarios.router'));
+// app.use('/api/alimentos', require('./routes/alimentos.router'));
+// app.use('/api/planes', require('./routes/planes.router'));
+// app.use('/api/pesos-historicos', require('./routes/pesos-historicos.router'));
+// app.use('/api/diarios', require('./routes/diarios.router'));
+
 app.listen(process.env.PORT, ()=>{
     console.log('Servidor: ' + process.env.PORT);
 });
