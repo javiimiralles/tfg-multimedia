@@ -84,7 +84,18 @@ const createUser = async(req, res = response) => {
         const usuario = new Usuario(object);
         usuario.password = cpassword;
 
-        await usuario.save()
+        // ToDo -> Calcular calorias y macros
+        usuario.plan.caloriasDiarias = 2000;
+        usuario.plan.carbosDiarios = 150;
+        usuario.plan.proteinasDiarias = 130;
+        usuario.plan.grasasDiarias = 50;
+
+        // Establecemos los pesos historicos del usuario
+        usuario.pesoHistorico.pesoMedio = usuario.pesoInicial;
+        usuario.pesoHistorico.pesoMaximo = usuario.pesoInicial;
+        usuario.pesoHistorico.pesoMinimo = usuario.pesoInicial;
+
+        await usuario.save();
 
         res.json({
             ok:true,
@@ -103,7 +114,7 @@ const createUser = async(req, res = response) => {
 
 const updateUser = async(req, res = response) => {
 
-    const { password, email, activo, ...object } = req.body;
+    const { password, email, activo, pesoHistorico, ...object } = req.body;
     const uid = req.params.id;
 
     try {

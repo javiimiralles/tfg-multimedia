@@ -3,6 +3,7 @@ const { check } = require('express-validator');
 const { validarJWT } = require('../middleware/validar-jwt');
 const { validarCampos } = require('../middleware/validar-campos');
 const { validarSexo } = require('../middleware/validar-sexo');
+const { validarPlan } = require('../middleware/validar-plan');
 
 const {
     getUserById,
@@ -40,8 +41,10 @@ router.post('/',[
     check('edad','El argumento edad debe ser numérico').optional().isNumeric(),
     check('pesoInicial','El argumento pesoInicial es obligatorio').not().isEmpty(),
     check('pesoInicial','El argumento pesoInicial debe ser numérico').optional().isNumeric(),
+    check('plan.tipo','El argumento plan.tipo es obligatorio').not().isEmpty(),
+    validarCampos,
+    validarPlan,
     validarSexo,
-    validarCampos
 ], createUser);
 
 router.put('/:id', [
@@ -57,8 +60,10 @@ router.put('/:id', [
     check('edad','El argumento edad debe ser numérico').optional().isNumeric(),
     check('pesoInicial','El argumento pesoInicial es obligatorio').not().isEmpty(),
     check('pesoInicial','El argumento pesoInicial debe ser numérico').optional().isNumeric(),
-    validarSexo,
-    validarCampos
+    check('plan.tipo','El argumento plan.tipo es obligatorio').not().isEmpty(),
+    validarCampos,
+    validarPlan,
+    validarSexo
 ], updateUser);
 
 router.delete('/:id', [

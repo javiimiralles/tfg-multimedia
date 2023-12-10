@@ -31,13 +31,34 @@ const UsuarioSchema = Schema(
             type: Number,
             require: true
         },
-        idPesosHistoricos: {
-            type: Schema.Types.ObjectId,
-            ref: 'PesoHistorico'
+        pesoHistorico: {
+            pesoMedio: {
+                type: Number,
+            },
+            pesoMaximo: {
+                type: Number,
+            },
+            pesoMinimo: {
+                type: Number,
+            }
         },
-        idPlan: {
-            type: Schema.Types.ObjectId,
-            ref: 'Plan'
+        plan: {
+            tipo: {
+                type: String,
+                require: true
+            },
+            caloriasDiarias: {
+                type: Number,
+            },
+            carbosDiarios: {
+                type: Number,
+            },
+            proteinasDiarias: {
+                type: Number,
+            },
+            grasasDiarias: {
+                type: Number,
+            }
         },
         distribucionComidas: {
             type: [String],
