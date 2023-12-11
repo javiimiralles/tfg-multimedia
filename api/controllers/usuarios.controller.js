@@ -11,8 +11,8 @@ const getUserById = async(req, res = response) => {
         // KO -> usuario no existe
         if(!usuario) {
             return res.status(400).json({
-                ok:false,
-                msg:"No existe ningún usuario para el id: " + uid
+                ok: false,
+                msg: "No existe ningún usuario para el id: " + uid
             });
         }
 

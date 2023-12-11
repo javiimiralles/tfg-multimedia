@@ -6,6 +6,9 @@ const AlimentoSchema = Schema(
             type: String,
             require: true
         },
+        marca: {
+            type: String,
+        },
         cantidadReferencia: {
             type: Number,
             require: true

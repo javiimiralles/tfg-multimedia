@@ -1,8 +1,41 @@
 const Alimento = require('../models/alimento.model');
+const Usuario = require('../models/usuario.model');
 const { response } = require('express');
 const { infoToken } = require('../utils/infotoken');
 
-const getAlimentos = async(req, res = response) => {
+const getAlimentoById = async(req, res = response) => {
+
+    const id = req.params.id;
+
+    try {
+
+        const alimento = await Alimento.findById(id);
+
+        // KO -> alimento no existe
+        if(!alimento) {
+            return res.status(400).json({
+                ok: false,
+                msg: "No existe ningún alimento para el id: " + id
+            });
+        }
+
+        // OK 
+        res.json({
+            ok: true,
+            msg: 'getAlimentoById',
+            alimento
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.json({
+            ok: false,
+            msg: 'Error obteniendo alimento por id'
+        });
+    }
+}
+
+const getAlimentosByUser = async(req, res = response) => {
     const desde = Number(req.query.desde) || 0;
     const resultados = Number(req.query.resultados) || Number(process.env.DOCSPERPAGE);
     const texto = req.query.texto;
@@ -12,33 +45,36 @@ const getAlimentos = async(req, res = response) => {
         textoBusqueda = new RegExp(texto, 'i');
     }
 
-    const id = req.query.id;
+    const idUsuario = req.params.idUsuario;
 
     try {
 
+        const usuario = await Usuario.findById(idUsuario);
+
+        // KO -> usuario no existe
+        if(!usuario) {
+            return res.status(400).json({
+                ok:false,
+                msg:"No existe ningún usuario para el id: " + idUsuario
+            });
+        }
+
         let alimentos, total;
-        if(id) {
+        if(texto) {
             [alimentos, total] = await Promise.all([
-                Alimento.findByIf(id),
-                Alimento.countDocuments()
+                Alimento.find({ nombre: textoBusqueda, idUsuario: idUsuario }).skip(desde).limit(resultados),
+                Alimento.countDocuments({ nombre: textoBusqueda, idUsuario: idUsuario })
             ]);
         } else {
-            if(texto) {
-                [alimentos, total] = await Promise.all([
-                    Alimento.find({ nombre: textoBusqueda }).skip(desde).limit(resultados),
-                    Alimento.countDocuments({ nombre: textoBusqueda })
-                ]);
-            } else {
-                [alimentos, total] = await Promise.all([
-                    Alimento.find({}).skip(desde).limit(resultados),
-                    Alimento.countDocuments()
-                ]);
-            }
+            [alimentos, total] = await Promise.all([
+                Alimento.find({ idUsuario: idUsuario }).skip(desde).limit(resultados),
+                Alimento.countDocuments({ idUsuario: idUsuario })
+            ]);
         }
 
         res.json({
             ok: true,
-            msg: 'getAlimentos',
+            msg: 'getAlimentosByUser',
             alimentos,
             page: {
                 desde,
@@ -51,7 +87,7 @@ const getAlimentos = async(req, res = response) => {
         console.log(error);
         res.json({
             ok: false,
-            msg: 'Error obteniedo alimentos'
+            msg: 'Error obteniendo alimentos por usuario'
         });
     }
 }
@@ -61,6 +97,16 @@ const createAlimento = async(req, res = response) => {
     const { nombre, idUsuario, ...object } = req.body;
     
     try {
+
+        const usuario = await Usuario.findById(idUsuario);
+
+        // KO -> usuario no existe
+        if(!usuario) {
+            return res.status(400).json({
+                ok:false,
+                msg:"No existe ningún usuario para el id: " + idUsuario
+            });
+        }
 
         const existeAlimento = await Alimento.findOne({ nombre, idUsuario });
 
@@ -101,6 +147,16 @@ const updateAlimento = async(req, res = response) => {
     const token = req.header('x-token');
 
     try {
+
+        const usuario = await Usuario.findById(idUsuario);
+
+        // KO -> usuario no existe
+        if(!usuario) {
+            return res.status(400).json({
+                ok:false,
+                msg:"No existe ningún usuario para el id: " + idUsuario
+            });
+        }
 
         // KO -> se esta intentado editar un alimento de otro usuario
         if(infoToken(token).uid != idUsuario) {
@@ -147,22 +203,22 @@ const deleteAlimento = async(req, res = response) => {
     const token = req.header('x-token');
 
     try {
-
-        // KO -> se esta intentado eliminar un alimento de otro usuario
-        if(infoToken(token).uid != idUsuario) {
-            return res.status(400).json({
-                ok:false,
-                msg:"No se pueden eliminar alimentos de otro usuario"
-            });
-        }
-
-        const existeAlimento = await Alimento.findOne({ nombre, idUsuario });
+        
+        const existeAlimento = await Alimento.findById(id);
 
         // KO -> no existe un alimento con ese nombre para ese usuario
         if(!existeAlimento) {
             return  res.status(400).json({
                 ok:false,
-                msg:"No existe ningún alimento con ese nombre"
+                msg:"No existe ningún alimento con ese id: " + id
+            });
+        }
+
+        // KO -> se esta intentado eliminar un alimento de otro usuario
+        if(infoToken(token).uid != existeAlimento.idUsuario) {
+            return res.status(400).json({
+                ok:false,
+                msg:"No se pueden eliminar alimentos de otro usuario"
             });
         }
 
@@ -181,4 +237,12 @@ const deleteAlimento = async(req, res = response) => {
             msg:'Error borrando alimento'
         })
     }
+}
+
+module.exports = {
+    getAlimentoById,
+    getAlimentosByUser,
+    createAlimento,
+    updateAlimento,
+    deleteAlimento
 }
