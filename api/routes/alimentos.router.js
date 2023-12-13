@@ -21,7 +21,9 @@ router.get('/:id', [
 
 router.get('/usuario/:idUsuario', [
     validarJWT,
-    check('idUsuario','El id del usuario debe ser valido').isMongoId(),
+    check('idUsuario','El idUsuario del alimento debe ser valido').isMongoId(),
+    check('desde','El argumento desde debe ser numérico').optional().isNumeric(),
+    check('resultados','El argumento desde debe ser numérico').optional().isNumeric(),
     validarCampos
 ], getAlimentosByUser);
 

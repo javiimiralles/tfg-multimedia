@@ -21,7 +21,11 @@ router.get('/:id', [
 
 router.get('/usuario/:idUsuario', [
     validarJWT,
-    check('idUsuario','El id del usuario debe ser valido').isMongoId(),
+    check('idUsuario','El idUsuario del alimento debe ser valido').isMongoId(),
+    check('desde','El argumento desde debe ser numérico').optional().isNumeric(),
+    check('resultados','El argumento desde debe ser numérico').optional().isNumeric(),
+    check('fechaDesde','El argumento fechaDesde desde debe ser una fecha').optional().isDate(),
+    check('fechaHasta','El argumento fechaHasta desde debe ser una fecha').optional().isDate(),
     validarCampos
 ], getRegistrosPesoByUser);
 

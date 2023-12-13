@@ -74,7 +74,7 @@ const getAlimentosByUser = async(req, res = response) => {
 
         res.json({
             ok: true,
-            msg: 'getAlimentosByUser',
+            msg: 'getAlimentosByLoggedUser',
             alimentos,
             page: {
                 desde,
