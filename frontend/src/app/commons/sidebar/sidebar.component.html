@@ -1,0 +1,66 @@
+<!-- Header con sidebar -->
+<ion-menu *ngIf="!simpleHeader" contentId="main-content">
+  <ion-header class="ion-no-border">
+    <ion-toolbar color="primary">
+      <ion-title color="light"><b>Tech4Diet App</b></ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content class="ion-padding">
+    <ion-list lines="none">
+      <ion-item color="light" routerLink="/home" routerLinkActive="active-link" (click)="closeMenu()">
+        <p class="item-text">
+          <i class="fa-solid fa-house"></i>
+          Inicio
+        </p>
+      </ion-item>
+      <ion-item color="light" routerLink="/alimentos/view" routerLinkActive="active-link" (click)="closeMenu()">
+        <p class="item-text">
+          <i class="fa-solid fa-utensils"></i>
+          Alimentos
+        </p>
+      </ion-item>
+      <ion-item color="light" routerLink="/registros-peso/view" routerLinkActive="active-link" (click)="closeMenu()">
+        <p class="item-text">
+          <i class="fa-solid fa-weight-scale"></i>
+          Registros de peso
+        </p>
+      </ion-item>
+      <ion-item color="light" routerLink="/actividad-fisica/view" routerLinkActive="active-link" (click)="closeMenu()">
+        <p class="item-text">
+          <i class="fa-solid fa-person-running"></i>
+          Actividad física
+        </p>
+      </ion-item>
+      <ion-item color="light" routerLinkActive="active-link" (click)="closeMenu()">
+        <p class="item-text">
+          <i class="fa-solid fa-glass-water"></i>
+          Consumo de agua
+        </p>
+      </ion-item>
+      <ion-item color="light" routerLinkActive="active-link" (click)="closeMenu()">
+        <p class="item-text">
+          <i class="fa-solid fa-camera"></i>
+          Fotos de progreso
+        </p>
+      </ion-item>
+      <ion-item color="light" routerLinkActive="active-link" (click)="closeMenu()">
+        <p class="item-text">
+          <i class="fa-solid fa-ruler"></i>
+          Medidas corporales
+        </p>
+      </ion-item>
+      <ion-item color="light" routerLinkActive="active-link" (click)="closeMenu()">
+        <p class="item-text">
+          <i class="fa-solid fa-user"></i>
+          Perfil
+        </p>
+      </ion-item>
+      <ion-item color="light" routerLinkActive="active-link" (click)="closeMenu()">
+        <p class="item-text">
+          <i class="fa-solid fa-gear"></i>
+          Configuración
+        </p>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-menu>
