@@ -1,0 +1,75 @@
+<!-- Header sin sidebar -->
+<ion-header *ngIf="simpleHeader" class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons *ngIf="backButtonUrl != ''" slot="start">
+      <ion-button [routerLink]="backButtonUrl">
+        <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title><b>{{ titulo }}</b></ion-title>
+    <ion-buttons *ngIf="leftButtonUrl != ''" slot="end">
+      <ion-button [routerLink]="leftButtonUrl">
+        <ion-icon slot="icon-only">
+          <i [ngClass]="leftButtonIcon"></i>
+        </ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<!-- Header con sidebar -->
+<ion-menu *ngIf="!simpleHeader" contentId="main-content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>{{ titulo }}</ion-title>
+      <ion-buttons *ngIf="leftButtonUrl != ''" slot="end">
+        <ion-button [routerLink]="leftButtonUrl">
+          <ion-icon slot="icon-only">
+            <i [ngClass]="leftButtonIcon"></i>
+          </ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content class="ion-padding">
+    <ion-list>
+      <ion-item routerLink="/home">
+        <ion-icon slot="start"><i class="fa-solid fa-house"></i></ion-icon>
+        Inicio
+      </ion-item>
+      <ion-item routerLink="/alimentos/view">
+        <ion-icon slot="start"><i class="fa-solid fa-utensils"></i></ion-icon>
+        Registro de alimentos
+      </ion-item>
+      <ion-item routerLink="/registros-peso/view">
+        <ion-icon slot="start"><i class="fa-solid fa-weight-scale"></i></ion-icon>
+        Registros de peso
+      </ion-item>
+      <ion-item routerLink="/actividad-fisica/view" style="border-bottom: 1px solid var(--tertiary);">
+        <ion-icon slot="start"><i class="fa-solid fa-person-running"></i></ion-icon>
+        Actividad física
+      </ion-item>
+      <ion-item>
+        <ion-icon slot="start"><i class="fa-solid fa-user"></i></ion-icon>
+        Perfil
+      </ion-item>
+      <ion-item>
+        <ion-icon slot="start"><i class="fa-solid fa-glass-water"></i></ion-icon>
+        Consumo de agua
+      </ion-item>
+      <ion-item>
+        <ion-icon slot="start"><i class="fa-solid fa-camera"></i></ion-icon>
+        Fotos de progreso
+      </ion-item>
+      <ion-item>
+        <ion-icon slot="start"><i class="fa-solid fa-ruler"></i></ion-icon>
+        Medidas corporales
+      </ion-item>
+      <ion-item>
+        <ion-icon slot="start"><i class="fa-solid fa-gear"></i></ion-icon>
+        Configuración
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+

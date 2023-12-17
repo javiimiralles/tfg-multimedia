@@ -24,8 +24,6 @@ app.use('/api/alimentos', require('./routes/alimentos.router'));
 app.use('/api/registros-peso', require('./routes/registros-peso.router'));
 app.use('/api/diarios', require('./routes/diarios.router'));
 
-app.use('/api/spoonacular', require('./external-services/spoonacular.service'));
-
 app.listen(process.env.PORT, ()=>{
     console.log('Servidor: ' + process.env.PORT);
 });

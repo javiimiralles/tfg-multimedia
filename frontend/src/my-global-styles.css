@@ -1,0 +1,44 @@
+/* Estilos de font-awesome */
+@import '@fortawesome/fontawesome-free/css/all.min.css';
+
+/* Aplicar fuentes a toda la app */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
+* {
+  font-family: 'Montserrat', sans-serif;
+}
+
+body {
+  --ion-background-color: var(--ion-color-light);
+}
+
+ion-toolbar {
+  color: var(--ion-color-primary);
+  --border-color: transparent;
+  box-shadow: none;
+}
+
+ion-item {
+  --background: white;
+  --padding-start: 20px;
+  --padding-end: 20px;
+  --padding-top: 4px;
+  --padding-bottom: 4px;
+  --border-radius: 25px;
+  --highlight-background: transparent; /* Elimina el resaltado/fondo en el foco */
+  --highlight-color-focused: transparent; /* Elimina el color del resaltado en foco */
+}
+
+ion-button {
+  --border-radius: 50px;
+}
+
+.button-icon-right {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.button-icon-right ion-icon {
+  margin-left: auto;
+}

@@ -77,6 +77,13 @@ const renovarToken = async(req, res = response) => {
             nombre: usuarioBD.nombre,
             email: usuarioBD.email,
             sexo: usuarioBD.sexo,
+            altura: usuarioBD.altura,
+            edad: usuarioBD.edad,
+            pesoInicial: usuarioBD.pesoInicial,
+            pesoHistorico: usuarioBD.pesoHistorico,
+            plan: usuarioBD.plan,
+            distribucionComidas: usuarioBD.distribucionComidas,
+            configuracion: usuarioBD.configuracion,
             token: nuevoToken
         });
 
