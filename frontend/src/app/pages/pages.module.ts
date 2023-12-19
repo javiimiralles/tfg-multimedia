@@ -10,6 +10,7 @@ import { AlimentosModule } from './alimentos/alimentos.module';
 import { PesosModule } from './pesos/pesos.module';
 import { ActividadFisicaModule } from './actividad-fisica/actividad-fisica.module';
 import { CommonsModule } from '../commons/commons.module';
+import { ComponentsModule } from '../components/components.module';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { CommonsModule } from '../commons/commons.module';
     AlimentosModule,
     PesosModule,
     ActividadFisicaModule,
-    CommonsModule
+    CommonsModule,
+    ComponentsModule
   ]
 })
 export class PagesModule { }

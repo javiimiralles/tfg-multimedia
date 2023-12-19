@@ -1,3 +1,26 @@
-<p style="color: black;">
-  home works!
-</p>
+<!-- ================== Resumen del dia ================== -->
+<ion-card class="ion-text-center" (click)="redirectTo('/alimentos/view')">
+  <ion-card-header>
+    <ion-card-title style="font-size: medium;"><b>Resumen del día</b></ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <ion-row>
+      <ion-col size="12">
+        <app-progress-bar [progressValue]="1000" [maxValue]="2500" color="var(--ion-color-tertiary)" label="Calorías" size="LARGE"></app-progress-bar>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="4">
+        <app-progress-bar [progressValue]="110" [maxValue]="250" color="var(--ion-color-secondary)" label="Hidratos" size="SMALL"></app-progress-bar>
+      </ion-col>
+      <ion-col size="4">
+        <app-progress-bar [progressValue]="55" [maxValue]="130" color="var(--ion-color-warning)" label="Proteínas" size="SMALL"></app-progress-bar>
+      </ion-col>
+      <ion-col size="4">
+        <app-progress-bar [progressValue]="25" [maxValue]="55" color="var(--ion-color-custom-yellow)" label="Grasas" size="SMALL"></app-progress-bar>
+      </ion-col>
+    </ion-row>
+  </ion-card-content>
+</ion-card>
+<!-- ================== Fin Resumen del dia ================== -->
+

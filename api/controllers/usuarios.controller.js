@@ -180,7 +180,7 @@ const deleteUser = async(req, res = response) => {
 
     } catch(error){
         console.log(error);
-        return  res.status(400).json({
+        return res.json({
             ok:false,
             msg:'Error borrando usuario'
         })
