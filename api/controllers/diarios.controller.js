@@ -35,12 +35,8 @@ const getDiarioById = async(req, res = response) => {
     }
 }
 
-const getDiariosByUser = async(req, res = response) => {
-    const desde = Number(req.query.desde) || 0;
-    const resultados = Number(req.query.resultados) || Number(process.env.DOCSPERPAGE);
-    const fechaDesde = Date.parse(req.query.fechaDesde) || '';
-    const fechaHasta = Date.parse(req.query.fechaHasta) || '';
-    const fechaExacta = Date.parse(req.query.fechaExacta) || '';
+const getDiarioByUser = async(req, res = response) => {
+    const fecha = Date.parse(req.query.fecha);
     const idUsuario = req.params.idUsuario;
 
     try {
@@ -55,50 +51,16 @@ const getDiariosByUser = async(req, res = response) => {
             });
         }
 
-        let diarios, total;
-        if(fechaExacta !== '') {
-            const fecha = new Date(fechaExacta);
-            fecha.setHours(0, 0, 0, 0);
-            const fechaSiguiente = new Date(fechaExacta);
-            fechaSiguiente.setDate(fecha.getDate() + 1);
-            [diarios, total] = await Promise.all([
-                Diario.findOne({ idUsuario, fecha: { $gt:fechaExacta, $lt:fechaSiguiente } }),
-                Diario.countDocuments({ idUsuario, fecha: { $gt:fechaExacta, $lt:fechaSiguiente } })
-            ]);
-        } else if(fechaDesde !== '' && fechaHasta !== '') {
-            [diarios, total] = await Promise.all([
-                Diario.find({ idUsuario, fecha: { $gt:fechaDesde, $lt:fechaHasta } }).skip(desde).limit(resultados),
-                Diario.countDocuments({ idUsuario, fecha: { $gt:fechaDesde, $lt:fechaHasta } })
-            ]);
-        } else if(fechaDesde !== '') {
-            [diarios, total] = await Promise.all([
-                Diario.find({ idUsuario, fecha: { $gt:fechaDesde } }).skip(desde).limit(resultados),
-                Diario.countDocuments({ idUsuario, fecha: { $gt:fechaDesde } })
-            ]);
-        } else if(fechaHasta !== '') {
-            [diarios, total] = await Promise.all([
-                Diario.find({ idUsuario, fecha: { $lt:fechaHasta } }).skip(desde).limit(resultados),
-                Diario.countDocuments({ idUsuario, fecha: { $lt:fechaHasta } })
-            ]);
-        } else {
-            [diarios, total] = await Promise.all([
-                Diario.find({ idUsuario }).skip(desde).limit(resultados),
-                Diario.countDocuments({ idUsuario })
-            ]);
-        }
+        const fechaActual = new Date(fecha);
+        fechaActual.setHours(0, 0, 0, 0);
+        const fechaSiguiente = new Date(fecha);
+        fechaSiguiente.setDate(fechaActual.getDate() + 1);
+        const diario = await Diario.findOne({ idUsuario, fecha: { $gte:fechaActual, $lt:fechaSiguiente } });
 
         res.json({
             ok: true,
-            msg: 'getDiariosByUser',
-            diarios,
-            page: {
-                desde,
-                resultados,
-                total,
-                fechaExacta,
-                fechaDesde,
-                fechaHasta
-            }
+            msg: 'getDiarioByUser',
+            diario
         });
 
     } catch (error) {
@@ -113,13 +75,14 @@ const getDiariosByUser = async(req, res = response) => {
 const createDiario = async(req, res = response) => {
 
     // Cuando se crea un diario se hace con todos los valores por defecto, y luego se actualiza
-    const { idUsuario, alimentosConsumidos, caloriasConsumidas, aguaConsumida, caloriasGastadas, 
-        carbosConsumidos, proteinasConsumidas, grasasConsumidas, ...object } = req.body;
+    const { idUsuario, ...object } = req.body;
 
     let { fecha } = req.body;
 
     if(!fecha) {
         fecha = new Date();
+    } else {
+        fecha = new Date(fecha);
     }
 
     try {
@@ -134,24 +97,27 @@ const createDiario = async(req, res = response) => {
             });
         }
 
-        fecha.setHours(0, 0, 0, 0);
-        const fechaSiguiente = new Date(fecha);
-        fechaSiguiente.setDate(fecha.getDate() + 1);
-        const existeDiario = await Diario.findOne({ fecha: { $gte: fecha, $lt: fechaSiguiente }, idUsuario });
+        const fechaAnterior = new Date(fecha);
+        fechaAnterior.setHours(0, 0, 0, 0);
+        fechaAnterior.setDate(fechaAnterior.getDate());
+        const fechaSiguiente = new Date(fechaAnterior);
+        fechaSiguiente.setDate(fechaAnterior.getDate() + 1);
 
-        // OK -> si existe un diario no pasa nada, esta bien
+        const existeDiario = await Diario.findOne({ fecha: { $gte: fechaAnterior, $lt: fechaSiguiente }, idUsuario });
+
+        // KO -> Ya existe un diario para este usuario y esta fecha
         if(existeDiario) {
-            return res.json({
-                ok:true,
-                msg:"createDiario - ya existia uno",
-                existeDiario
+            return res.status(400).json({
+                ok: false,
+                msg: "Ya existe un diario para este usuario y esta fecha",
             })
         }
 
         object.fecha = fecha;
         object.idUsuario = idUsuario;
-        object.alimentosConsumidos = [];
         const diario = new Diario(object);
+
+        diario.alimentosConsumidos = [];
 
         await diario.save();
 
@@ -171,7 +137,7 @@ const createDiario = async(req, res = response) => {
 }
 
 const updateDiario = async(req, res = response) => {
-    const { fecha, idUsuario, alimentosConsumidos, ...object } = req.body;
+    const { fecha, idUsuario, aguaConsumida, caloriasGastadas, alimentosConsumidos, ...object } = req.body;
     const id = req.params.id;
     const token = req.header('x-token');
 
@@ -205,39 +171,119 @@ const updateDiario = async(req, res = response) => {
             });
         }
 
+        object.fecha = fecha;
+        object.idUsuario = idUsuario;
+        object.aguaConsumida = aguaConsumida >= 0 ? aguaConsumida : 0;
+        object.caloriasGastadas = caloriasGastadas >= 0 ? caloriasGastadas : 0;
+        const diario = await Diario.findByIdAndUpdate(id, object, { new: true });
+
+        // OK
+        res.json({
+            ok: true,
+            msg: "updateDiario",
+            diario
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.json({
+            ok: false,
+            msg: 'Error editando diario'
+        });
+    }
+}
+
+const updateAlimentosConsumidos = async(req, res = response) => {
+    const { fecha, idUsuario, alimentoAgregar, alimentoEliminar, ...object } = req.body;
+    const id = req.params.id;
+    const token = req.header('x-token');
+
+    try {
+
+        const usuario = await Usuario.findById(idUsuario);
+
+        // KO -> usuario no existe
+        if(!usuario) {
+            return res.status(400).json({
+                ok:false,
+                msg:"No existe ningún usuario para el id: " + idUsuario
+            });
+        }
+
+        // KO -> se esta intentado editar un diario de otro usuario
+        if(infoToken(token).uid != idUsuario) {
+            return res.status(400).json({
+                ok:false,
+                msg:"No se pueden editar diarios de otro usuario"
+            });
+        }
+
+        let existeDiario = await Diario.findById(id);
+
+        // KO -> no existe ningún diario con ese id
+        if(!existeDiario) {
+            return  res.status(400).json({
+                ok: false,
+                msg: "Este diario no existe"
+            });
+        }
+
+        const alimentosConsumidos = existeDiario.alimentosConsumidos;
         let caloriasConsumidas = existeDiario.caloriasConsumidas;
         let carbosConsumidos = existeDiario.carbosConsumidos;
         let proteinasConsumidas = existeDiario.proteinasConsumidas;
         let grasasConsumidas = existeDiario.grasasConsumidas;
-        let nuevaListaAlimentos = existeDiario.alimentosConsumidos;
 
-        if(alimentosConsumidos && alimentosConsumidos.length > 0) {
-            for(let i = 0; i < alimentosConsumidos.length; i++) {
-                const existeAlimento = await Alimento.findById(alimentosConsumidos[i].idAlimento);
-                
-                // KO -> no existe algún alimento
-                if(!existeAlimento) {
-                    return  res.status(400).json({
-                        ok: false,
-                        msg: "Algún alimento no existe"
-                    });
-                }
-
-                const cantidad = alimentosConsumidos[i].cantidad;
-                const cantidadReferencia = existeAlimento.cantidadReferencia;
-    
-                caloriasConsumidas += Math.round((existeAlimento.calorias * cantidad) / cantidadReferencia);
-                carbosConsumidos += parseFloat(((existeAlimento.carbohidratos * cantidad) / cantidadReferencia).toFixed(2));
-                proteinasConsumidas += parseFloat((existeAlimento.proteinas * cantidad) / cantidadReferencia);
-                grasasConsumidas += parseFloat(((existeAlimento.grasas * cantidad) / cantidadReferencia).toFixed(2));
-
-                nuevaListaAlimentos.push(alimentosConsumidos[i]);
+        if(alimentoAgregar != null) {
+            const existeAlimento = await Alimento.findById(alimentoAgregar.idAlimento);
+            // KO -> no existe el alimento a añadir
+            if(!existeAlimento) {
+                return  res.status(400).json({
+                    ok: false,
+                    msg: "El alimento que se va a añadir no existe"
+                });
             }
+
+            const cantidadReferencia = existeAlimento.cantidadReferencia;
+            const cantidadAgregar = alimentoAgregar.cantidad;
+
+            caloriasConsumidas += Math.round((existeAlimento.calorias * cantidadAgregar) / cantidadReferencia);
+            carbosConsumidos += Math.round((existeAlimento.carbohidratos * cantidadAgregar) / cantidadReferencia);
+            proteinasConsumidas += Math.round((existeAlimento.proteinas * cantidadAgregar) / cantidadReferencia);
+            grasasConsumidas += Math.round((existeAlimento.grasas * cantidadAgregar) / cantidadReferencia);
+
+            alimentosConsumidos.push(alimentoAgregar);
+        } else if(alimentoEliminar != null) {
+            const index = alimentoEliminar.index;
+
+            // KO -> index es incorrecto
+            if(index > alimentosConsumidos.length - 1) {
+                return  res.status(400).json({
+                    ok: false,
+                    msg: "El alimento que se va a eliminar no está en la lista"
+                });
+            }
+
+            const alimentoBD = await Alimento.findById(alimentosConsumidos[index].idAlimento);
+
+            const cantidadReferencia = alimentoBD.cantidadReferencia;
+
+            const cantidadEliminar = alimentosConsumidos[index].cantidad;
+            caloriasConsumidas -= Math.round((alimentoBD.calorias * cantidadEliminar) / cantidadReferencia);
+            carbosConsumidos -= Math.round((alimentoBD.carbohidratos * cantidadEliminar) / cantidadReferencia);
+            proteinasConsumidas -= Math.round((alimentoBD.proteinas * cantidadEliminar) / cantidadReferencia);
+            grasasConsumidas -= Math.round((alimentoBD.grasas * cantidadEliminar) / cantidadReferencia);
+            alimentosConsumidos.splice(index, 1);
+        } else {
+            return  res.status(400).json({
+                ok: false,
+                msg: "Se debe pasar un alimento para añadir o eliminar"
+            });
         }
 
         object.fecha = fecha;
         object.idUsuario = idUsuario;
-        object.alimentosConsumidos = nuevaListaAlimentos;
+        object.alimentosConsumidos = alimentosConsumidos;
         object.caloriasConsumidas = caloriasConsumidas;
         object.carbosConsumidos = carbosConsumidos;
         object.proteinasConsumidas = proteinasConsumidas;
@@ -247,7 +293,7 @@ const updateDiario = async(req, res = response) => {
         // OK
         res.json({
             ok: true,
-            msg: "updateDiario",
+            msg: "updateAlimentosConsumidos",
             diario
         });
 
@@ -304,8 +350,9 @@ const deleteDiario = async(req, res = response) => {
 
 module.exports = {
     getDiarioById,
-    getDiariosByUser,
+    getDiarioByUser,
     createDiario,
     updateDiario,
+    updateAlimentosConsumidos,
     deleteDiario
 }

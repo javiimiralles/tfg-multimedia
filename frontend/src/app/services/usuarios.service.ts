@@ -32,7 +32,7 @@ export class UsuariosService {
       return of(incorrecto);
     }
 
-    return this.http.get(`${environment.base_url}/login/token`, this.cabeceras)
+    return this.http.get(`${environment.base_url}/login/token`, this.headers)
       .pipe(
         tap((res: any) => {
           const { token, uid, nombre, email, sexo, altura, edad, pesoInicial, pesoHistorico, plan, distribucionComidas, configuracion } = res;
@@ -62,7 +62,7 @@ export class UsuariosService {
     localStorage.removeItem('token');
   }
 
-  get cabeceras() {
+  get headers() {
     return {
       headers: {
         'x-token': this.token

@@ -7,6 +7,7 @@ import { AdminLayoutComponent } from '../layouts/admin-layout/admin-layout.compo
 import { HomeComponent } from './home/home.component';
 import { AlimentosViewComponent } from './alimentos/alimentos-view/alimentos-view.component';
 import { PesosViewComponent } from './pesos/pesos-view/pesos-view.component';
+import { ActividadFisicaViewComponent } from './actividad-fisica/actividad-fisica-view/actividad-fisica-view.component';
 
 const routes: Routes = [
   { path: '', component: AdminLayoutComponent, canActivate: [AuthGuard],
@@ -32,7 +33,7 @@ const routes: Routes = [
                                                                     leftButtonUrl: '',
                                                                     backButtonUrl: ''
                                                                   }},
-      { path: 'actividad-fisica/view', component: AlimentosViewComponent, data: {
+      { path: 'actividad-fisica/view', component: ActividadFisicaViewComponent, data: {
                                                                   simpleHeader: false,
                                                                   titulo: 'Actividad física',
                                                                   leftButtonIcon: 'fa-solid fa-bell',

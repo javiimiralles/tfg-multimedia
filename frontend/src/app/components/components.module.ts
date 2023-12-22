@@ -4,13 +4,16 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 import { ProgressBarComponent } from './progress-bar/progress-bar.component';
+import { DatePickerComponent } from './date-picker/date-picker.component';
 
 @NgModule({
   declarations: [
-    ProgressBarComponent
+    ProgressBarComponent,
+    DatePickerComponent
   ],
   exports: [
-    ProgressBarComponent
+    ProgressBarComponent,
+    DatePickerComponent
   ],
   imports: [
     IonicModule,

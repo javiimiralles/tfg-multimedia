@@ -1,0 +1,12 @@
+<ion-item lines="none" id="date-picker">
+  <ion-button fill="clear" slot="start" (click)="changeDate(-1)">
+    <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
+  </ion-button>
+  <ion-button fill="clear" slot="start" (click)="changeDate(1)">
+    <ion-icon slot="icon-only" name="chevron-forward-outline"></ion-icon>
+  </ion-button>
+  <ion-label class="ion-text-center">
+    <ion-icon name="calendar-outline"></ion-icon>
+    {{ formatedDate }}
+  </ion-label>
+</ion-item>

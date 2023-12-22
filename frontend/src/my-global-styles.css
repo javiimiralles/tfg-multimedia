@@ -29,6 +29,11 @@ ion-item {
   --highlight-color-focused: transparent; /* Elimina el color del resaltado en foco */
 }
 
+ion-card {
+  background-color: white;
+  border-radius: 30px;
+}
+
 ion-button {
   --border-radius: 50px;
 }
@@ -41,4 +46,8 @@ ion-button {
 
 .button-icon-right ion-icon {
   margin-left: auto;
+}
+
+.ion-page {
+  justify-content: flex-start !important;
 }
