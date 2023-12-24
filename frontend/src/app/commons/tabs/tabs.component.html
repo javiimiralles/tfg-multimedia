@@ -1,19 +1,14 @@
-<ion-tabs>
-  <ion-tab-bar slot="bottom">
-    <ion-tab-button tab="home">
-      <i class="fa-solid fa-house"></i>
-    </ion-tab-button>
-    <ion-tab-button tab="alimentos/view">
-      <i class="fa-solid fa-utensils"></i>
-    </ion-tab-button>
-    <ion-tab-button tab="registros-peso/view">
-      <i class="fa-solid fa-weight-scale"></i>
-    </ion-tab-button>
-    <ion-tab-button tab="actividad-fisica/view">
-      <i class="fa-solid fa-person-running"></i>
-    </ion-tab-button>
-  </ion-tab-bar>
-</ion-tabs>
-
-
-
+<div class="custom-tab-bar">
+  <a class="tab-item" routerLink="/home" routerLinkActive="active">
+    <i class="fa-solid fa-house"></i>
+  </a>
+  <a class="tab-item" routerLink="/alimentos" routerLinkActive="active">
+    <i class="fa-solid fa-utensils"></i>
+  </a>
+  <a class="tab-item" routerLink="/registros-peso" routerLinkActive="active">
+    <i class="fa-solid fa-weight-scale"></i>
+  </a>
+  <a class="tab-item" routerLink="/actividad-fisica" routerLinkActive="active">
+    <i class="fa-solid fa-person-running"></i>
+  </a>
+</div>

@@ -55,7 +55,8 @@ const getDiarioByUser = async(req, res = response) => {
         fechaActual.setHours(0, 0, 0, 0);
         const fechaSiguiente = new Date(fecha);
         fechaSiguiente.setDate(fechaActual.getDate() + 1);
-        const diario = await Diario.findOne({ idUsuario, fecha: { $gte:fechaActual, $lt:fechaSiguiente } });
+        const diario = await Diario.findOne({ idUsuario, fecha: { $gte: fechaActual, $lt: fechaSiguiente } })
+                                    .populate('alimentosConsumidos.idAlimento');
 
         res.json({
             ok: true,
@@ -194,7 +195,8 @@ const updateDiario = async(req, res = response) => {
 }
 
 const updateAlimentosConsumidos = async(req, res = response) => {
-    const { fecha, idUsuario, alimentoAgregar, alimentoEliminar, ...object } = req.body;
+    const { fecha, idUsuario, ...object } = req.body;
+    let { alimentoAgregar, alimentoEliminar, alimentoEditar } = req.body;
     const id = req.params.id;
     const token = req.header('x-token');
 
@@ -234,6 +236,7 @@ const updateAlimentosConsumidos = async(req, res = response) => {
         let proteinasConsumidas = existeDiario.proteinasConsumidas;
         let grasasConsumidas = existeDiario.grasasConsumidas;
 
+        // --------- Agregar alimento consumido
         if(alimentoAgregar != null) {
             const existeAlimento = await Alimento.findById(alimentoAgregar.idAlimento);
             // KO -> no existe el alimento a añadir
@@ -247,13 +250,26 @@ const updateAlimentosConsumidos = async(req, res = response) => {
             const cantidadReferencia = existeAlimento.cantidadReferencia;
             const cantidadAgregar = alimentoAgregar.cantidad;
 
-            caloriasConsumidas += Math.round((existeAlimento.calorias * cantidadAgregar) / cantidadReferencia);
-            carbosConsumidos += Math.round((existeAlimento.carbohidratos * cantidadAgregar) / cantidadReferencia);
-            proteinasConsumidas += Math.round((existeAlimento.proteinas * cantidadAgregar) / cantidadReferencia);
-            grasasConsumidas += Math.round((existeAlimento.grasas * cantidadAgregar) / cantidadReferencia);
+            const caloriasSumar = Math.round((existeAlimento.calorias * cantidadAgregar) / cantidadReferencia);
+            const carbosSumar = Math.round((existeAlimento.carbohidratos * cantidadAgregar) / cantidadReferencia);
+            const proteinasSumar = Math.round((existeAlimento.proteinas * cantidadAgregar) / cantidadReferencia);
+            const grasasSumar = Math.round((existeAlimento.grasas * cantidadAgregar) / cantidadReferencia);
 
+            caloriasConsumidas += caloriasSumar;
+            carbosConsumidos += carbosSumar;
+            proteinasConsumidas += proteinasSumar
+            grasasConsumidas += grasasSumar;
+
+            alimentoAgregar.calorias = caloriasSumar;
+            alimentoAgregar.carbohidratos = carbosSumar;
+            alimentoAgregar.proteinas = proteinasSumar;
+            alimentoAgregar.grasas = grasasSumar;
             alimentosConsumidos.push(alimentoAgregar);
-        } else if(alimentoEliminar != null) {
+
+        } 
+        // ------ Eliminar alimento consumido
+        else if(alimentoEliminar != null) {
+            alimentoEliminar = JSON.parse(alimentoEliminar);
             const index = alimentoEliminar.index;
 
             // KO -> index es incorrecto
@@ -274,10 +290,36 @@ const updateAlimentosConsumidos = async(req, res = response) => {
             proteinasConsumidas -= Math.round((alimentoBD.proteinas * cantidadEliminar) / cantidadReferencia);
             grasasConsumidas -= Math.round((alimentoBD.grasas * cantidadEliminar) / cantidadReferencia);
             alimentosConsumidos.splice(index, 1);
-        } else {
-            return  res.status(400).json({
+        }
+        // ToDo -------- Editar alimento consumido
+        else if(!alimentoEditar) {
+            alimentoEditar = JSON.parse(alimentoEditar);
+            const index = alimentoEditar.index;
+            const cantidadSumar = alimentoEditar.cantidad;
+
+            // KO -> index es incorrecto
+            if(index > alimentosConsumidos.length - 1) {
+                return  res.status(400).json({
+                    ok: false,
+                    msg: "El alimento que se va a editar no está en la lista"
+                });
+            }
+
+            const alimentoBD = await Alimento.findById(alimentosConsumidos[index].idAlimento);
+
+            // Primero eliminamos las calorias y macros del alimento original
+            const cantidadEliminar = alimentosConsumidos[index].cantidad;
+            caloriasConsumidas -= Math.round((alimentoBD.calorias * cantidadEliminar) / cantidadReferencia);
+            carbosConsumidos -= Math.round((alimentoBD.carbohidratos * cantidadEliminar) / cantidadReferencia);
+            proteinasConsumidas -= Math.round((alimentoBD.proteinas * cantidadEliminar) / cantidadReferencia);
+            grasasConsumidas -= Math.round((alimentoBD.grasas * cantidadEliminar) / cantidadReferencia);
+
+            // ToDo -> falta sumar las nuevas calorias y macros y hacer pruebas
+        }
+        else {
+            return res.status(400).json({
                 ok: false,
-                msg: "Se debe pasar un alimento para añadir o eliminar"
+                msg: "Se debe pasar un alimento para añadir, eliminar o editar"
             });
         }
 

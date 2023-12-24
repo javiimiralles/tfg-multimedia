@@ -22,7 +22,9 @@ export class ProgressBarComponent implements OnInit {
   }
 
   get percentage(): string {
-    return `${(this.progressValue / this.maxValue) * 100}%`;
+    let percentage = (this.progressValue / this.maxValue) * 100;
+    percentage = percentage > 100 ? 100 : percentage;
+    return `${percentage}%`;
   }
 
 }

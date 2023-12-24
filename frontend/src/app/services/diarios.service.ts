@@ -27,6 +27,14 @@ export class DiariosService {
     return this.http.post(`${environment.base_url}/diarios`, data, this.headers);
   }
 
+  deleteAlimentoConsumido(uid: string, index: number): Observable<any> {
+    const alimentoEliminar = { index };
+    const data: FormData = new FormData;
+    data.append('alimentoEliminar', JSON.stringify(alimentoEliminar));
+    data.append('idUsuario', this.idUsuario);
+    return this.http.put(`${environment.base_url}/diarios/alimentos-consumidos/${uid}`, data, this.headers);
+  }
+
   private formatDate(date: Date) {
     let month = '' + (date.getMonth() + 1);
     let day = '' + date.getDate();

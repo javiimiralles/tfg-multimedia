@@ -43,7 +43,6 @@ export class LoginComponent  implements OnInit {
       .subscribe(res => {
         this.waiting = false;
         this.router.navigateByUrl('/home');
-        console.log('Login correcto');
       }, (err) => {
         console.error(err);
         const msg: string = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';

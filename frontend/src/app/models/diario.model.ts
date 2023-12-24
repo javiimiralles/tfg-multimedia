@@ -5,6 +5,10 @@ export class Diario {
     public alimentosConsumidos?: [
       {
         idAlimento?: string,
+        calorias?: number,
+        carbohidratos?: number,
+        proteinas?: number,
+        grasas?: number,
         cantidad?: number,
         categoria?: string
       }

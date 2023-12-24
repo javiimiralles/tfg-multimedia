@@ -1,0 +1,39 @@
+ion-card-content {
+  padding: 0px;
+}
+
+ion-list {
+  background-color: white;
+  padding: 0px;
+}
+
+ion-label {
+  margin: 0;
+}
+
+ion-card-title {
+  font-size: medium;
+}
+
+ion-button {
+  text-transform: none;
+}
+
+.flex-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.left-side {
+  text-align: left;
+}
+
+.right-side {
+  text-align: right;
+}
+
+.subtitle {
+  color: gray;
+  font-size: small;
+}

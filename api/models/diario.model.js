@@ -12,6 +12,18 @@ const DiarioSchema = Schema(
                     type: Schema.Types.ObjectId,
                     ref: 'Alimento',
                 },
+                calorias: {
+                    type: Number
+                },
+                carbohidratos: {
+                    type: Number
+                },
+                proteinas: {
+                    type: Number
+                },
+                grasas: {
+                    type: Number
+                },
                 cantidad: {
                     type: Number,
                 },

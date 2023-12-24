@@ -1,5 +1,6 @@
-
-<app-date-picker (dateChange)="onDateChange($event)"></app-date-picker>
+<div class="ion-padding">
+  <app-date-picker (dateChange)="onDateChange($event)"></app-date-picker>
+</div>
 
 <!-- ====== Barras de progreso ====== -->
 <div class="ion-padding" *ngIf="!loading">
@@ -22,23 +23,39 @@
 <!-- ====== Fin Barras de progreso ====== -->
 
 <!-- ====== Registro de alimentos ====== -->
-<ion-card *ngFor="let nombreComida of distribucionComidas">
+<ion-card *ngFor="let categoria of distribucionComidas; let i = index;">
   <ion-card-header>
-    <ion-card-title>{{ nombreComida }}</ion-card-title>
+    <ion-card-title>
+      <div class="flex-container">
+        <div><b>{{ categoria }}</b></div>
+        <div class="right-side"><span>{{ caloriasTotalesPorCategoria[i] }} cal</span></div>
+      </div>
+    </ion-card-title>
   </ion-card-header>
-
   <ion-card-content>
-    Here's a small text description for the card content. Nothing more, nothing less.
+    <ion-list>
+      <ng-container *ngFor="let alimento of diario.alimentosConsumidos; let j = index;">
+        <ion-item *ngIf="alimento.categoria === categoria || (!distribucionComidas.includes(alimento.categoria) && categoria === 'Otras comidas')"
+              (click)="presentAlert(j)">
+          <ion-label class="flex-container">
+            <div class="left-side">
+              <div style="font-size: 14px;" >{{ alimento.idAlimento.nombre }}</div>
+              <p class="subtitle">{{ getSubtituloAlimento(alimento) }}</p>
+            </div>
+            <div class="right-side">
+              <div>{{ alimento.calorias }} cal</div>
+              <div>
+                <span style="color: var(--ion-color-secondary);">H: {{ alimento.carbohidratos }}</span>
+                <span style="color: var(--ion-color-warning);"> P: {{ alimento.proteinas }}</span>
+                <span style="color: var(--ion-color-custom-yellow);"> G: {{ alimento.grasas }}</span>
+              </div>
+            </div>
+          </ion-label>
+        </ion-item>
+      </ng-container>
+    </ion-list>
   </ion-card-content>
-</ion-card>
-<ion-card *ngFor="let nombreComida of distribucionComidas">
-  <ion-card-header>
-    <ion-card-title>{{ nombreComida }}</ion-card-title>
-  </ion-card-header>
-
-  <ion-card-content>
-    Here's a small text description for the card content. Nothing more, nothing less.
-  </ion-card-content>
+  <ion-button color="success" fill="clear"><ion-icon name="add-circle"></ion-icon>&nbsp; Añadir alimento</ion-button>
 </ion-card>
 <!-- ====== Registro de alimentos ====== -->
 

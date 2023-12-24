@@ -2,10 +2,10 @@
 @import '@fortawesome/fontawesome-free/css/all.min.css';
 
 /* Aplicar fuentes a toda la app */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@500&display=swap');
 
 * {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Raleway', sans-serif;
 }
 
 body {
@@ -50,4 +50,27 @@ ion-button {
 
 .ion-page {
   justify-content: flex-start !important;
+}
+
+/* Alert styles */
+.alert-button-group.sc-ion-alert-md {
+  display: block;
+}
+
+.alert-head.sc-ion-alert-md {
+  padding: 0;
+}
+
+.alert-button.sc-ion-alert-md.text-danger {
+  color: var(--ion-color-danger);
+}
+
+.alert-head.sc-ion-alert-ios {
+  padding: 0;
+  border: none;
+}
+
+.alert-button.sc-ion-alert-ios.text-danger {
+  color: var(--ion-color-danger);
+  border-top: none;
 }

@@ -19,25 +19,25 @@ const routes: Routes = [
                                                   leftButtonUrl: '',
                                                   backButtonUrl: ''
                                                 }},
-      { path: 'alimentos/view', component: AlimentosViewComponent, data: {
+      { path: 'alimentos', component: AlimentosViewComponent, data: {
                                                                     simpleHeader: false,
                                                                     titulo: 'Registro de alimentos',
-                                                                    leftButtonIcon: 'fa-solid fa-glass-water',
-                                                                    leftButtonUrl: '',
+                                                                    leftButtonIcon: 'fa-solid fa-glass-water fa-lg',
+                                                                    leftButtonUrl: '/consumo-agua',
                                                                     backButtonUrl: ''
                                                                   }},
-      { path: 'registros-peso/view', component: PesosViewComponent, data: {
+      { path: 'registros-peso', component: PesosViewComponent, data: {
                                                                     simpleHeader: false,
                                                                     titulo: 'Registros de peso',
-                                                                    leftButtonIcon: 'fa-solid fa-bell',
-                                                                    leftButtonUrl: '',
+                                                                    leftButtonIcon: 'fa-solid fa-bell fa-lg',
+                                                                    leftButtonUrl: '/notificaciones',
                                                                     backButtonUrl: ''
                                                                   }},
-      { path: 'actividad-fisica/view', component: ActividadFisicaViewComponent, data: {
+      { path: 'actividad-fisica', component: ActividadFisicaViewComponent, data: {
                                                                   simpleHeader: false,
                                                                   titulo: 'Actividad física',
-                                                                  leftButtonIcon: 'fa-solid fa-bell',
-                                                                  leftButtonUrl: '',
+                                                                  leftButtonIcon: 'fa-solid fa-bell fa-lg',
+                                                                  leftButtonUrl: '/notificaciones',
                                                                   backButtonUrl: ''
                                                                 }},
       { path: '**', redirectTo: 'home' }

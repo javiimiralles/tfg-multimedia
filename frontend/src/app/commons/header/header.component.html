@@ -9,9 +9,7 @@
     <ion-title><b>{{ titulo }}</b></ion-title>
     <ion-buttons *ngIf="leftButtonUrl != ''" slot="end">
       <ion-button [routerLink]="leftButtonUrl">
-        <ion-icon slot="icon-only">
-          <i [ngClass]="leftButtonIcon"></i>
-        </ion-icon>
+        <i [ngClass]="leftButtonIcon"></i>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -24,6 +22,11 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title><b>{{ titulo }}</b></ion-title>
+    <ion-buttons *ngIf="leftButtonUrl != ''" slot="end">
+      <ion-button [routerLink]="leftButtonUrl">
+        <i [ngClass]="leftButtonIcon"></i>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
