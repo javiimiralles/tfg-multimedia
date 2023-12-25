@@ -1,10 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Diario } from '../models/diario.model';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { UsuariosService } from './usuarios.service';
-import { ToastService } from './toast.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +11,7 @@ export class DiariosService {
 
   idUsuario: string = this.usuariosService.uid;
 
-  constructor(private http: HttpClient, private usuariosService: UsuariosService, private toastService: ToastService) {}
+  constructor(private http: HttpClient, private usuariosService: UsuariosService) {}
 
   cargarDiarioPorFecha(fecha: Date): Observable<any> {
     const fechaFormateada = this.formatDate(fecha);

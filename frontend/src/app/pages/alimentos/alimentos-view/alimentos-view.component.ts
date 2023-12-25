@@ -150,4 +150,8 @@ export class AlimentosViewComponent  implements OnInit {
     });
   }
 
+  irAListadoDeAlimentos(categoria: string) {
+    this.router.navigate(['/alimentos-list'],  { queryParams: { categoria, idDiario: this.diario.uid } });
+  }
+
 }

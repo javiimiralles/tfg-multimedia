@@ -3,7 +3,7 @@ const axios = require('axios');
 
 const router = Router();
 
-const fields = 'product_name';
+const fields = 'product_name,brands,nutriments';
 
 // Obtener producto por codigo de barras
 router.get('product/:barcode', async(req, res = response) => {
@@ -18,7 +18,7 @@ router.get('product/:barcode', async(req, res = response) => {
             return res.status(404).json({
                 ok: false,
                 msg: 'Producto no encontrado'
-            })
+            });
         }
 
         res.json({
@@ -39,7 +39,6 @@ router.get('product/:barcode', async(req, res = response) => {
 router.get('/search', async(req, res = response) => {
 
     try {
-        console.log('Hola');
         const query = req.query.query || '';
         const pageSize = req.query.resultados || 10;
         const url = `${process.env.OPENFOODFACTS_BASE_URL}/cgi/search.pl?search_terms=${query}&search_simple=1&action=process&json=1&page_size=${pageSize}&fields=${fields}`;
