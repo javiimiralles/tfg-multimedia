@@ -111,10 +111,12 @@ const createAlimento = async(req, res = response) => {
         const existeAlimento = await Alimento.findOne({ nombre, idUsuario });
 
         // KO -> existe un alimento con ese nombre para ese usuario
+        // No mandamos status 400 porque queremos que siga funcionando
         if(existeAlimento) {
-            return  res.status(400).json({
+            return  res.json({
                 ok:false,
-                msg:"Ya existe un alimento con ese nombre"
+                msg:"Ya existe un alimento con ese nombre",
+                alimento: existeAlimento
             });
         }
 

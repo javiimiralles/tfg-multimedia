@@ -142,7 +142,6 @@ export class AlimentosViewComponent  implements OnInit {
   deleteAlimento(index: number) {
     this.diariosService.deleteAlimentoConsumido(this.diario.uid, index).subscribe(res => {
       this.toastService.presentToast('Alimento borrado', 'success');
-      // this.diario.alimentosConsumidos.splice(index, 1);
       this.cargarDiarioPorFecha(this.selectedDate);
     }, (err) => {
       const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
@@ -151,7 +150,9 @@ export class AlimentosViewComponent  implements OnInit {
   }
 
   irAListadoDeAlimentos(categoria: string) {
-    this.router.navigate(['/alimentos-list'],  { queryParams: { categoria, idDiario: this.diario.uid } });
+    this.diariosService.idDiarioActual = this.diario.uid;
+    this.diariosService.categoriaActual = categoria;
+    this.router.navigateByUrl('/alimentos/list');
   }
 
 }

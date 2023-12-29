@@ -195,7 +195,7 @@ const updateDiario = async(req, res = response) => {
 }
 
 const updateAlimentosConsumidos = async(req, res = response) => {
-    const { fecha, idUsuario, ...object } = req.body;
+    const { idUsuario, ...object } = req.body;
     let { alimentoAgregar, alimentoEliminar, alimentoEditar } = req.body;
     const id = req.params.id;
     const token = req.header('x-token');
@@ -238,6 +238,7 @@ const updateAlimentosConsumidos = async(req, res = response) => {
 
         // --------- Agregar alimento consumido
         if(alimentoAgregar != null) {
+            alimentoAgregar = JSON.parse(alimentoAgregar);
             const existeAlimento = await Alimento.findById(alimentoAgregar.idAlimento);
             // KO -> no existe el alimento a añadir
             if(!existeAlimento) {
@@ -323,7 +324,6 @@ const updateAlimentosConsumidos = async(req, res = response) => {
             });
         }
 
-        object.fecha = fecha;
         object.idUsuario = idUsuario;
         object.alimentosConsumidos = alimentosConsumidos;
         object.caloriasConsumidas = caloriasConsumidas;

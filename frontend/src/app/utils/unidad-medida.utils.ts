@@ -10,6 +10,9 @@ export const getAbrebiaturaUnidadMedida = (unidadMedida: string): string => {
       return 'ml';
     case 'litros':
       return 'l';
+    case 'unidad':
+    case 'unidades':
+      return 'u';
     default:
       return unidadMedida;
   }

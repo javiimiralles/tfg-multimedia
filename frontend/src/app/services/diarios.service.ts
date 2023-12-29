@@ -11,6 +11,10 @@ export class DiariosService {
 
   idUsuario: string = this.usuariosService.uid;
 
+  idDiarioActual: string;
+  idAlimentoActual: string;
+  categoriaActual: string;
+
   constructor(private http: HttpClient, private usuariosService: UsuariosService) {}
 
   cargarDiarioPorFecha(fecha: Date): Observable<any> {
@@ -23,6 +27,13 @@ export class DiariosService {
     data.append('idUsuario', this.idUsuario);
     data.append('fecha', date.toISOString());
     return this.http.post(`${environment.base_url}/diarios`, data, this.headers);
+  }
+
+  addAlimentoConsumido(uid: string, alimentoAgregar: any) {
+    const data: FormData = new FormData;
+    data.append('idUsuario', this.idUsuario);
+    data.append('alimentoAgregar', JSON.stringify(alimentoAgregar));
+    return this.http.put(`${environment.base_url}/diarios/alimentos-consumidos/${uid}`, data, this.headers);
   }
 
   deleteAlimentoConsumido(uid: string, index: number): Observable<any> {

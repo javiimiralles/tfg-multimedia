@@ -21,7 +21,7 @@
 
 <!-- ======= Lista resultados ======== -->
 <ion-list *ngIf="listaResultados.length > 0">
-  <ion-item *ngFor="let resultado of listaResultados" color="light">
+  <ion-item *ngFor="let resultado of listaResultados" color="light" (click)="registrarAlimentoConsumido(resultado)">
     <ion-label class="flex-container">
       <div class="left-side">
         <div style="font-size: 14px;">{{ resultado.nombre }}</div>
@@ -30,9 +30,9 @@
       <div class="right-side">
         <div>{{ resultado.calorias }} cal</div>
         <div>
-          <span style="color: var(--ion-color-secondary);">H: {{ (resultado.carbohidratos) }}</span>
-          <span style="color: var(--ion-color-warning);"> P: {{ resultado.proteinas }}</span>
-          <span style="color: var(--ion-color-custom-yellow);"> G: {{ resultado.grasas }}</span>
+          <span class="secondary-color">H: {{ (resultado.carbohidratos) }}</span>
+          <span class="warning-color"> P: {{ resultado.proteinas }}</span>
+          <span class="custom-yellow-color"> G: {{ resultado.grasas }}</span>
         </div>
       </div>
     </ion-label>

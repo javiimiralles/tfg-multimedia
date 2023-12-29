@@ -9,6 +9,7 @@ import { AlimentosViewComponent } from './alimentos/alimentos-view/alimentos-vie
 import { PesosViewComponent } from './pesos/pesos-view/pesos-view.component';
 import { ActividadFisicaViewComponent } from './actividad-fisica/actividad-fisica-view/actividad-fisica-view.component';
 import { AlimentosListComponent } from './alimentos/alimentos-list/alimentos-list.component';
+import { RegistroAlimentoFormComponent } from './alimentos/registro-alimento-form/registro-alimento-form.component';
 
 const routes: Routes = [
   { path: '', component: AdminLayoutComponent, canActivate: [AuthGuard],
@@ -29,12 +30,19 @@ const routes: Routes = [
                                                                     leftButtonUrl: '/consumo-agua',
                                                                     backButtonUrl: ''
                                                                   }},
-      { path: 'alimentos-list', component: AlimentosListComponent, data: {
+      { path: 'alimentos/list', component: AlimentosListComponent, data: {
                                                                     simpleHeader: true,
                                                                     titulo: 'Listado de alimentos',
                                                                     leftButtonIcon: '',
                                                                     leftButtonUrl: '',
                                                                     backButtonUrl: '/alimentos'
+                                                                  }},
+      { path: 'alimentos/registro', component: RegistroAlimentoFormComponent, data: {
+                                                                    simpleHeader: true,
+                                                                    titulo: 'Añadir alimento',
+                                                                    leftButtonIcon: '',
+                                                                    leftButtonUrl: '',
+                                                                    backButtonUrl: '/alimentos/list'
                                                                   }},
       /********** Peso *************/
       { path: 'registros-peso', component: PesosViewComponent, data: {

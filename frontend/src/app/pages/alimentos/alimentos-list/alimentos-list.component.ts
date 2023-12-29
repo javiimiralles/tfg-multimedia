@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Alimento } from 'src/app/models/alimento.model';
 import { AlimentosService } from 'src/app/services/alimentos.service';
+import { DiariosService } from 'src/app/services/diarios.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { UsuariosService } from 'src/app/services/usuarios.service';
 import { getAbrebiaturaUnidadMedida } from 'src/app/utils/unidad-medida.utils';
@@ -22,18 +23,16 @@ export class AlimentosListComponent  implements OnInit {
   noResultsFound: boolean = false;
   segmentActual: string = 'mis-alimentos';
 
-  constructor(private activatedRoute: ActivatedRoute,
+  constructor(private diariosService: DiariosService,
     private alimentosService: AlimentosService,
     private toastService: ToastService,
     private router: Router,
-    private usuariosService: UsuariosService) {
-    this.activatedRoute.queryParams.subscribe(params => {
-      this.categoria = params['categoria'];
-      this.idDiario = params['idDiario'];
-    })
-  }
+    private usuariosService: UsuariosService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.categoria = this.diariosService.categoriaActual;
+    this.idDiario = this.diariosService.idDiarioActual;
+  }
 
   onSearchbarChange(event) {
     this.textoBusqueda = event.detail.value;
@@ -46,6 +45,7 @@ export class AlimentosListComponent  implements OnInit {
   }
 
   cargarAlimentos() {
+    this.noResultsFound = false;
     this.listaResultados = [];
     if(this.textoBusqueda.trim() !== '') {
       if(this.segmentActual === 'mis-alimentos') {
@@ -92,6 +92,21 @@ export class AlimentosListComponent  implements OnInit {
     } else {
       this.noResultsFound = false;
     }
+  }
+
+  registrarAlimentoConsumido(alimento: Alimento) {
+    if(this.segmentActual === 'mis-alimentos') {
+      this.goToRegistroAlimento(alimento.uid);
+    } else {
+      this.alimentosService.createAlimento(alimento).subscribe(res => {
+        this.goToRegistroAlimento(res['alimento'].uid);
+      });
+    }
+  }
+
+  goToRegistroAlimento(idAlimento: string) {
+    this.diariosService.idAlimentoActual = idAlimento;
+    this.router.navigateByUrl('/alimentos/registro');
   }
 
 }

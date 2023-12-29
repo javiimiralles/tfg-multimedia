@@ -17,6 +17,45 @@ body {
   justify-content: flex-start !important;
 }
 
+.flex-container {
+  display: flex !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+}
+
+.left-side {
+  text-align: left !important;
+}
+
+.right-side {
+  text-align: right !important;
+}
+
+.subtitle {
+  color: gray !important;
+  font-size: small !important;
+}
+
+.primary-color {
+  color: var(--ion-color-primary);
+}
+
+.secondary-color {
+  color: var(--ion-color-secondary);
+}
+
+.warning-color {
+  color: var(--ion-color-warning);
+}
+
+.danger-color {
+  color: var(--ion-color-danger);
+}
+
+.custom-yellow-color {
+  color: var(--ion-color-custom-yellow);
+}
+
 /* Toolbar */
 ion-toolbar {
   color: var(--ion-color-primary);
