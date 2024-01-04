@@ -10,6 +10,7 @@ import { PesosViewComponent } from './pesos/pesos-view/pesos-view.component';
 import { ActividadFisicaViewComponent } from './actividad-fisica/actividad-fisica-view/actividad-fisica-view.component';
 import { AlimentosListComponent } from './alimentos/alimentos-list/alimentos-list.component';
 import { RegistroAlimentoFormComponent } from './alimentos/registro-alimento-form/registro-alimento-form.component';
+import { AlimentoFormComponent } from './alimentos/alimento-form/alimento-form.component';
 
 const routes: Routes = [
   { path: '', component: AdminLayoutComponent, canActivate: [AuthGuard],
@@ -40,6 +41,13 @@ const routes: Routes = [
       { path: 'alimentos/registro', component: RegistroAlimentoFormComponent, data: {
                                                                     simpleHeader: true,
                                                                     titulo: 'Añadir alimento',
+                                                                    leftButtonIcon: '',
+                                                                    leftButtonUrl: '',
+                                                                    backButtonUrl: '/alimentos/list'
+                                                                  }},
+      { path: 'alimentos/form/:uid', component: AlimentoFormComponent, data: {
+                                                                    simpleHeader: true,
+                                                                    titulo: 'Crear alimento',
                                                                     leftButtonIcon: '',
                                                                     leftButtonUrl: '',
                                                                     backButtonUrl: '/alimentos/list'

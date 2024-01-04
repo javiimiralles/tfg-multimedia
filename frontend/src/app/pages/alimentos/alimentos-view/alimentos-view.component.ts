@@ -119,11 +119,12 @@ export class AlimentosViewComponent  implements OnInit {
 
   async presentAlert(index: number) {
     const alert = await this.alertController.create({
+      header: 'Opciones',
       buttons: [
         {
           text: 'Editar cantidad',
           handler: () => {
-            console.log(this.diario.alimentosConsumidos[index]);
+            this.presentEditarCantidadAlert(index);
           }
         },
         {
@@ -137,6 +138,51 @@ export class AlimentosViewComponent  implements OnInit {
     });
 
     await alert.present();
+  }
+
+  async presentEditarCantidadAlert(index: number) {
+    const alert = await this.alertController.create({
+      inputs: [
+        {
+          placeholder: 'Nueva cantidad',
+          attributes: {
+            type: 'number'
+          }
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'text-danger d-inline',
+        },
+        {
+          text: 'Aceptar',
+          cssClass: 'd-inline',
+          handler: (data) => {
+            const nuevaCantidad = parseFloat(data[0]);
+            if (!isNaN(nuevaCantidad) && nuevaCantidad > 0) {
+              this.updateAlimento(index, nuevaCantidad);
+              return true;
+            } else {
+              return false;
+            }
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  updateAlimento(index: number, cantidad: number) {
+    this.diariosService.updateCantidadAlimentoConsumido(this.diario.uid, index, cantidad).subscribe(res => {
+      this.toastService.presentToast('Alimento editado', 'success');
+      this.cargarDiarioPorFecha(this.selectedDate);
+    }, (err) => {
+      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
+      this.toastService.presentToast(msg, 'danger');
+    });
   }
 
   deleteAlimento(index: number) {

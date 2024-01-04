@@ -70,9 +70,11 @@ ion-item {
   --padding-end: 20px;
   --padding-top: 4px;
   --padding-bottom: 4px;
-  --border-radius: 25px;
+  --border-radius: 20px;
   --highlight-background: transparent; /* Elimina el resaltado/fondo en el foco */
   --highlight-color-focused: transparent; /* Elimina el color del resaltado en foco */
+  border-radius: 20px;
+  border-bottom: 0.5px solid lightgray;
 }
 
 /* Cards */
@@ -97,26 +99,21 @@ ion-button {
 }
 
 /* Alerts */
-.alert-button-group.sc-ion-alert-md {
-  display: block;
-}
-
-.alert-head.sc-ion-alert-md {
-  padding: 0;
-}
-
 .alert-button.sc-ion-alert-md.text-danger {
   color: var(--ion-color-danger);
 }
 
-.alert-head.sc-ion-alert-ios {
-  padding: 0;
-  border: none;
+.alert-button.sc-ion-alert-md.d-inline {
+  display: inline !important;
 }
 
 .alert-button.sc-ion-alert-ios.text-danger {
   color: var(--ion-color-danger);
   border-top: none;
+}
+
+.alert-button.sc-ion-alert-ios.d-inline {
+  display: inline !important;
 }
 
 /* Searchbar */

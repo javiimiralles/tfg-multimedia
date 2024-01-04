@@ -292,8 +292,8 @@ const updateAlimentosConsumidos = async(req, res = response) => {
             grasasConsumidas -= Math.round((alimentoBD.grasas * cantidadEliminar) / cantidadReferencia);
             alimentosConsumidos.splice(index, 1);
         }
-        // ToDo -------- Editar alimento consumido
-        else if(!alimentoEditar) {
+        // -------- Editar alimento consumido
+        else if(alimentoEditar != null) {
             alimentoEditar = JSON.parse(alimentoEditar);
             const index = alimentoEditar.index;
             const cantidadSumar = alimentoEditar.cantidad;
@@ -307,6 +307,7 @@ const updateAlimentosConsumidos = async(req, res = response) => {
             }
 
             const alimentoBD = await Alimento.findById(alimentosConsumidos[index].idAlimento);
+            const cantidadReferencia = alimentoBD.cantidadReferencia;
 
             // Primero eliminamos las calorias y macros del alimento original
             const cantidadEliminar = alimentosConsumidos[index].cantidad;
@@ -315,7 +316,22 @@ const updateAlimentosConsumidos = async(req, res = response) => {
             proteinasConsumidas -= Math.round((alimentoBD.proteinas * cantidadEliminar) / cantidadReferencia);
             grasasConsumidas -= Math.round((alimentoBD.grasas * cantidadEliminar) / cantidadReferencia);
 
-            // ToDo -> falta sumar las nuevas calorias y macros y hacer pruebas
+            // Añadimos las nuevas calorias y macros
+            const caloriasSumar = Math.round((alimentoBD.calorias * cantidadSumar) / cantidadReferencia);
+            const carbosSumar = Math.round((alimentoBD.carbohidratos * cantidadSumar) / cantidadReferencia);
+            const proteinasSumar = Math.round((alimentoBD.proteinas * cantidadSumar) / cantidadReferencia);
+            const grasasSumar = Math.round((alimentoBD.grasas * cantidadSumar) / cantidadReferencia);
+
+            caloriasConsumidas += caloriasSumar;
+            carbosConsumidos += carbosSumar;
+            proteinasConsumidas += proteinasSumar;
+            grasasConsumidas += grasasSumar;
+
+            alimentosConsumidos[index].cantidad = cantidadSumar;
+            alimentosConsumidos[index].calorias = caloriasSumar;
+            alimentosConsumidos[index].carbohidratos = carbosSumar;
+            alimentosConsumidos[index].proteinas = proteinasSumar;
+            alimentosConsumidos[index].grasas = grasasSumar;
         }
         else {
             return res.status(400).json({

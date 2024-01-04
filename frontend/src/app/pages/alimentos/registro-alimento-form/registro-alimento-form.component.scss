@@ -10,6 +10,10 @@
   font-size: 20px;
 }
 
+ion-item {
+  border: none;
+}
+
 ion-input {
   flex: 1; /* Permite que el input se expanda para llenar el espacio disponible */
   border-bottom: 1px solid gray;

@@ -63,7 +63,7 @@ export class RegistroAlimentoFormComponent  implements OnInit {
     })
   }
 
-  onCantidadInput(event) {
+  onCantidadInputChange(event) {
     this.calcularInformacioNutricional();
   }
 

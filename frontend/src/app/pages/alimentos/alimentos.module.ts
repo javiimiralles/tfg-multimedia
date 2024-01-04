@@ -9,17 +9,20 @@ import { ComponentsModule } from 'src/app/components/components.module';
 import { CommonsModule } from 'src/app/commons/commons.module';
 import { AlimentosListComponent } from './alimentos-list/alimentos-list.component';
 import { RegistroAlimentoFormComponent } from './registro-alimento-form/registro-alimento-form.component';
+import { AlimentoFormComponent } from './alimento-form/alimento-form.component';
 
 @NgModule({
   declarations: [
     AlimentosViewComponent,
     AlimentosListComponent,
-    RegistroAlimentoFormComponent
+    RegistroAlimentoFormComponent,
+    AlimentoFormComponent
   ],
   exports: [
     AlimentosViewComponent,
     AlimentosListComponent,
-    RegistroAlimentoFormComponent
+    RegistroAlimentoFormComponent,
+    AlimentoFormComponent
   ],
   imports: [
     IonicModule,

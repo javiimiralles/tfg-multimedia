@@ -27,9 +27,21 @@ export class AlimentosService {
   }
 
   createAlimento(alimento: Alimento) {
+    const data: FormData = this.getFormData(alimento);
+    return this.http.post(`${environment.base_url}/alimentos`, data, this.headers);
+  }
+
+  updateAlimento(uid: string, alimento: Alimento) {
+    const data: FormData = this.getFormData(alimento);
+    return this.http.put(`${environment.base_url}/alimentos/${uid}`, data, this.headers);
+  }
+
+  private getFormData(alimento: Alimento): FormData {
     const data: FormData = new FormData;
     data.append('nombre', alimento.nombre);
-    data.append('marca', alimento.marca);
+    if(alimento.marca != null && alimento.marca !== '') {
+      data.append('marca', alimento.marca);
+    }
     data.append('cantidadReferencia', (alimento.cantidadReferencia).toString());
     data.append('unidadMedida', alimento.unidadMedida);
     data.append('calorias', (alimento.calorias).toString());
@@ -37,7 +49,8 @@ export class AlimentosService {
     data.append('proteinas', (alimento.proteinas).toString());
     data.append('grasas', (alimento.grasas).toString());
     data.append('idUsuario', this.idUsuario);
-    return this.http.post(`${environment.base_url}/alimentos`, data, this.headers);
+
+    return data;
   }
 
   get headers(){

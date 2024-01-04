@@ -43,7 +43,7 @@
         label="Cantidad"
         aria-label="Cantidad"
         [value]="alimento.cantidadReferencia"
-        (ionInput)="onCantidadInput($event)">
+        (ionInput)="onCantidadInputChange($event)">
       </ion-input>
       <ion-label style="font-size: 16px;" class="ion-padding-start">{{ alimento.unidadMedida }}</ion-label>
     </ion-item>
@@ -56,7 +56,7 @@
         <ion-button (click)="registrarAlimentoConsumido()" color="success" expand="block"><i class="fa-solid fa-plus ion-margin-end"></i> Añadir</ion-button>
       </ion-col>
       <ion-col size="6">
-        <ion-button color="primary" expand="block"><i class="fa-regular fa-pen-to-square ion-margin-end"></i> Editar</ion-button>
+        <ion-button color="primary" expand="block" [routerLink]="['/alimentos/form', alimento.uid]"><i class="fa-regular fa-pen-to-square ion-margin-end"></i> Editar</ion-button>
       </ion-col>
     </ion-row>
     <!-- ======= Fin Input ======= -->

@@ -94,7 +94,7 @@ const getAlimentosByUser = async(req, res = response) => {
 
 const createAlimento = async(req, res = response) => {
 
-    const { nombre, idUsuario, ...object } = req.body;
+    const { nombre, idUsuario, cantidadReferencia, ...object } = req.body;
     
     try {
 
@@ -122,6 +122,7 @@ const createAlimento = async(req, res = response) => {
 
         object.nombre = nombre;
         object.idUsuario = idUsuario;
+        object.cantidadReferencia = cantidadReferencia != null && cantidadReferencia !== '' ? cantidadReferencia : 'gramos';
         const alimento = new Alimento(object);
 
         await alimento.save();
@@ -144,7 +145,7 @@ const createAlimento = async(req, res = response) => {
 
 const updateAlimento = async(req, res = response) => {
 
-    const { nombre, idUsuario, ...object } = req.body;
+    const { nombre, idUsuario, cantidadReferencia, ...object } = req.body;
     const id = req.params.id;
     const token = req.header('x-token');
 
@@ -180,7 +181,7 @@ const updateAlimento = async(req, res = response) => {
 
         object.nombre = nombre;
         object.idUsuario = idUsuario;
-        
+        object.cantidadReferencia = cantidadReferencia != null && cantidadReferencia !== '' ? cantidadReferencia : 'gramos';
         const alimento = await Alimento.findByIdAndUpdate(id, object, { new: true });
 
         // OK

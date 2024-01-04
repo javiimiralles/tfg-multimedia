@@ -36,11 +36,19 @@ export class DiariosService {
     return this.http.put(`${environment.base_url}/diarios/alimentos-consumidos/${uid}`, data, this.headers);
   }
 
+  updateCantidadAlimentoConsumido(uid: string, index: number, cantidad: number) {
+    const alimentoEditar = { index, cantidad };
+    const data: FormData = new FormData;
+    data.append('idUsuario', this.idUsuario);
+    data.append('alimentoEditar', JSON.stringify(alimentoEditar));
+    return this.http.put(`${environment.base_url}/diarios/alimentos-consumidos/${uid}`, data, this.headers);
+  }
+
   deleteAlimentoConsumido(uid: string, index: number): Observable<any> {
     const alimentoEliminar = { index };
     const data: FormData = new FormData;
-    data.append('alimentoEliminar', JSON.stringify(alimentoEliminar));
     data.append('idUsuario', this.idUsuario);
+    data.append('alimentoEliminar', JSON.stringify(alimentoEliminar));
     return this.http.put(`${environment.base_url}/diarios/alimentos-consumidos/${uid}`, data, this.headers);
   }
 
