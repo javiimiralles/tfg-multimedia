@@ -71,8 +71,8 @@ export class AlimentosViewComponent  implements OnInit {
     }
   }
 
-  onDateChange(newDate: Date) {
-    this.selectedDate = newDate;
+  onDateChange(dates: any) {
+    this.selectedDate = dates.startDate;
     this.cargarDiarioPorFecha(this.selectedDate);
   }
 

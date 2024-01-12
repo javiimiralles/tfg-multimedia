@@ -1,4 +1,4 @@
-const RegistroPeso = require('../models/registro-peso');
+const RegistroPeso = require('../models/registro-peso.model');
 const Usuario = require('../models/usuario.model');
 const { response } = require('express');
 const { infoToken } = require('../utils/infotoken');
@@ -36,7 +36,7 @@ const getRegistroPesoById = async(req, res = response) => {
 
 const getRegistrosPesoByUser = async(req, res = response) => {
     const desde = Number(req.query.desde) || 0;
-    const resultados = Number(req.query.resultados) || Number(process.env.DOCSPERPAGE);
+    const resultados = Number(req.query.resultados) || 50;
     const fechaDesde = Date.parse(req.query.fechaDesde) || '';
     const fechaHasta = Date.parse(req.query.fechaHasta) || '';
     const idUsuario = req.params.idUsuario;
@@ -56,22 +56,22 @@ const getRegistrosPesoByUser = async(req, res = response) => {
         let registros, total;
         if(fechaDesde !== '' && fechaHasta !== '') {
             [registros, total] = await Promise.all([
-                RegistroPeso.find({ idUsuario, fecha: { $gt:fechaDesde, $lt:fechaHasta } }).skip(desde).limit(resultados),
+                RegistroPeso.find({ idUsuario, fecha: { $gt:fechaDesde, $lt:fechaHasta } }).skip(desde).limit(resultados).sort({ fecha: -1 }),
                 RegistroPeso.countDocuments({ idUsuario, fecha: { $gt:fechaDesde, $lt:fechaHasta } })
             ]);
         } else if(fechaDesde !== '') {
             [registros, total] = await Promise.all([
-                RegistroPeso.find({ idUsuario, fecha: { $gt:fechaDesde } }).skip(desde).limit(resultados),
+                RegistroPeso.find({ idUsuario, fecha: { $gt:fechaDesde } }).skip(desde).limit(resultados).sort({ fecha: -1 }),
                 RegistroPeso.countDocuments({ idUsuario, fecha: { $gt:fechaDesde } })
             ]);
         } else if(fechaHasta !== '') {
             [registros, total] = await Promise.all([
-                RegistroPeso.find({ idUsuario, fecha: { $lt:fechaHasta } }).skip(desde).limit(resultados),
+                RegistroPeso.find({ idUsuario, fecha: { $lt:fechaHasta } }).skip(desde).limit(resultados).sort({ fecha: -1 }),
                 RegistroPeso.countDocuments({ idUsuario, fecha: { $lt:fechaHasta } })
             ]);
         } else {
             [registros, total] = await Promise.all([
-                RegistroPeso.find({ idUsuario }).skip(desde).limit(resultados),
+                RegistroPeso.find({ idUsuario }).skip(desde).limit(resultados).sort({ fecha: -1 }),
                 RegistroPeso.countDocuments({ idUsuario })
             ]);
         }

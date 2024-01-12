@@ -80,6 +80,7 @@ const renovarToken = async(req, res = response) => {
             altura: usuarioBD.altura,
             edad: usuarioBD.edad,
             pesoInicial: usuarioBD.pesoInicial,
+            pesoActual: usuarioBD.pesoActual,
             pesoHistorico: usuarioBD.pesoHistorico,
             plan: usuarioBD.plan,
             distribucionComidas: usuarioBD.distribucionComidas,

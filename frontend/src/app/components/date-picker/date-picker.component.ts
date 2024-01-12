@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-date-picker',
@@ -7,28 +7,42 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 })
 export class DatePickerComponent  implements OnInit {
 
-  @Output() dateChange = new EventEmitter<Date>();
-  selectedDate: Date = new Date();
+  @Input() mode: 'day' | 'period' = 'day';
+  @Output() dateChange = new EventEmitter<any>();
+  startDate: Date = new Date();
+  endDate: Date = new Date();
   formatedDate: string = '';
 
   constructor() { }
 
   ngOnInit() {
-    this.formatedDate = this.formatDate();
+    if(this.mode === 'day') {
+      this.startDate = new Date();
+      this.endDate = null;
+      this.formatedDate = this.formatSimpleDate();
+    } else {
+      const today = new Date();
+      this.startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+      this.endDate = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+      this.formatedDate = this.formatComplexDate();
+    }
   }
 
   changeDate(offset: number) {
-    this.selectedDate.setDate(this.selectedDate.getDate() + offset);
-    this.formatedDate = this.formatDate();
-    this.dateChange.emit(this.selectedDate);
+    if(this.mode === 'day') {
+      this.startDate.setDate(this.startDate.getDate() + offset);
+      this.formatedDate = this.formatSimpleDate();
+    } else {
+      this.startDate.setMonth(this.startDate.getMonth() + offset);
+      this.endDate.setMonth(this.endDate.getMonth() + offset);
+      this.formatedDate = this.formatComplexDate();
+    }
+
+    const dates = { startDate: this.startDate, endDate: this.endDate };
+    this.dateChange.emit(dates);
   }
 
-  onDateChange(event: any) {
-    console.log('Date changed', event.detail.value);
-    // Implement any additional logic needed when the date is changed
-  }
-
-  formatDate(): string {
+  formatSimpleDate(): string {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -38,15 +52,23 @@ export class DatePickerComponent  implements OnInit {
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
 
-    if (this.selectedDate.toDateString() === today.toDateString()) {
+    if (this.startDate.toDateString() === today.toDateString()) {
       return 'Hoy';
-    } else if (this.selectedDate.toDateString() === yesterday.toDateString()) {
+    } else if (this.startDate.toDateString() === yesterday.toDateString()) {
       return 'Ayer';
-    } else if (this.selectedDate.toDateString() === tomorrow.toDateString()) {
+    } else if (this.startDate.toDateString() === tomorrow.toDateString()) {
       return 'Mañana';
     } else {
-      return this.selectedDate.toLocaleDateString('en-GB').replace(/\//g, '-');
+      return this.startDate.toLocaleDateString('en-GB').replace(/\//g, '-');
     }
+  }
+
+  formatComplexDate() {
+    const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+    const mes = meses[this.startDate.getMonth()];
+    const year = this.startDate.getFullYear();
+
+    return `${mes} ${year}`;
   }
 
 }

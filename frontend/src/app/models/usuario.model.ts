@@ -8,6 +8,7 @@ export class Usuario {
     public altura?: number,
     public edad?: number,
     public pesoInicial?: number,
+    public pesoActual?: number,
     public pesoHistorico?: {
       pesoMedio?: number,
       pesoMaximo?: number,

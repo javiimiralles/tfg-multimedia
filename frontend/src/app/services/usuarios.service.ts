@@ -35,9 +35,9 @@ export class UsuariosService {
     return this.http.get(`${environment.base_url}/login/token`, this.headers)
       .pipe(
         tap((res: any) => {
-          const { token, uid, nombre, email, sexo, altura, edad, pesoInicial, pesoHistorico, plan, distribucionComidas, configuracion } = res;
+          const { token, uid, nombre, email, sexo, altura, edad, pesoInicial, pesoActual, pesoHistorico, plan, distribucionComidas, configuracion } = res;
           localStorage.setItem('token', token);
-          this.usuario = new Usuario(uid, nombre, email, null, sexo, altura, edad, pesoInicial, pesoHistorico,
+          this.usuario = new Usuario(uid, nombre, email, null, sexo, altura, edad, pesoInicial, pesoActual, pesoHistorico,
             plan, distribucionComidas, configuracion);
         }),
         map (res => {
@@ -77,28 +77,32 @@ export class UsuariosService {
     return this.usuario.uid;
   }
 
-  get nombre(): string{
+  get nombre(): string {
     return this.usuario.nombre;
   }
 
-  get email(): string{
+  get email(): string {
     return this.usuario.email;
   }
 
-  get sexo(): string{
+  get sexo(): string {
     return this.usuario.sexo;
   }
 
-  get altura(): number{
+  get altura(): number {
     return this.usuario.altura;
   }
 
-  get edad(): number{
+  get edad(): number {
     return this.usuario.edad;
   }
 
-  get pesoInicial(): number{
+  get pesoInicial(): number {
     return this.usuario.pesoInicial;
+  }
+
+  get pesoActual(): number {
+    return this.usuario.pesoActual;
   }
 
   get pesoHistorico() {

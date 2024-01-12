@@ -31,6 +31,10 @@ const UsuarioSchema = Schema(
             type: Number,
             require: true
         },
+        pesoActual: {
+            type: Number,
+            require: true
+        },
         pesoHistorico: {
             pesoMedio: {
                 type: Number,
