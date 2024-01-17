@@ -1,4 +1,5 @@
 const Usuario = require('../models/usuario.model');
+const RegistroPeso = require('../models/registro-peso.model');
 const { response  }= require('express');
 const bcrypt = require('bcryptjs');
 
@@ -94,8 +95,17 @@ const createUser = async(req, res = response) => {
         usuario.pesoHistorico.pesoMedio = usuario.pesoInicial;
         usuario.pesoHistorico.pesoMaximo = usuario.pesoInicial;
         usuario.pesoHistorico.pesoMinimo = usuario.pesoInicial;
+        usuario.pesoActual = usuario.pesoInicial;
 
         await usuario.save();
+
+        // Añadimos un primer registro de peso para el usuario 
+        const registro = new RegistroPeso();
+        registro.fecha = new Date();
+        registro.peso = usuario.pesoInicial;
+        registro.idUsuario = usuario._id;
+
+        await registro.save();
 
         res.json({
             ok:true,

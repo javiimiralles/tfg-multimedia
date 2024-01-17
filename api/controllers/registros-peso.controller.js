@@ -56,18 +56,18 @@ const getRegistrosPesoByUser = async(req, res = response) => {
         let registros, total;
         if(fechaDesde !== '' && fechaHasta !== '') {
             [registros, total] = await Promise.all([
-                RegistroPeso.find({ idUsuario, fecha: { $gt:fechaDesde, $lt:fechaHasta } }).skip(desde).limit(resultados).sort({ fecha: -1 }),
-                RegistroPeso.countDocuments({ idUsuario, fecha: { $gt:fechaDesde, $lt:fechaHasta } })
+                RegistroPeso.find({ idUsuario, fecha: { $gte:fechaDesde, $lte:fechaHasta } }).skip(desde).limit(resultados).sort({ fecha: -1 }),
+                RegistroPeso.countDocuments({ idUsuario, fecha: { $gte:fechaDesde, $lte:fechaHasta } })
             ]);
         } else if(fechaDesde !== '') {
             [registros, total] = await Promise.all([
-                RegistroPeso.find({ idUsuario, fecha: { $gt:fechaDesde } }).skip(desde).limit(resultados).sort({ fecha: -1 }),
-                RegistroPeso.countDocuments({ idUsuario, fecha: { $gt:fechaDesde } })
+                RegistroPeso.find({ idUsuario, fecha: { $gte:fechaDesde } }).skip(desde).limit(resultados).sort({ fecha: -1 }),
+                RegistroPeso.countDocuments({ idUsuario, fecha: { $gte:fechaDesde } })
             ]);
         } else if(fechaHasta !== '') {
             [registros, total] = await Promise.all([
-                RegistroPeso.find({ idUsuario, fecha: { $lt:fechaHasta } }).skip(desde).limit(resultados).sort({ fecha: -1 }),
-                RegistroPeso.countDocuments({ idUsuario, fecha: { $lt:fechaHasta } })
+                RegistroPeso.find({ idUsuario, fecha: { $lte:fechaHasta } }).skip(desde).limit(resultados).sort({ fecha: -1 }),
+                RegistroPeso.countDocuments({ idUsuario, fecha: { $lte:fechaHasta } })
             ]);
         } else {
             [registros, total] = await Promise.all([
@@ -129,6 +129,8 @@ const createRegistroPeso = async(req, res = response) => {
         const registro = new RegistroPeso(object);
 
         await registro.save();
+
+        upatePesosHistoricosUsuario(registro.peso, idUsuario, true);
 
         // OK
         res.json({
@@ -195,6 +197,8 @@ const updateRegistroPeso = async(req, res = response) => {
 
         const registro = await RegistroPeso.findByIdAndUpdate(id, object, { new: true });
 
+        upatePesosHistoricosUsuario(registro.peso, idUsuario, false);
+
         // OK
         res.json({
             ok: true,
@@ -238,6 +242,8 @@ const deleteRegistroPeso = async(req, res = response) => {
 
         const registroEliminado = await RegistroPeso.findByIdAndDelete(id);
 
+        upatePesosHistoricosUsuario(registroEliminado.peso, registroEliminado.idUsuario, false);
+
         res.json({
             ok:true,
             msg:"deleteRegistroPeso",
@@ -251,6 +257,49 @@ const deleteRegistroPeso = async(req, res = response) => {
             msg: 'Error borrando registro de peso'
         })
     }
+}
+
+async function upatePesosHistoricosUsuario(peso, idUsuario, modoCreacion) {
+    
+    try {
+        const usuario = await Usuario.findById(idUsuario);
+        
+        if(modoCreacion) {
+            usuario.pesoActual = peso;
+            usuario.pesoHistorico.pesoMaximo = Math.max(usuario.pesoHistorico.pesoMaximo || 0, peso);
+            usuario.pesoHistorico.pesoMinimo = Math.min(usuario.pesoHistorico.pesoMinimo || peso, peso);
+        } else {
+            let registroPesoMax, registroPesoMin, registroMasReciente;
+            [registroPesoMax, registroPesoMin, registroMasReciente] = await Promise.all([
+                RegistroPeso.findOne({ idUsuario }).sort({ peso: -1 }),
+                RegistroPeso.findOne({ idUsuario }).sort({ peso: 1 }),
+                RegistroPeso.findOne({ idUsuario }).sort({ fecha: -1 })
+            ]);
+
+            usuario.pesoActual = registroMasReciente.peso;
+            usuario.pesoHistorico.pesoMaximo = registroPesoMax.peso;
+            usuario.pesoHistorico.pesoMinimo = registroPesoMin.peso;
+        }
+
+        const registrosPeso = await RegistroPeso.find({ idUsuario });
+        let sumaPesos = 0;
+        registrosPeso.forEach(registro => {
+            sumaPesos += registro.peso;
+        });
+
+        const pesoMedio = Math.round(registrosPeso.length > 0 ? sumaPesos / registrosPeso.length : 0);
+        usuario.pesoHistorico.pesoMedio = pesoMedio;
+
+        await usuario.save();
+
+    } catch (error) {
+        console.log(error);
+        res.json({
+            ok: false,
+            msg: 'Error al actualizar el peso histórico'
+        });
+    }
+
 }
 
 module.exports = {

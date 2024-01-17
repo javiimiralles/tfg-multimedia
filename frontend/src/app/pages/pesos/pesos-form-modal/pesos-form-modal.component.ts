@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
 import { RegistroPeso } from 'src/app/models/registro-peso.model';
 import { PesosService } from 'src/app/services/pesos.service';
@@ -12,6 +12,9 @@ import { UsuariosService } from 'src/app/services/usuarios.service';
 })
 export class PesosFormModalComponent  implements OnInit {
 
+  @Input() registroEdicion: RegistroPeso;
+
+  modalHeader: string = '';
   fechaSeleccionada: Date = new Date();
   fechaFormateada: string = '';
   peso: number = this.usuariosService.pesoActual;
@@ -25,16 +28,29 @@ export class PesosFormModalComponent  implements OnInit {
     private toastService: ToastService) { }
 
   ngOnInit() {
-    this.fechaSeleccionada = new Date();
-    this.fechaFormateada = new Date().toLocaleDateString();
+    if(!this.registroEdicion) {
+      this.fechaSeleccionada = new Date();
+      this.fechaFormateada = new Date().toLocaleDateString();
+      this.modalHeader = 'Nuevo registro de peso';
+    } else {
+      this.peso = this.registroEdicion.peso;
+      this.fechaSeleccionada = new Date(this.registroEdicion.fecha);
+      this.fechaFormateada = this.fechaSeleccionada.toLocaleDateString();
+      this.modalHeader = 'Editar registro de peso';
+    }
   }
 
   enviarFormulario() {
     if(this.peso != null && this.peso > 0) {
       this.showError = false;
       const date: Date = new Date(this.fechaSeleccionada);
-      const registro: RegistroPeso = new RegistroPeso(null, date, this.peso);
-      this.crearRegistroPeso(registro);
+      if(!this.registroEdicion) {
+        const registro: RegistroPeso = new RegistroPeso(null, date, this.peso);
+        this.crearRegistroPeso(registro);
+      } else {
+        const registro: RegistroPeso = new RegistroPeso(this.registroEdicion.uid, date, this.peso);
+        this.editarRegistroPeso(registro);
+      }
     } else {
       this.showError = true;
     }
@@ -43,8 +59,20 @@ export class PesosFormModalComponent  implements OnInit {
   crearRegistroPeso(registro: RegistroPeso) {
     this.pesosService.createRegistroPeso(registro).subscribe(res => {
       if(res['registro']) {
-        this.modalController.dismiss({ nuevoRegistro: true });
+        this.modalController.dismiss({ ok: true });
         this.toastService.presentToast('Registro de peso creado', 'success');
+      }
+    }, (err) => {
+      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
+      this.toastService.presentToast(msg, 'danger');
+    })
+  }
+
+  editarRegistroPeso(registro: RegistroPeso) {
+    this.pesosService.updateRegistroPeso(registro).subscribe(res => {
+      if(res['registro']) {
+        this.modalController.dismiss({ ok: true });
+        this.toastService.presentToast('Registro de peso editado', 'success');
       }
     }, (err) => {
       const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';

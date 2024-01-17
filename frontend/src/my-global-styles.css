@@ -36,6 +36,7 @@ body {
   font-size: small !important;
 }
 
+/* Colores */
 .primary-color {
   color: var(--ion-color-primary);
 }
@@ -58,6 +59,29 @@ body {
 
 .custom-yellow-color {
   color: var(--ion-color-custom-yellow);
+}
+
+/* Angular Material */
+mat-form-field {
+  display: block !important;
+  border-bottom: none !important;
+}
+
+mat-form-field div {
+  background-color: white !important;
+  padding-right: 5px !important;
+}
+
+mat-datepicker-content {
+  border-radius: 20px !important;
+}
+
+.cdk-overlay-pane.mat-datepicker-popup {
+  top: 25% !important;
+}
+
+.mat-mdc-form-field-subscript-wrapper, .mdc-line-ripple {
+  display: none;
 }
 
 /* Toolbar */
@@ -141,4 +165,8 @@ ion-fab {
   --width: 80%;
   --height: 30%;
   --border-radius: 20px;
+}
+
+.custom-modal div {
+  background-color: white;
 }

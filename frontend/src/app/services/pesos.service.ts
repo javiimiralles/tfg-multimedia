@@ -28,6 +28,19 @@ export class PesosService {
     return this.http.post(`${environment.base_url}/registros-peso`, data, this.headers);
   }
 
+  updateRegistroPeso(registro: RegistroPeso) {
+    const uid = registro.uid;
+    const data: FormData = new FormData;
+    data.append('fecha', registro.fecha.toISOString());
+    data.append('peso', registro.peso.toString());
+    data.append('idUsuario', this.idUsuario);
+    return this.http.put(`${environment.base_url}/registros-peso/${uid}`, data, this.headers);
+  }
+
+  deleteRegistroPeso(uid: string) {
+    return this.http.delete(`${environment.base_url}/registros-peso/${uid}`, this.headers);
+  }
+
   get headers(){
     return {
       headers:{

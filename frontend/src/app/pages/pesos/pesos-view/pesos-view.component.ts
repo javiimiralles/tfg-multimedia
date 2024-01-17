@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { RegistroPeso } from 'src/app/models/registro-peso.model';
 import { PesosService } from 'src/app/services/pesos.service';
 import { ToastService } from 'src/app/services/toast.service';
@@ -23,7 +23,8 @@ export class PesosViewComponent  implements OnInit {
     private toastService: ToastService,
     private pesosService: PesosService,
     private modalController: ModalController,
-    private usuariosService: UsuariosService) { }
+    private usuariosService: UsuariosService,
+    private alertController: AlertController) { }
 
   ngOnInit() {
     const today = new Date();
@@ -32,20 +33,25 @@ export class PesosViewComponent  implements OnInit {
     this.cargarRegistrosDePeso();
   }
 
-  async openNuevoRegistroFormModal() {
+  async openPesosFormModal(registro: RegistroPeso) {
     const modal = await this.modalController.create({
       component: PesosFormModalComponent,
-      cssClass: 'custom-modal'
+      cssClass: 'custom-modal',
+      componentProps: {
+        registroEdicion: registro
+      }
     });
 
     await modal.present();
 
     const { data } = await modal.onWillDismiss();
-    if(data?.nuevoRegistro) {
+    if(data?.ok) {
       this.cargarRegistrosDePeso();
+      this.updateInfoUser();
     }
   }
 
+  // Capturdores de eventos
   onSegmentChange(event) {
     this.segmentActual = event.detail.value;
   }
@@ -91,7 +97,6 @@ export class PesosViewComponent  implements OnInit {
         dev = `${variacionPeso} kg`;
       }
     }
-
     return dev;
   }
 
@@ -108,5 +113,47 @@ export class PesosViewComponent  implements OnInit {
 
     return clase;
   }
+
+  async presentAlert(registro: RegistroPeso) {
+    const alert = await this.alertController.create({
+      header: 'Opciones',
+      buttons: [
+        {
+          text: 'Editar registro',
+          handler: () => {
+            this.openPesosFormModal(registro);
+          }
+        },
+        {
+          text: 'Eliminar',
+          cssClass: 'text-danger',
+          handler: () => {
+            this.deleteRegistroPeso(registro.uid);
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  deleteRegistroPeso(uid: string) {
+    this.pesosService.deleteRegistroPeso(uid).subscribe(res => {
+      this.toastService.presentToast('Registro eliminado', 'success');
+      this.cargarRegistrosDePeso();
+      this.updateInfoUser();
+    }, (err) => {
+      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
+      this.toastService.presentToast(msg, 'danger');
+    });
+  }
+
+  // Cuando creamos, editamos o eliminamos un registro de peso habra que actualizar
+  // la info del usuario para que se actualice su pesoActual
+  updateInfoUser() {
+    this.usuariosService.validarToken().subscribe(res => {});
+  }
+
+
 
 }

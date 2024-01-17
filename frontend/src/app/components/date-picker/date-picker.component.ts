@@ -1,4 +1,8 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatDatepickerIntl } from '@angular/material/datepicker';
+import { IonModal } from '@ionic/angular';
+
 
 @Component({
   selector: 'app-date-picker',
@@ -7,13 +11,18 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 })
 export class DatePickerComponent  implements OnInit {
 
+  @ViewChild(IonModal) calendarModal: IonModal;
+
   @Input() mode: 'day' | 'period' = 'day';
   @Output() dateChange = new EventEmitter<any>();
-  startDate: Date = new Date();
-  endDate: Date = new Date();
+  startDate: Date;
+  endDate: Date;
   formatedDate: string = '';
 
-  constructor() { }
+  constructor(
+    private _adapter: DateAdapter<any>,
+    @Inject(MAT_DATE_LOCALE) private _locale: string
+  ) {}
 
   ngOnInit() {
     if(this.mode === 'day') {
@@ -22,10 +31,13 @@ export class DatePickerComponent  implements OnInit {
       this.formatedDate = this.formatSimpleDate();
     } else {
       const today = new Date();
-      this.startDate = new Date(today.getFullYear(), today.getMonth(), 1);
-      this.endDate = new Date(today.getFullYear(), today.getMonth() + 1, 1);
-      this.formatedDate = this.formatComplexDate();
+      this.startDate = new Date(today.getFullYear(), today.getMonth(), 1, 1);
+      this.endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+      this.formatedDate = this.formatMonthDate();
     }
+
+    this._locale = 'es';
+    this._adapter.setLocale(this._locale);
   }
 
   changeDate(offset: number) {
@@ -34,14 +46,17 @@ export class DatePickerComponent  implements OnInit {
       this.formatedDate = this.formatSimpleDate();
     } else {
       this.startDate.setMonth(this.startDate.getMonth() + offset);
-      this.endDate.setMonth(this.endDate.getMonth() + offset);
-      this.formatedDate = this.formatComplexDate();
+      this.endDate.setMonth(this.endDate.getMonth() + offset + 1);
+      this.startDate.setDate(1);
+      this.endDate.setDate(0);
+      this.formatedDate = this.formatMonthDate();
     }
 
     const dates = { startDate: this.startDate, endDate: this.endDate };
     this.dateChange.emit(dates);
   }
 
+  // ======== Formateo de fechas ===========
   formatSimpleDate(): string {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -59,16 +74,46 @@ export class DatePickerComponent  implements OnInit {
     } else if (this.startDate.toDateString() === tomorrow.toDateString()) {
       return 'Mañana';
     } else {
-      return this.startDate.toLocaleDateString('en-GB').replace(/\//g, '-');
+      return this.startDate.toLocaleDateString('en-GB').replace(/\//g, '/');
     }
   }
 
-  formatComplexDate() {
+  formatMonthDate() {
     const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
     const mes = meses[this.startDate.getMonth()];
     const year = this.startDate.getFullYear();
 
     return `${mes} ${year}`;
+  }
+
+  formatComplexDate() {
+    const options: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short', year: 'numeric' };
+
+    const formattedStartDate = this.startDate.toLocaleDateString('es-ES', options).replace('.', '');
+    const formattedEndDate = this.endDate.toLocaleDateString('es-ES', options).replace('.', '');
+
+    return `Del ${formattedStartDate} al ${formattedEndDate}`;
+  }
+
+  // ======== Logica del modal ===========
+  closeModal() {
+    this.calendarModal.dismiss();
+  }
+
+onModalDateChange(event: any) {
+    this.startDate = new Date(event.detail.value);
+    this.formatedDate = this.formatSimpleDate();
+    const dates = { startDate: this.startDate, endDate: this.endDate };
+    this.dateChange.emit(dates);
+    this.calendarModal.dismiss();
+  }
+
+  confirmPeriodModal() {
+    this.formatedDate = this.formatComplexDate();
+    this.endDate.setDate(this.endDate.getDate() + 1);
+    const dates = { startDate: this.startDate, endDate: this.endDate };
+    this.dateChange.emit(dates);
+    this.calendarModal.dismiss();
   }
 
 }
