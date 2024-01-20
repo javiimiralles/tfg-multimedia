@@ -142,6 +142,7 @@ export class AlimentosViewComponent  implements OnInit {
 
   async presentEditarCantidadAlert(index: number) {
     const alert = await this.alertController.create({
+      header: 'Editar cantidad',
       inputs: [
         {
           placeholder: 'Nueva cantidad',

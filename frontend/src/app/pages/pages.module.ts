@@ -11,15 +11,18 @@ import { PesosModule } from './pesos/pesos.module';
 import { ActividadFisicaModule } from './actividad-fisica/actividad-fisica.module';
 import { CommonsModule } from '../commons/commons.module';
 import { ComponentsModule } from '../components/components.module';
+import { ConsumoAguaComponent } from './consumo-agua/consumo-agua.component';
 
 @NgModule({
   declarations: [
     AdminLayoutComponent,
-    HomeComponent
+    HomeComponent,
+    ConsumoAguaComponent
   ],
   exports: [
     AdminLayoutComponent,
-    HomeComponent
+    HomeComponent,
+    ConsumoAguaComponent
   ],
   imports: [
     IonicModule,

@@ -12,6 +12,7 @@ export class ProgressBarComponent implements OnInit {
   @Input() label: string;
   @Input() color: string;
   @Input() size: string;
+  @Input() unidadMedida: string;
 
   height: string = '20px';
 

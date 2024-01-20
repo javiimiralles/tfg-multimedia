@@ -11,6 +11,7 @@ import { ActividadFisicaViewComponent } from './actividad-fisica/actividad-fisic
 import { AlimentosListComponent } from './alimentos/alimentos-list/alimentos-list.component';
 import { RegistroAlimentoFormComponent } from './alimentos/registro-alimento-form/registro-alimento-form.component';
 import { AlimentoFormComponent } from './alimentos/alimento-form/alimento-form.component';
+import { ConsumoAguaComponent } from './consumo-agua/consumo-agua.component';
 
 const routes: Routes = [
   { path: '', component: AdminLayoutComponent, canActivate: [AuthGuard],
@@ -64,6 +65,14 @@ const routes: Routes = [
       { path: 'actividad-fisica', component: ActividadFisicaViewComponent, data: {
                                                                   simpleHeader: false,
                                                                   titulo: 'Actividad física',
+                                                                  leftButtonIcon: 'notifications-outline',
+                                                                  leftButtonUrl: '/notificaciones',
+                                                                  backButtonUrl: ''
+                                                                }},
+      /********** Consumo agua *************/
+      { path: 'consumo-agua', component: ConsumoAguaComponent, data: {
+                                                                  simpleHeader: false,
+                                                                  titulo: 'Consumo de agua',
                                                                   leftButtonIcon: 'notifications-outline',
                                                                   leftButtonUrl: '/notificaciones',
                                                                   backButtonUrl: ''

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { UsuariosService } from './usuarios.service';
 import { formatDate } from '../utils/date.utils';
+import { Diario } from '../models/diario.model';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +29,16 @@ export class DiariosService {
     data.append('idUsuario', this.idUsuario);
     data.append('fecha', date.toISOString());
     return this.http.post(`${environment.base_url}/diarios`, data, this.headers);
+  }
+
+  updateDiario(diario: Diario) {
+    const data: FormData = new FormData;
+    const fecha: Date = new Date(diario.fecha);
+    data.append('idUsuario', this.idUsuario);
+    data.append('fecha', fecha.toISOString());
+    data.append('aguaConsumida', diario.aguaConsumida.toString());
+    data.append('caloriasConsumidas', diario.caloriasConsumidas.toString());
+    return this.http.put(`${environment.base_url}/diarios/${diario.uid}`, data, this.headers);
   }
 
   addAlimentoConsumido(uid: string, alimentoAgregar: any) {

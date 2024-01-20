@@ -61,6 +61,10 @@ body {
   color: var(--ion-color-custom-yellow);
 }
 
+.custom-blue-color {
+  color: var(--ion-color-custom-blue);
+}
+
 /* Angular Material */
 mat-form-field {
   display: block !important;
