@@ -27,3 +27,27 @@
 </ion-card>
 <!-- ================== Fin Resumen del dia ================== -->
 
+<!-- ================== Resumen peso ================== -->
+<ion-card class="weight-card" (click)="redirectTo('/registros-peso')">
+  <ion-card-header>
+    <ion-card-title class="ion-text-center" style="font-size: medium;"><b>Peso</b></ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="6" class="ion-text-center">
+          <ion-icon name="scale-outline"></ion-icon>
+          <div>Actual</div>
+          <div><strong>{{ pesoActual }} kg</strong></div>
+        </ion-col>
+        <ion-col size="6" class="ion-text-center">
+          <ion-icon name="flag-outline"></ion-icon>
+          <div>Objetivo</div>
+          <div><strong>{{ pesoObjetivo }} kg</strong></div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card-content>
+</ion-card>
+<!-- ================== Fin Resumen peso ================== -->
+

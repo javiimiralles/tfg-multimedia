@@ -1,15 +1,15 @@
-i {
-  margin-right: 10px;
-}
-
-.item-text {
+ion-icon {
   color: var(--ion-color-primary);
-}
-
-.active-link {
-  font-weight: bold;
+  margin-right: 10px;
+  font-size: large;
 }
 
 ion-item {
+  color: var(--ion-color-primary);
   border: none;
+  --background: var(--ion-color-light) !important;
+}
+
+.bold {
+  font-weight: bold;
 }

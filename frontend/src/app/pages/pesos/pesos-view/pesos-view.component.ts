@@ -5,6 +5,34 @@ import { PesosService } from 'src/app/services/pesos.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { PesosFormModalComponent } from '../pesos-form-modal/pesos-form-modal.component';
 import { UsuariosService } from 'src/app/services/usuarios.service';
+import {
+  ApexAxisChartSeries,
+  ApexChart,
+  ApexXAxis,
+  ApexDataLabels,
+  ApexTooltip,
+  ApexStroke,
+  ApexMarkers,
+  ApexYAxis,
+  ApexGrid,
+  ApexTitleSubtitle,
+  ApexAnnotations,
+} from 'ng-apexcharts';
+
+export type ChartOptions = {
+  series: ApexAxisChartSeries;
+  chart: ApexChart;
+  xaxis: ApexXAxis;
+  stroke: ApexStroke;
+  dataLabels: ApexDataLabels;
+  markers: ApexMarkers;
+  yaxis: ApexYAxis;
+  title: ApexTitleSubtitle;
+  grid: ApexGrid;
+  tooltip: ApexTooltip;
+  colors: string[];
+  annotations: ApexAnnotations;
+};
 
 @Component({
   selector: 'app-pesos-view',
@@ -13,11 +41,22 @@ import { UsuariosService } from 'src/app/services/usuarios.service';
 })
 export class PesosViewComponent  implements OnInit {
 
-  segmentActual = 'listado';
+  segmentActual: 'listado' | 'estadisticas' = 'listado';
   startDate: Date = new Date();
   endDate: Date = new Date();
   registrosPeso: RegistroPeso[] = [];
   variacionesPeso: number[] = [];
+
+  pesoObjetivo: number = this.usuariosService.pesoObjetivo;
+  objetivoUsuario: string = this.usuariosService.plan.tipo;
+
+  pesoMaximo: number = this.usuariosService.pesoHistorico.pesoMaximo;
+  pesoMinimo: number = this.usuariosService.pesoHistorico.pesoMinimo;
+  pesoMedio: number = this.usuariosService.pesoHistorico.pesoMedio;
+
+  chartOptions: Partial<ChartOptions>;
+  chartData: number[] = [];
+  chartLabels: any[] = [];
 
   constructor(
     private toastService: ToastService,
@@ -51,7 +90,7 @@ export class PesosViewComponent  implements OnInit {
     }
   }
 
-  // Capturdores de eventos
+  // Capturadores de eventos
   onSegmentChange(event) {
     this.segmentActual = event.detail.value;
   }
@@ -67,6 +106,15 @@ export class PesosViewComponent  implements OnInit {
       if(res['registros']) {
         this.registrosPeso = res['registros'];
         this.calcularVariacionesPeso();
+        this.chartData = this.registrosPeso.map(registro => registro.peso).slice(0, 10).reverse();
+        this.chartLabels = this.registrosPeso.map(registro => {
+            const date = new Date(registro.fecha);
+            const day = date.getDate();
+            const monthNames = ['ene.', 'feb.', 'mar.', 'abr.', 'may.', 'jun.', 'jul.', 'ago.', 'sep.', 'oct.', 'nov.', 'dic.'];
+            const month = monthNames[date.getMonth()];
+            return `${day} ${month}`;
+          }).slice(0, 10).reverse();
+        this.updateChartData();
       }
     }, (err) => {
       const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
@@ -103,10 +151,9 @@ export class PesosViewComponent  implements OnInit {
   getVariacionPesoClass(index: number, variacionPeso: number) {
     let clase: string = '';
     if(index != this.variacionesPeso.length - 1) {
-      const objetivoUsuario: string = this.usuariosService.plan.tipo;
-      if(objetivoUsuario === 'Perder peso') {
+      if(this.objetivoUsuario === 'Perder peso') {
         clase = variacionPeso > 0 ? 'danger-color' : 'success-color';
-      } else if(objetivoUsuario === 'Ganar peso') {
+      } else if(this.objetivoUsuario === 'Ganar peso') {
         clase = variacionPeso < 0 ? 'danger-color' : 'success-color';
       }
     }
@@ -154,6 +201,53 @@ export class PesosViewComponent  implements OnInit {
     this.usuariosService.validarToken().subscribe(res => {});
   }
 
+  // Logica del grafico
+  updateChartData() {
+    this.chartOptions = {
+      series: [
+        {
+          name: "Peso",
+          data: this.chartData
+        }
+      ],
+      chart: {
+        height: 250,
+        type: "line",
+        toolbar: {
+          show: false
+        },
+        dropShadow: {
+          enabled: true,
+        },
+        zoom: {
+          enabled: false
+        }
+      },
+      dataLabels: {
+        enabled: true
+      },
+      stroke: {
+        curve: "smooth",
+        width: 2
+      },
+      grid: {
+        show: false,
+      },
+      xaxis: {
+        categories: this.chartLabels,
+      },
+      yaxis: {
+        show: false
+      },
+      colors: ['#4F3422'],
+      annotations: {
+        yaxis: [{
+          y: this.pesoObjetivo,
+          borderColor: '#9BB168',
+        }]
+      }
+    };
+  }
 
 
 }

@@ -27,7 +27,7 @@ const routes: Routes = [
       { path: 'alimentos', component: AlimentosViewComponent, data: {
                                                                     simpleHeader: false,
                                                                     titulo: 'Registro de alimentos',
-                                                                    leftButtonIcon: 'fa-solid fa-glass-water fa-lg',
+                                                                    leftButtonIcon: 'water-outline',
                                                                     leftButtonUrl: '/consumo-agua',
                                                                     backButtonUrl: ''
                                                                   }},
@@ -56,7 +56,7 @@ const routes: Routes = [
       { path: 'registros-peso', component: PesosViewComponent, data: {
                                                                     simpleHeader: false,
                                                                     titulo: 'Registros de peso',
-                                                                    leftButtonIcon: 'fa-solid fa-bell fa-lg',
+                                                                    leftButtonIcon: 'notifications-outline',
                                                                     leftButtonUrl: '/notificaciones',
                                                                     backButtonUrl: ''
                                                                   }},
@@ -64,7 +64,7 @@ const routes: Routes = [
       { path: 'actividad-fisica', component: ActividadFisicaViewComponent, data: {
                                                                   simpleHeader: false,
                                                                   titulo: 'Actividad física',
-                                                                  leftButtonIcon: 'fa-solid fa-bell fa-lg',
+                                                                  leftButtonIcon: 'notifications-outline',
                                                                   leftButtonUrl: '/notificaciones',
                                                                   backButtonUrl: ''
                                                                 }},

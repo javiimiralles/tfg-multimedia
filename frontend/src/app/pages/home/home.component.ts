@@ -17,6 +17,9 @@ export class HomeComponent  implements OnInit {
   diario: Diario;
   planUsuario = this.usuariosService.plan;
 
+  pesoActual: number = this.usuariosService.pesoActual;
+  pesoObjetivo: number = this.usuariosService.pesoObjetivo;
+
   constructor(
     private router: Router,
     private diariosService: DiariosService,
