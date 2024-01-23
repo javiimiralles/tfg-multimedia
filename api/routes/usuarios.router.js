@@ -22,9 +22,8 @@ router.get('/id/:id', [
 ], getUserById);
 
 router.get('/email/:email', [
-    validarJWT,
     check('email','El argumento email es obligatorio').not().isEmpty(),
-    check('email','El argumento email debe ser un email').isEmail(),
+    check('email','El email es incorrecto').isEmail(),
     validarCampos,
 ], getUserByEmail);
 

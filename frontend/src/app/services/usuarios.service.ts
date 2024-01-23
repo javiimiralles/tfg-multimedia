@@ -14,6 +14,10 @@ export class UsuariosService {
 
   constructor(private http: HttpClient, private router: Router) { }
 
+  getUserByEmail(email: string) {
+    return this.http.get(`${environment.base_url}/usuarios/email/${email}`, this.headers);
+  }
+
   login(formData: any): Observable<any> {
     return this.http.post(`${environment.base_url}/login`, formData)
       .pipe(
@@ -23,6 +27,11 @@ export class UsuariosService {
           this.usuario = new Usuario(uid);
         })
       );
+  }
+
+  logout(): void {
+    this.cleanLocalStorage();
+    this.router.navigateByUrl('/login');
   }
 
   validar(correcto: boolean, incorrecto: boolean): Observable<boolean> {

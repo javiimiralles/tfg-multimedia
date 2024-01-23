@@ -40,8 +40,9 @@ const getUserByEmail = async(req, res = response) => {
         const usuario = await Usuario.findOne({ email });
 
         // KO -> usuario no existe
+        // No enviamos error 400 porque queremos que siga la ejecución
         if(!usuario) {
-            return res.status(400).json({
+            return res.json({
                 ok:false,
                 msg:"No existe ningún usuario para el email: " + email
             });

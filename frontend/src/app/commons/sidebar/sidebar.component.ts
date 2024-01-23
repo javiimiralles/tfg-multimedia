@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivationEnd, Router } from '@angular/router';
 import { MenuController } from '@ionic/angular';
 import { Subscription, filter, map } from 'rxjs';
+import { UsuariosService } from 'src/app/services/usuarios.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -25,7 +26,7 @@ export class SidebarComponent implements OnInit {
     { nombre: 'Configuración', icono: 'settings', url: '/configuracion' },
   ]
 
-  constructor(private router: Router, private menuController: MenuController) { }
+  constructor(private router: Router, private menuController: MenuController, private usuariosService: UsuariosService) { }
 
   ngOnInit() {
     this.sub$ = this.getData().subscribe(data => {
@@ -43,6 +44,10 @@ export class SidebarComponent implements OnInit {
 
   closeMenu() {
     this.menuController.close();
+  }
+
+  logout() {
+    this.usuariosService.logout();
   }
 
 }

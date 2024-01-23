@@ -1,3 +1,68 @@
-<p>
-  register works!
-</p>
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title>Registro</ion-title>
+  </ion-toolbar>
+  <ion-progress-bar [value]="progressValue"></ion-progress-bar>
+</ion-header>
+
+<div class="ion-padding registration-container">
+  <!--============= Step 1 (inputs nombre, email, passwords) ===================-->
+  <div *ngIf="currentStep == 1" [formGroup]="step1Form" class="form-container">
+    <ion-item lines="none" class="ion-margin-bottom">
+      <ion-input formControlName="nombre" label="Nombre" labelPlacement="floating"></ion-input>
+    </ion-item>
+    <ion-item lines="none" class="ion-margin-bottom">
+      <ion-input formControlName="email" label="Email" labelPlacement="floating"></ion-input>
+    </ion-item>
+    <ion-item lines="none" class="ion-margin-bottom">
+      <ion-input type="password" formControlName="password" label="Contraseña" labelPlacement="floating"></ion-input>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-input type="password" formControlName="repeatPassword" label="Repite la contraseña" labelPlacement="floating"></ion-input>
+    </ion-item>
+  </div>
+  <!--============= Fin Step 1 (inputs nombre, email, passwords) ===================-->
+
+  <!--============= Step 2 (sexo) ===================-->
+  <div *ngIf="currentStep == 2" class="form-container">
+    <ion-card class="card-man" [ngClass]="selectedSexo === 'HOMBRE' ? 'selected' : ''" (click)="selectSexo('HOMBRE')">
+      <ion-card-header>
+        <ion-card-title><strong>Hombre</strong></ion-card-title>
+      </ion-card-header>
+    </ion-card>
+    <ion-card class="card-woman" [ngClass]="selectedSexo === 'MUJER' ? 'selected' : ''" (click)="selectSexo('MUJER')">
+      <ion-card-header>
+        <ion-card-title><strong>Mujer</strong></ion-card-title>
+      </ion-card-header>
+    </ion-card>
+  </div>
+  <!--============= Fin Step 2 (sexo) ===================-->
+
+  <!--============= Step 3 (altura) ===================-->
+  <div *ngIf="currentStep == 3" class="form-container">
+  </div>
+  <!--============= Fin Step 3 (altura) ===================-->
+
+  <!--============= Botones ===================-->
+  <div class="flex-container">
+    <div class="left-side">
+      <ion-button *ngIf="currentStep > 1" class="ion-margin-top" color="secondary" (click)="previousStep()">
+        Volver <ion-icon name="chevron-back" slot="start"></ion-icon>
+      </ion-button>
+    </div>
+    <div class="right-side" *ngIf="currentStep < totalSteps">
+      <ion-button class="ion-margin-top" color="success" (click)="validate()"
+        [disabled]="(currentStep == 1 && !step1Form.valid) || (currentStep == 2 && selectedSexo == null)">
+        Continuar <ion-icon name="chevron-forward" slot="end"></ion-icon>
+      </ion-button>
+    </div>
+    <div class="right-side" *ngIf="currentStep == totalSteps">
+      <ion-button class="ion-margin-top" color="success">
+        Finalizar <ion-icon name="chevron-forward" slot="end"></ion-icon>
+      </ion-button>
+    </div>
+  </div>
+  <!--============= Fin Botones ===================-->
+</div>
+
+
