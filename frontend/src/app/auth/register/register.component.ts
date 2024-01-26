@@ -1,7 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
+import { IonModal } from '@ionic/angular';
 import { ToastService } from 'src/app/services/toast.service';
 import { UsuariosService } from 'src/app/services/usuarios.service';
+import { AlertController, ItemReorderEventDetail } from '@ionic/angular';
+import { Usuario } from 'src/app/models/usuario.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -10,12 +14,26 @@ import { UsuariosService } from 'src/app/services/usuarios.service';
 })
 export class RegisterComponent  implements OnInit {
 
-  currentStep: number = 3;
-  totalSteps: number = 7;
+  @ViewChild(IonModal) modal: IonModal;
+
+  realizandoRegistro: boolean = false;
+  currentStep: number = 1;
+  totalSteps: number = 8;
   progressValue: number = this.currentStep/this.totalSteps;
   buttonDisabled: boolean = true;
+  registrarObjetivoPeso: boolean = false;
 
-  selectedSexo: string;
+  sexo: string;
+  altura: number = 170;
+  edad: number = 20;
+  pesoEntero: number = 60;
+  pesoDecimal: number = 0;
+  peso: number;
+  plan: string;
+  pesoObjetivoEntero: number = 70;
+  pesoObjetivoDecimal: number = 0;
+  pesoObjetivo: number;
+  distribucionComidas: string[] = ['Desayuno', 'Comida', 'Cena'];
 
   step1Form = this.formBuilder.group({
     nombre: ['', Validators.required],
@@ -27,7 +45,9 @@ export class RegisterComponent  implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private usuariosService: UsuariosService,
-    private toastService: ToastService) {}
+    private toastService: ToastService,
+    private alertController: AlertController,
+    private router: Router) {}
 
   ngOnInit() {}
 
@@ -44,7 +64,92 @@ export class RegisterComponent  implements OnInit {
   }
 
   selectSexo(sexo: string) {
-    this.selectedSexo = sexo;
+    this.sexo = sexo;
+  }
+
+  onHeightChange(height: number) {
+    this.altura = height
+  }
+
+  onAgeChange(age: number) {
+    this.edad = age;
+  }
+
+  onWeigthIntChange(weigthInt: number) {
+    this.pesoEntero = weigthInt;
+  }
+
+  onWeigthDecimalChange(weigthDecimal: number) {
+    this.pesoDecimal = weigthDecimal;
+  }
+
+  selectPlan(plan: string) {
+    this.plan = plan;
+  }
+
+  handleReorderDistribucion(ev: CustomEvent<ItemReorderEventDetail>) {
+    this.distribucionComidas = ev.detail.complete(this.distribucionComidas);
+  }
+
+  openModal() {
+    this.modal.present();
+  }
+
+  closeModal() {
+    this.modal.dismiss();
+  }
+
+  confirmModal() {
+    this.modal.dismiss();
+    this.registrarObjetivoPeso = true;
+    this.validate();
+  }
+
+  noRegistrarObjetivo() {
+    this.registrarObjetivoPeso = false;
+    this.validate();
+  }
+
+  onTargetIntChange(weightInt: number) {
+    this.pesoObjetivoEntero = weightInt;
+  }
+
+  onTargetDecimalChange(weightDecimal: number) {
+    this.pesoObjetivoDecimal = weightDecimal;
+  }
+
+  deleteComida(index: number) {
+    this.distribucionComidas.splice(index, 1);
+  }
+
+  async presentAlert() {
+    const alert = await this.alertController.create({
+      header: 'Añadir comida',
+      inputs: [
+        {
+          placeholder: 'Escribe aquí',
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'text-danger d-inline',
+        },
+        {
+          text: 'Aceptar',
+          cssClass: 'd-inline',
+          handler: (data) => {
+            if (data[0] != null && data[0] !== '') {
+              this.distribucionComidas.push(data[0]);
+            } else {
+              return;
+            }
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
 
   validate() {
@@ -53,10 +158,28 @@ export class RegisterComponent  implements OnInit {
         this.validateStep1();
         break;
       case 2:
-        if(this.selectedSexo != null) this.nextStep();
+        if(this.sexo != null) this.nextStep();
+        break;
+      case 5:
+        this.peso = this.pesoEntero + (this.pesoDecimal / 100);
+        this.nextStep();
+        break;
+      case 6:
+        if(this.plan != null) this.nextStep();
+        break;
+      case 7:
+        if(this.registrarObjetivoPeso) {
+          this.pesoObjetivo = this.pesoObjetivoEntero + (this.pesoObjetivoDecimal / 100);
+        } else {
+          this.pesoObjetivo = null;
+        }
+        this.nextStep();
+        break;
+      case this.totalSteps:
+        if(this.distribucionComidas.length > 0) this.finishRegister();
         break;
       default:
-        return;
+        this.nextStep();
     }
 
   }
@@ -84,5 +207,33 @@ export class RegisterComponent  implements OnInit {
       this.toastService.presentToast(msg, 'danger');
     })
   }
+
+  finishRegister() {
+    const plan = { tipo: this.plan }
+    const usuario: Usuario = new Usuario('', this.step1Form.get('nombre').value, this.step1Form.get('email').value, this.step1Form.get('password').value,
+      this.sexo, this.altura, this.edad, this.peso, this.pesoObjetivo, this.peso, null, plan, this.distribucionComidas, null);
+
+    this.usuariosService.register(usuario).subscribe(res => {
+      this.realizandoRegistro = true;
+      const loginForm = this.formBuilder.group({
+        email: usuario.email,
+        password: this.step1Form.get('password').value
+      })
+      this.usuariosService.login(loginForm.value).subscribe(res => {
+        this.realizandoRegistro = false;
+        this.router.navigateByUrl('/home');
+      }, (err) => {
+        console.log(err);
+        this.realizandoRegistro = false;
+        const msg: string = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
+        this.toastService.presentToast(msg, 'danger');
+      })
+    }, (err) => {
+      this.realizandoRegistro = false;
+      const msg: string = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
+      this.toastService.presentToast(msg, 'danger');
+    })
+  }
+
 
 }

@@ -1,8 +1,6 @@
 import { Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
-import { MatDatepickerIntl } from '@angular/material/datepicker';
 import { IonModal } from '@ionic/angular';
-
 
 @Component({
   selector: 'app-date-picker',

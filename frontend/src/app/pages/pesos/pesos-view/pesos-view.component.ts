@@ -47,7 +47,7 @@ export class PesosViewComponent  implements OnInit {
   registrosPeso: RegistroPeso[] = [];
   variacionesPeso: number[] = [];
 
-  pesoObjetivo: number = this.usuariosService.pesoObjetivo;
+  pesoObjetivo: number = this.usuariosService.pesoObjetivo || null;
   objetivoUsuario: string = this.usuariosService.plan.tipo;
 
   pesoMaximo: number = this.usuariosService.pesoHistorico.pesoMaximo;

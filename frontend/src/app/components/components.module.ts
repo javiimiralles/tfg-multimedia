@@ -9,15 +9,18 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 
 import { ProgressBarComponent } from './progress-bar/progress-bar.component';
 import { DatePickerComponent } from './date-picker/date-picker.component';
+import { NumberPickerComponent } from './number-picker/number-picker.component';
 
 @NgModule({
   declarations: [
     ProgressBarComponent,
-    DatePickerComponent
+    DatePickerComponent,
+    NumberPickerComponent,
   ],
   exports: [
     ProgressBarComponent,
-    DatePickerComponent
+    DatePickerComponent,
+    NumberPickerComponent,
   ],
   imports: [
     IonicModule,
@@ -26,7 +29,7 @@ import { DatePickerComponent } from './date-picker/date-picker.component';
     MatDatepickerModule,
     MatNativeDateModule,
     MatFormFieldModule,
-    FormsModule
+    FormsModule,
   ],
 })
 export class ComponentsModule { }

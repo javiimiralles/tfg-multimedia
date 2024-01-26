@@ -12,11 +12,15 @@
   justify-content: center;
 }
 
-.card-man, .card-woman {
+.card {
   background-size: cover;
   background-position: center center;
-  height: 200px;
   transition: all 0.3s ease;
+  height: 200px;
+}
+
+.card strong {
+  font-size: 25px;
 }
 
 .card-man {
@@ -24,7 +28,6 @@
 }
 
 .card-man strong {
-  font-size: 25px;
   color: var(--ion-color-success-shade);
 }
 
@@ -33,10 +36,42 @@
 }
 
 .card-woman strong {
-  font-size: 25px;
   color: var(--ion-color-secondary-shade);
+}
+
+.card-banana, .card-apple, .card-watermelon {
+  height: 150px;
+}
+
+.card-banana {
+  background-image: url('/assets/images/illustrations/banana.svg');
+}
+
+.card-apple {
+  background-image: url('/assets/images/illustrations/apple.svg');
+}
+
+.card-watermelon {
+  background-image: url('/assets/images/illustrations/watermelon.svg');
 }
 
 .selected {
   box-shadow: 0px 4px 10px rgb(97, 97, 97);
+}
+
+.title {
+  font-weight: bold;
+  color: var(--ion-color-primary);
+}
+
+ion-spinner {
+  width: 100px;
+  height: 100px;
+}
+
+.spinner-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
 }

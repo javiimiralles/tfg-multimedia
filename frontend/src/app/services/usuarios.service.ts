@@ -18,6 +18,10 @@ export class UsuariosService {
     return this.http.get(`${environment.base_url}/usuarios/email/${email}`, this.headers);
   }
 
+  register(usuario: Usuario) {
+    return this.http.post(`${environment.base_url}/usuarios`, usuario, this.headers);
+  }
+
   login(formData: any): Observable<any> {
     return this.http.post(`${environment.base_url}/login`, formData)
       .pipe(
