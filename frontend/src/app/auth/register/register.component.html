@@ -16,7 +16,7 @@
         <ion-input formControlName="nombre" label="Nombre" labelPlacement="floating"></ion-input>
       </ion-item>
       <ion-item lines="none" class="ion-margin-bottom">
-        <ion-input formControlName="email" label="Email" labelPlacement="floating"></ion-input>
+        <ion-input type="email" formControlName="email" label="Email" labelPlacement="floating"></ion-input>
       </ion-item>
       <ion-item lines="none" class="ion-margin-bottom">
         <ion-input type="password" formControlName="password" label="Contraseña" labelPlacement="floating"></ion-input>
@@ -169,7 +169,7 @@
         </ion-button>
       </div>
       <div class="right-side" *ngIf="currentStep == totalSteps">
-        <ion-button class="ion-margin-top" color="success" [disabled]="(currentStep == 7 && distribucionComidas.length == 0)" (click)="validate()">
+        <ion-button class="ion-margin-top" color="success" [disabled]="(currentStep == totalSteps && distribucionComidas.length == 0)" (click)="validate()">
           Finalizar <ion-icon name="chevron-forward" slot="end"></ion-icon>
         </ion-button>
       </div>
