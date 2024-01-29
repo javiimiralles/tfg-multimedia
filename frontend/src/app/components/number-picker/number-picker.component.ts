@@ -7,6 +7,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 })
 export class NumberPickerComponent  implements OnInit {
 
+  timeout: any;
   interval: any;
 
   @Input() selectedNumber: number;
@@ -43,24 +44,30 @@ export class NumberPickerComponent  implements OnInit {
   }
 
   startIncreasing() {
-    this.increaseNumber();
-    this.interval = setInterval(() => {
-      this.increaseNumber();
-    }, 200);
-  }
-
-  stopIncreasing() {
+    clearTimeout(this.timeout);
     clearInterval(this.interval);
+
+    this.timeout = setTimeout(() => {
+      this.interval = setInterval(() => {
+        this.increaseNumber();
+      }, 100);
+    }, 300);
   }
 
   startDecreasing() {
-    this.decreaseNumber();
-    this.interval = setInterval(() => {
-      this.decreaseNumber();
-    }, 200);
+    clearTimeout(this.timeout);
+    clearInterval(this.interval);
+
+    this.timeout = setTimeout(() => {
+      this.interval = setInterval(() => {
+        this.decreaseNumber();
+      }, 100);
+    }, 300);
   }
 
-  stopDecreasing() {
+  resetTimers() {
+    clearTimeout(this.timeout);
     clearInterval(this.interval);
   }
+
 }

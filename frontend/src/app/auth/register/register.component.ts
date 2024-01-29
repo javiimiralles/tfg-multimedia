@@ -17,7 +17,7 @@ export class RegisterComponent  implements OnInit {
   @ViewChild(IonModal) modal: IonModal;
 
   realizandoRegistro: boolean = false;
-  currentStep: number = 1;
+  currentStep: number = 4;
   totalSteps: number = 8;
   progressValue: number = this.currentStep/this.totalSteps;
   buttonDisabled: boolean = true;
