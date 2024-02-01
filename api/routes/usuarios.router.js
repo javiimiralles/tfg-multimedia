@@ -57,8 +57,6 @@ router.put('/:id', [
     check('altura','El argumento altura debe ser numérico').isNumeric(),
     check('edad','El argumento edad es obligatorio').trim().not().isEmpty(),
     check('edad','El argumento edad debe ser numérico').isNumeric(),
-    check('pesoInicial','El argumento pesoInicial es obligatorio').trim().not().isEmpty(),
-    check('pesoInicial','El argumento pesoInicial debe ser numérico').isNumeric(),
     check('plan.tipo','El argumento plan.tipo es obligatorio').trim().not().isEmpty(),
     validarCampos,
     validarPlan,

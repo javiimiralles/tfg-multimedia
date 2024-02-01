@@ -12,10 +12,6 @@
         <ion-icon *ngIf="!rla.isActive" [name]="item.icono + '-outline'"></ion-icon>
         <span [ngClass]="rla.isActive ? 'bold' : ''" >{{ item.nombre }}</span>
       </ion-item>
-      <ion-item (click)="logout()">
-        <ion-icon name="log-out-outline"></ion-icon>
-        <span>Cerrar sesión</span>
-      </ion-item>
     </ion-list>
   </ion-content>
 </ion-menu>

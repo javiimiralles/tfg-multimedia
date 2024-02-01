@@ -12,6 +12,7 @@ import { AlimentosListComponent } from './alimentos/alimentos-list/alimentos-lis
 import { RegistroAlimentoFormComponent } from './alimentos/registro-alimento-form/registro-alimento-form.component';
 import { AlimentoFormComponent } from './alimentos/alimento-form/alimento-form.component';
 import { ConsumoAguaComponent } from './consumo-agua/consumo-agua.component';
+import { PerfilComponent } from './perfil/perfil-view/perfil.component';
 
 const routes: Routes = [
   { path: '', component: AdminLayoutComponent, canActivate: [AuthGuard],
@@ -77,6 +78,14 @@ const routes: Routes = [
                                                                   leftButtonUrl: '/notificaciones',
                                                                   backButtonUrl: ''
                                                                 }},
+      /********** Perfil *************/
+      { path: 'perfil', component: PerfilComponent, data: {
+                                                                simpleHeader: false,
+                                                                titulo: 'Mi perfil',
+                                                                leftButtonIcon: '',
+                                                                leftButtonUrl: '',
+                                                                backButtonUrl: ''
+                                                              }},
       { path: '**', redirectTo: 'home' }
     ]
   }

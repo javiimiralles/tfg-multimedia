@@ -46,8 +46,4 @@ export class SidebarComponent implements OnInit {
     this.menuController.close();
   }
 
-  logout() {
-    this.usuariosService.logout();
-  }
-
 }

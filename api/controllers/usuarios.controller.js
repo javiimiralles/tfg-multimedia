@@ -125,7 +125,7 @@ const createUser = async(req, res = response) => {
 
 const updateUser = async(req, res = response) => {
 
-    const { password, email, activo, pesoHistorico, ...object } = req.body;
+    const { password, email, pesoInicial, pesoActual, pesoHistorico, ...object } = req.body;
     const uid = req.params.id;
 
     try {

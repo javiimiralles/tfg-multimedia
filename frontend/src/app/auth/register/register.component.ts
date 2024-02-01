@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { IonModal } from '@ionic/angular';
 import { ToastService } from 'src/app/services/toast.service';
@@ -12,12 +12,12 @@ import { Router } from '@angular/router';
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
 })
-export class RegisterComponent  implements OnInit {
+export class RegisterComponent {
 
   @ViewChild(IonModal) modal: IonModal;
 
   realizandoRegistro: boolean = false;
-  currentStep: number = 4;
+  currentStep: number = 1;
   totalSteps: number = 8;
   progressValue: number = this.currentStep/this.totalSteps;
   buttonDisabled: boolean = true;
@@ -48,8 +48,6 @@ export class RegisterComponent  implements OnInit {
     private toastService: ToastService,
     private alertController: AlertController,
     private router: Router) {}
-
-  ngOnInit() {}
 
   nextStep() {
     if (this.currentStep < this.totalSteps) {

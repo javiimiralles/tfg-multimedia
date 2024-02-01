@@ -12,17 +12,18 @@ import { ActividadFisicaModule } from './actividad-fisica/actividad-fisica.modul
 import { CommonsModule } from '../commons/commons.module';
 import { ComponentsModule } from '../components/components.module';
 import { ConsumoAguaComponent } from './consumo-agua/consumo-agua.component';
+import { PerfilModule } from './perfil/perfil.module';
 
 @NgModule({
   declarations: [
     AdminLayoutComponent,
     HomeComponent,
-    ConsumoAguaComponent
+    ConsumoAguaComponent,
   ],
   exports: [
     AdminLayoutComponent,
     HomeComponent,
-    ConsumoAguaComponent
+    ConsumoAguaComponent,
   ],
   imports: [
     IonicModule,
@@ -35,7 +36,8 @@ import { ConsumoAguaComponent } from './consumo-agua/consumo-agua.component';
     PesosModule,
     ActividadFisicaModule,
     CommonsModule,
-    ComponentsModule
+    ComponentsModule,
+    PerfilModule
   ]
 })
 export class PagesModule { }

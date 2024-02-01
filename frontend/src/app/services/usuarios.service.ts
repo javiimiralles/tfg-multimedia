@@ -22,6 +22,10 @@ export class UsuariosService {
     return this.http.post(`${environment.base_url}/usuarios`, usuario, this.headers);
   }
 
+  updateUser(usuario: Usuario) {
+    return this.http.put(`${environment.base_url}/usuarios/${this.usuario.uid}`, usuario, this.headers);
+  }
+
   login(formData: any): Observable<any> {
     return this.http.post(`${environment.base_url}/login`, formData)
       .pipe(
