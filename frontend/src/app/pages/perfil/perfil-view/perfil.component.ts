@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { Usuario } from 'src/app/models/usuario.model';
 import { ToastService } from 'src/app/services/toast.service';
 import { UsuariosService } from 'src/app/services/usuarios.service';
 import { PesoObjetivoModalComponent } from '../perfil-modals/peso-objetivo-modal/peso-objetivo-modal.component';
+import { DistribucionComidasModalComponent } from '../perfil-modals/distribucion-comidas-modal/distribucion-comidas-modal.component';
+import { CambiarPasswordModalComponent } from '../perfil-modals/cambiar-password-modal/cambiar-password-modal.component';
+import { CambiarPlanModalComponent } from '../perfil-modals/cambiar-plan-modal/cambiar-plan-modal.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-perfil',
@@ -26,10 +30,14 @@ export class PerfilComponent implements OnInit {
 
   establecerObjetivoTxt: string;
 
+  borrandoCuenta: boolean = false;
+
   constructor(
     private usuariosService: UsuariosService,
     private toastService: ToastService,
-    private modalController: ModalController) {}
+    private modalController: ModalController,
+    private router: Router,
+    private alertController: AlertController) {}
 
   ngOnInit() {
     this.setData();
@@ -68,6 +76,20 @@ export class PerfilComponent implements OnInit {
     })
   }
 
+  deleteUser() {
+    this.borrandoCuenta = true;
+    this.usuariosService.deleteUser().subscribe(res => {
+      this.router.navigateByUrl('/login');
+      this.toastService.presentToast('Cuenta eliminada', 'success');
+      this.borrandoCuenta = false;
+    }, (err) => {
+      this.borrandoCuenta = false;
+      console.error(err);
+      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
+      this.toastService.presentToast(msg, 'danger');
+    });
+  }
+
   updateInfoUser() {
     this.usuariosService.validarToken().subscribe(res => { this.setData() });
   }
@@ -76,7 +98,29 @@ export class PerfilComponent implements OnInit {
     this.usuariosService.logout();
   }
 
-  // Controladores de los modales
+  async presentDeleteAccountAlert() {
+    const alert = await this.alertController.create({
+      header: '¡ATENCIÓN! Estás a punto de eliminar tu cuenta',
+      message: 'Todos los datos y registros se borrarán y no se podrán recuperar',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel'
+        },
+        {
+          text: 'Eliminar',
+          cssClass: 'text-danger',
+          handler: () => {
+            this.deleteUser();
+          }
+        }
+      ],
+    });
+
+    await alert.present();
+  }
+
+  // ============ Controladores de los modales ======================= //
   async openPesoObjetivoModal() {
     const modal = await this.modalController.create({
       component: PesoObjetivoModalComponent,
@@ -103,6 +147,46 @@ export class PerfilComponent implements OnInit {
 
       this.updateUser();
     }
+  }
+
+  async openCambiarPlanModal() {
+    const modal = await this.modalController.create({
+      component: CambiarPlanModalComponent,
+      componentProps: {
+        plan: this.plan
+      }
+    });
+    modal.present();
+
+    const { data } = await modal.onWillDismiss();
+    if(data) {
+      this.plan = data;
+      this.updateUser();
+    }
+  }
+
+  async openDistribucionComidasModal() {
+    const modal = await this.modalController.create({
+      component: DistribucionComidasModalComponent,
+      componentProps: {
+        distribucionComidas: this.distribucionComidas
+      }
+    });
+    modal.present();
+
+    const { data } = await modal.onWillDismiss();
+
+    if(data) {
+      this.distribucionComidas = data;
+      this.updateUser();
+    }
+  }
+
+  async openCambiarPasswordModal() {
+    const modal = await this.modalController.create({
+      component: CambiarPasswordModalComponent
+    });
+    modal.present();
   }
 
 }

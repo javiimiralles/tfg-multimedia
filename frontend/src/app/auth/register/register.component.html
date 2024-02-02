@@ -75,17 +75,17 @@
     <!--============= Step 6 (tipo plan) ===================-->
     <div *ngIf="currentStep == 6" class="form-container">
       <h1 class="title ion-text-center">¿Cuál es tu objetivo?</h1>
-      <ion-card class="card card-banana" [ngClass]="plan === 'Ganar peso' ? 'selected' : ''" (click)="selectPlan('Ganar peso')">
+      <ion-card class="card card-banana" [ngClass]="plan === 'Ganar peso' ? 'selected-banana' : ''" (click)="selectPlan('Ganar peso')">
         <ion-card-header>
           <ion-card-title><strong>Ganar peso</strong></ion-card-title>
         </ion-card-header>
       </ion-card>
-      <ion-card class="card card-apple" [ngClass]="plan === 'Mantener peso' ? 'selected' : ''" (click)="selectPlan('Mantener peso')">
+      <ion-card class="card card-apple" [ngClass]="plan === 'Mantener peso' ? 'selected-apple' : ''" (click)="selectPlan('Mantener peso')">
         <ion-card-header>
           <ion-card-title><strong>Mantener peso</strong></ion-card-title>
         </ion-card-header>
       </ion-card>
-      <ion-card class="card card-watermelon" [ngClass]="plan === 'Perder peso' ? 'selected' : ''" (click)="selectPlan('Perder peso')">
+      <ion-card class="card card-watermelon" [ngClass]="plan === 'Perder peso' ? 'selected-watermelon' : ''" (click)="selectPlan('Perder peso')">
         <ion-card-header>
           <ion-card-title><strong>Perder peso</strong></ion-card-title>
         </ion-card-header>

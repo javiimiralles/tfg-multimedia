@@ -10,6 +10,7 @@ const {
     getUserByEmail,
     createUser, 
     updateUser,
+    updatePassword,
     deleteUser
 } = require('../controllers/usuarios.controller');
 
@@ -62,6 +63,15 @@ router.put('/:id', [
     validarPlan,
     validarSexo
 ], updateUser);
+
+router.put('/change-password/:id', [
+    validarJWT,
+    check('id', 'El identificador no es válido').isMongoId(),
+    check('password', 'El argumento password es obligatorio').not().isEmpty().trim(),
+    check('newPassword', 'El argumento nuevopassword es obligatorio').not().isEmpty().trim(),
+    check('newPassword2', 'El argumento nuevopassword2 es obligatorio').not().isEmpty().trim(),
+    validarCampos,
+], updatePassword);
 
 router.delete('/:id', [
     validarJWT,

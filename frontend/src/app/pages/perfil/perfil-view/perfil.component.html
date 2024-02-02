@@ -1,4 +1,4 @@
-<div class="ion-padding">
+<div class="ion-padding" *ngIf="!borrandoCuenta">
   <!--=============== Datos personales form ===================-->
   <div class="ion-padding-bottom">
     <h4 class="title">Información personal</h4>
@@ -48,13 +48,13 @@
       <ion-item class="ion-margin-bottom" button detail="true" (click)="openPesoObjetivoModal()">
         <ion-label>{{ establecerObjetivoTxt }}</ion-label>
       </ion-item>
-      <ion-item class="ion-margin-bottom" button detail="true">
+      <ion-item class="ion-margin-bottom" button detail="true" (click)="openCambiarPlanModal()">
         <ion-label>Cambiar plan</ion-label>
       </ion-item>
-      <ion-item class="ion-margin-bottom" button detail="true">
+      <ion-item class="ion-margin-bottom" button detail="true" (click)="openDistribucionComidasModal()">
         <ion-label>Editar distribución de comidas</ion-label>
       </ion-item>
-      <ion-item class="ion-margin-bottom" button detail="true">
+      <ion-item class="ion-margin-bottom" button detail="true" (click)="openCambiarPasswordModal()">
         <ion-label>Cambiar contraseña</ion-label>
       </ion-item>
       <ion-item-divider></ion-item-divider>
@@ -62,12 +62,19 @@
         <ion-icon name="log-out-outline" color="primary" slot="start"></ion-icon>
         <ion-label>Cerrar sesión</ion-label>
       </ion-item>
-      <ion-item class="ion-margin-bottom" button>
+      <ion-item class="ion-margin-bottom" button (click)="presentDeleteAccountAlert()">
         <ion-icon name="trash-outline" color="danger" slot="start"></ion-icon>
         <ion-label color="danger">Eliminar cuenta</ion-label>
       </ion-item>
     </ion-list>
   </div>
   <!--=============== Fin Otras opciones ===================-->
+</div>
+
+<div *ngIf="borrandoCuenta" class="ion-text-center spinner-container">
+  <div>
+    <h1 class="title">Eliminando datos...</h1>
+    <ion-spinner name="lines-sharp-small" color="secondary"></ion-spinner>
+  </div>
 </div>
 

@@ -59,6 +59,18 @@
   box-shadow: 0px 4px 10px rgb(97, 97, 97);
 }
 
+.selected-banana {
+  box-shadow: 0px 4px 10px var(--ion-color-custom-yellow);
+}
+
+.selected-apple {
+  box-shadow: 0px 4px 10px var(--ion-color-success);
+}
+
+.selected-watermelon {
+  box-shadow: 0px 4px 10px var(--ion-color-danger);
+}
+
 .title {
   font-weight: bold;
   color: var(--ion-color-primary);

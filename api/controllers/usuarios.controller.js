@@ -1,5 +1,7 @@
 const Usuario = require('../models/usuario.model');
 const RegistroPeso = require('../models/registro-peso.model');
+const Alimento = require('../models/alimento.model');
+const Diario = require('../models/diario.model');
 const { response  }= require('express');
 const bcrypt = require('bcryptjs');
 
@@ -165,6 +167,62 @@ const updateUser = async(req, res = response) => {
     }
 }
 
+const updatePassword = async(req, res = response) => {
+
+    const uid = req.params.id;
+    const { password, newPassword, newPassword2 } = req.body;
+
+    try {
+        const token = req.header('x-token');
+
+        const usuarioBD = await Usuario.findById(uid);
+        if (!usuarioBD) {
+            return res.status(400).json({
+                ok: false,
+                msg: 'Este usuario no existe',
+            });
+        }
+
+        const validPassword = bcrypt.compareSync(password, usuarioBD.password);
+        // Se comprueba que sabe la contraseña vieja y que ha puesto dos veces la contraseña nueva
+        if (!validPassword) {
+            return res.status(400).json({
+                ok: false,
+                msg: 'La contraseña es incorrecta',
+                token: ''
+            });
+        }
+
+        if (newPassword !== newPassword2) {
+            return res.status(400).json({
+                ok: false,
+                msg: 'Las contraseñas no coinciden',
+            });
+        }
+
+        // tenemos todo OK, ciframos la nueva contraseña y la actualizamos
+        const salt = bcrypt.genSaltSync();
+        const cpassword = bcrypt.hashSync(newPassword, salt);
+        usuarioBD.password = cpassword;
+
+        // Almacenar en BD
+        await usuarioBD.save();
+
+        res.json({
+            ok: true,
+            msg: 'Contraseña actualizada'
+        });
+
+    } catch (error) {
+        return res.status(400).json({
+            ok: false,
+            msg: 'Error al actualizar contraseña',
+        });
+    }
+
+
+}
+
 const deleteUser = async(req, res = response) => {
     const uid = req.params.id;
 
@@ -182,6 +240,11 @@ const deleteUser = async(req, res = response) => {
 
         const usuarioEliminado = await Usuario.findByIdAndDelete(uid);
 
+        // Eliminamos todos los registros del resto de colecciones que esten relacionadas con este usuario
+        await Alimento.deleteMany({ idUsuario: uid });
+        await RegistroPeso.deleteMany({ idUsuario: uid });
+        await Diario.deleteMany({ idUsuario: uid });
+
         // OK
         res.json({
             ok:true,
@@ -192,8 +255,8 @@ const deleteUser = async(req, res = response) => {
     } catch(error){
         console.log(error);
         return res.json({
-            ok:false,
-            msg:'Error borrando usuario'
+            ok: false,
+            msg: 'Error borrando usuario'
         })
     }
 }
@@ -203,5 +266,6 @@ module.exports = {
     getUserByEmail,
     createUser,
     updateUser,
+    updatePassword,
     deleteUser,
 }

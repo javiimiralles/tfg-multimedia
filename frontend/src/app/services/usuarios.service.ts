@@ -26,6 +26,14 @@ export class UsuariosService {
     return this.http.put(`${environment.base_url}/usuarios/${this.usuario.uid}`, usuario, this.headers);
   }
 
+  updatePassword(data: any) {
+    return this.http.put(`${environment.base_url}/usuarios/change-password/${this.usuario.uid}`, data, this.headers);
+  }
+
+  deleteUser() {
+    return this.http.delete(`${environment.base_url}/usuarios/${this.usuario.uid}`, this.headers);
+  }
+
   login(formData: any): Observable<any> {
     return this.http.post(`${environment.base_url}/login`, formData)
       .pipe(
