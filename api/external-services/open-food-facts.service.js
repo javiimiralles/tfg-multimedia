@@ -1,20 +1,22 @@
 const { Router, response } = require('express');
 const axios = require('axios');
+const Alimento = require('../models/alimento.model');
+const { infoToken } = require('../utils/infotoken');
 
 const router = Router();
 
 const fields = 'product_name,brands,nutriments';
 
 // Obtener producto por codigo de barras
-router.get('product/:barcode', async(req, res = response) => {
+router.get('/product/:barcode', async(req, res = response) => {
 
     try {
         const barcode = req.params.barcode;
         const url = `${process.env.OPENFOODFACTS_BASE_URL}/api/v0/product/${barcode}.json?fields=${fields}`;
         const response = await axios.get(url);
-        const foodData = response.data;
+        const foodData = response.data.product;
 
-        if(foodData.status_verbose === 'product not found') {
+        if(response.data.status_verbose === 'product not found') {
             return res.status(404).json({
                 ok: false,
                 msg: 'Producto no encontrado'

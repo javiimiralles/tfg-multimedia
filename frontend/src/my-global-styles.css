@@ -174,3 +174,17 @@ ion-fab {
 .custom-modal div {
   background-color: white;
 }
+
+/* BarcodeScanner */
+body.scanner-active {
+  --background: transparent;
+  --ion-background-color: transparent;
+}
+
+.custom-tab-bar.scanner-active {
+  display: none !important;
+}
+
+ion-header.scanner-active {
+  display: none !important;
+}

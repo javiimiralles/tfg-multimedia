@@ -10,17 +10,20 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { ProgressBarComponent } from './progress-bar/progress-bar.component';
 import { DatePickerComponent } from './date-picker/date-picker.component';
 import { NumberPickerComponent } from './number-picker/number-picker.component';
+import { LoaderComponent } from './loader/loader.component';
 
 @NgModule({
   declarations: [
     ProgressBarComponent,
     DatePickerComponent,
     NumberPickerComponent,
+    LoaderComponent,
   ],
   exports: [
     ProgressBarComponent,
     DatePickerComponent,
     NumberPickerComponent,
+    LoaderComponent
   ],
   imports: [
     IonicModule,

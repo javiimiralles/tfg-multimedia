@@ -71,10 +71,5 @@
   <!--=============== Fin Otras opciones ===================-->
 </div>
 
-<div *ngIf="borrandoCuenta" class="ion-text-center spinner-container">
-  <div>
-    <h1 class="title">Eliminando datos...</h1>
-    <ion-spinner name="lines-sharp-small" color="secondary"></ion-spinner>
-  </div>
-</div>
+<app-loader *ngIf="borrandoCuenta" [message]="'Eliminando datos...'"></app-loader>
 

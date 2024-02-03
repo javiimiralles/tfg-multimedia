@@ -22,6 +22,10 @@ export class AlimentosService {
     return this.http.get(`${environment.base_url}/alimentos/usuario/${this.idUsuario}?resultados=${resultados}&texto=${textoBusqueda}`, getHeaders());
   }
 
+  cargarAlimentoOpenFoodFactsPorBarcode(barcode: string) {
+    return this.http.get(`${environment.base_url}/open-food-facts/product/${barcode}`, getHeaders());
+  }
+
   cargarAlimentosOpenFoodFacts(resultados: number, textoBusqueda: string) {
     return this.http.get(`${environment.base_url}/open-food-facts/search?query=${textoBusqueda}&resultados=${resultados}`, getHeaders());
   }

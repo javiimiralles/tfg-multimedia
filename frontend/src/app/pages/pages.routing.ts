@@ -13,6 +13,7 @@ import { RegistroAlimentoFormComponent } from './alimentos/registro-alimento-for
 import { AlimentoFormComponent } from './alimentos/alimento-form/alimento-form.component';
 import { ConsumoAguaComponent } from './consumo-agua/consumo-agua.component';
 import { PerfilComponent } from './perfil/perfil-view/perfil.component';
+import { AlimentosBarcodeScannerComponent } from './alimentos/alimentos-barcode-scanner/alimentos-barcode-scanner.component';
 
 const routes: Routes = [
   { path: '', component: AdminLayoutComponent, canActivate: [AuthGuard],
@@ -53,6 +54,13 @@ const routes: Routes = [
                                                                     leftButtonIcon: '',
                                                                     leftButtonUrl: '',
                                                                     backButtonUrl: '/alimentos/list'
+                                                                  }},
+      { path: 'alimentos/barcode-scanner', component: AlimentosBarcodeScannerComponent, data: {
+                                                                    simpleHeader: true,
+                                                                    titulo: '',
+                                                                    leftButtonIcon: '',
+                                                                    leftButtonUrl: '',
+                                                                    backButtonUrl: ''
                                                                   }},
       /********** Peso *************/
       { path: 'registros-peso', component: PesosViewComponent, data: {

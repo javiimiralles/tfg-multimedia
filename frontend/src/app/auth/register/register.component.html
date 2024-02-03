@@ -178,11 +178,6 @@
   </div>
 </div>
 
-<div *ngIf="realizandoRegistro" class="ion-text-center spinner-container">
-  <div>
-    <h1 class="title">Realizando registro...</h1>
-    <ion-spinner name="lines-sharp-small" color="secondary"></ion-spinner>
-  </div>
-</div>
+<app-loader *ngIf="realizandoRegistro" [message]="'Realizando registro...'"></app-loader>
 
 
