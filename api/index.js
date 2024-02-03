@@ -9,7 +9,10 @@ require('dotenv').config();
 const app = express();
 dbConnection();
 
-app.use(cors());
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH']
+}));
 app.use(express.json());
 app.use(fileUpload ({
     limits: { fileSize: process.env.MAXSIZEUPLOAD * 1024 * 1024 },
@@ -27,5 +30,5 @@ app.use('/api/diarios', require('./routes/diarios.router'));
 app.use('/api/open-food-facts', require('./external-services/open-food-facts.service'));
 
 app.listen(process.env.PORT, ()=>{
-    console.log('Servidor: ' + process.env.PORT);
+  console.log('Servidor en puerto: ' + process.env.PORT);
 });

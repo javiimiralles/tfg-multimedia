@@ -4,6 +4,7 @@ import { Observable, catchError, map, of, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
 import { Usuario } from '../models/usuario.model';
+import { getHeaders } from '../utils/headers.utils';
 
 @Injectable({
   providedIn: 'root'
@@ -15,23 +16,23 @@ export class UsuariosService {
   constructor(private http: HttpClient, private router: Router) { }
 
   getUserByEmail(email: string) {
-    return this.http.get(`${environment.base_url}/usuarios/email/${email}`, this.headers);
+    return this.http.get(`${environment.base_url}/usuarios/email/${email}`, getHeaders());
   }
 
   register(usuario: Usuario) {
-    return this.http.post(`${environment.base_url}/usuarios`, usuario, this.headers);
+    return this.http.post(`${environment.base_url}/usuarios`, usuario, getHeaders());
   }
 
   updateUser(usuario: Usuario) {
-    return this.http.put(`${environment.base_url}/usuarios/${this.usuario.uid}`, usuario, this.headers);
+    return this.http.put(`${environment.base_url}/usuarios/${this.usuario.uid}`, usuario, getHeaders());
   }
 
   updatePassword(data: any) {
-    return this.http.put(`${environment.base_url}/usuarios/change-password/${this.usuario.uid}`, data, this.headers);
+    return this.http.put(`${environment.base_url}/usuarios/change-password/${this.usuario.uid}`, data, getHeaders());
   }
 
   deleteUser() {
-    return this.http.delete(`${environment.base_url}/usuarios/${this.usuario.uid}`, this.headers);
+    return this.http.delete(`${environment.base_url}/usuarios/${this.usuario.uid}`, getHeaders());
   }
 
   login(formData: any): Observable<any> {
@@ -57,7 +58,7 @@ export class UsuariosService {
       return of(incorrecto);
     }
 
-    return this.http.get(`${environment.base_url}/login/token`, this.headers)
+    return this.http.get(`${environment.base_url}/login/token`, getHeaders())
       .pipe(
         tap((res: any) => {
           const { token, uid, nombre, email, sexo, altura, edad, pesoInicial, pesoObjetivo, pesoActual,
@@ -86,13 +87,6 @@ export class UsuariosService {
 
   cleanLocalStorage(): void{
     localStorage.removeItem('token');
-  }
-
-  get headers() {
-    return {
-      headers: {
-        'x-token': this.token
-      }};
   }
 
   get token(): string {

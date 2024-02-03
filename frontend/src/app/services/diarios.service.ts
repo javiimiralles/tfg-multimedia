@@ -5,6 +5,7 @@ import { environment } from '../../environments/environment';
 import { UsuariosService } from './usuarios.service';
 import { formatDate } from '../utils/date.utils';
 import { Diario } from '../models/diario.model';
+import { getHeaders } from '../utils/headers.utils';
 
 @Injectable({
   providedIn: 'root'
@@ -21,14 +22,14 @@ export class DiariosService {
 
   cargarDiarioPorFecha(fecha: Date): Observable<any> {
     const fechaFormateada = formatDate(fecha);
-    return this.http.get(`${environment.base_url}/diarios/usuario/${this.idUsuario}?fecha=${fechaFormateada}`, this.headers);
+    return this.http.get(`${environment.base_url}/diarios/usuario/${this.idUsuario}?fecha=${fechaFormateada}`, getHeaders());
   }
 
   crearDiario(date: Date): Observable<any> {
     const data: FormData = new FormData;
     data.append('idUsuario', this.idUsuario);
     data.append('fecha', date.toISOString());
-    return this.http.post(`${environment.base_url}/diarios`, data, this.headers);
+    return this.http.post(`${environment.base_url}/diarios`, data, getHeaders());
   }
 
   updateDiario(diario: Diario) {
@@ -38,14 +39,14 @@ export class DiariosService {
     data.append('fecha', fecha.toISOString());
     data.append('aguaConsumida', diario.aguaConsumida.toString());
     data.append('caloriasConsumidas', diario.caloriasConsumidas.toString());
-    return this.http.put(`${environment.base_url}/diarios/${diario.uid}`, data, this.headers);
+    return this.http.put(`${environment.base_url}/diarios/${diario.uid}`, data, getHeaders());
   }
 
   addAlimentoConsumido(uid: string, alimentoAgregar: any) {
     const data: FormData = new FormData;
     data.append('idUsuario', this.idUsuario);
     data.append('alimentoAgregar', JSON.stringify(alimentoAgregar));
-    return this.http.put(`${environment.base_url}/diarios/alimentos-consumidos/${uid}`, data, this.headers);
+    return this.http.put(`${environment.base_url}/diarios/alimentos-consumidos/${uid}`, data, getHeaders());
   }
 
   updateCantidadAlimentoConsumido(uid: string, index: number, cantidad: number) {
@@ -53,7 +54,7 @@ export class DiariosService {
     const data: FormData = new FormData;
     data.append('idUsuario', this.idUsuario);
     data.append('alimentoEditar', JSON.stringify(alimentoEditar));
-    return this.http.put(`${environment.base_url}/diarios/alimentos-consumidos/${uid}`, data, this.headers);
+    return this.http.put(`${environment.base_url}/diarios/alimentos-consumidos/${uid}`, data, getHeaders());
   }
 
   deleteAlimentoConsumido(uid: string, index: number): Observable<any> {
@@ -61,19 +62,7 @@ export class DiariosService {
     const data: FormData = new FormData;
     data.append('idUsuario', this.idUsuario);
     data.append('alimentoEliminar', JSON.stringify(alimentoEliminar));
-    return this.http.put(`${environment.base_url}/diarios/alimentos-consumidos/${uid}`, data, this.headers);
-  }
-
-  get headers(){
-    return {
-      headers:{
-        'x-token': this.token
-      }
-    }
-  }
-
-  get token(): string {
-    return localStorage.getItem('token') || '';
+    return this.http.put(`${environment.base_url}/diarios/alimentos-consumidos/${uid}`, data, getHeaders());
   }
 
 }

@@ -15,7 +15,7 @@ const RegistroPesoSchema = Schema(
             ref: 'Usuario',
             require: true
         }
-    }, { collection: 'registros-peso' }
+    }, { collection: 'registros_peso' }
 );
 
 RegistroPesoSchema.method('toJSON', function(){

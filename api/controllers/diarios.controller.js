@@ -58,7 +58,7 @@ const getDiarioByUser = async(req, res = response) => {
         const diario = await Diario.findOne({ idUsuario, fecha: { $gte: fechaActual, $lt: fechaSiguiente } })
                                     .populate('alimentosConsumidos.idAlimento');
 
-        res.json({
+        return res.json({
             ok: true,
             msg: 'getDiarioByUser',
             diario
