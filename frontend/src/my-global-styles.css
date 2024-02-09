@@ -171,8 +171,8 @@ ion-fab {
   --border-radius: 20px;
 }
 
-.custom-modal div {
-  background-color: white;
+.fix-height {
+  --height: 35%;
 }
 
 /* BarcodeScanner */

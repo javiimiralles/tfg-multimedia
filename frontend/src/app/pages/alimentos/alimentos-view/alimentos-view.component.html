@@ -36,7 +36,7 @@
     <ion-list>
       <ng-container *ngFor="let alimento of diario.alimentosConsumidos; let j = index;">
         <ion-item *ngIf="alimento.categoria === categoria || (!distribucionComidas.includes(alimento.categoria) && categoria === 'Otras comidas')"
-              (click)="presentAlert(j)">
+              (click)="presentOptionsAlert(j)">
           <ion-label class="flex-container">
             <div class="left-side">
               <div style="font-size: 14px;" >{{ alimento.idAlimento.nombre }}</div>

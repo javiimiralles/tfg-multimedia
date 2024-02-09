@@ -207,12 +207,12 @@ export class RegisterComponent {
   }
 
   finishRegister() {
+    this.realizandoRegistro = true;
     const plan = { tipo: this.plan }
     const usuario: Usuario = new Usuario('', this.step1Form.get('nombre').value, this.step1Form.get('email').value, this.step1Form.get('password').value,
       this.sexo, this.altura, this.edad, this.peso, this.pesoObjetivo, this.peso, null, plan, this.distribucionComidas, null);
 
     this.usuariosService.register(usuario).subscribe(res => {
-      this.realizandoRegistro = true;
       const loginForm = this.formBuilder.group({
         email: usuario.email,
         password: this.step1Form.get('password').value

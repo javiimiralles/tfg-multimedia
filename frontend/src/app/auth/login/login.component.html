@@ -15,9 +15,9 @@
         <ion-text color="danger" class="text-error" *ngIf="loginForm.get('email').touched && loginForm.get('email').hasError('required')">
           El correo electrónico es obligatorio.
         </ion-text>
-        <ion-text color="danger" class="text-error" *ngIf="loginForm.get('email').hasError('email')">
+        <!-- <ion-text color="danger" class="text-error" *ngIf="loginForm.get('email').hasError('email')">
           Introduce un correo electrónico válido.
-        </ion-text>
+        </ion-text> -->
 
         <ion-item class="ion-margin-top">
           <ion-label position="floating">Contraseña</ion-label>

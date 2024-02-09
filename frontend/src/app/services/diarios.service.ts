@@ -20,8 +20,8 @@ export class DiariosService {
 
   constructor(private http: HttpClient, private usuariosService: UsuariosService) {}
 
-  cargarDiarioPorFecha(fecha: Date): Observable<any> {
-    const fechaFormateada = formatDate(fecha);
+  cargarDiarioPorFecha(date: Date): Observable<any> {
+    const fechaFormateada = formatDate(date);
     return this.http.get(`${environment.base_url}/diarios/usuario/${this.idUsuario}?fecha=${fechaFormateada}`, getHeaders());
   }
 

@@ -164,7 +164,7 @@ const updateRegistroPeso = async(req, res = response) => {
             });
         }
 
-        // KO -> se esta intentado editar un alimento de otro usuario
+        // KO -> se esta intentado editar un registro de otro usuario
         if(infoToken(token).uid != idUsuario) {
             return res.status(400).json({
                 ok:false,

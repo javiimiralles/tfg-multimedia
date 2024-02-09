@@ -117,7 +117,7 @@ export class AlimentosViewComponent  implements OnInit {
     return subtitulo;
   }
 
-  async presentAlert(index: number) {
+  async presentOptionsAlert(index: number) {
     const alert = await this.alertController.create({
       header: 'Opciones',
       buttons: [

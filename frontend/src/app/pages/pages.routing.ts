@@ -14,6 +14,7 @@ import { AlimentoFormComponent } from './alimentos/alimento-form/alimento-form.c
 import { ConsumoAguaComponent } from './consumo-agua/consumo-agua.component';
 import { PerfilComponent } from './perfil/perfil-view/perfil.component';
 import { AlimentosBarcodeScannerComponent } from './alimentos/alimentos-barcode-scanner/alimentos-barcode-scanner.component';
+import { MedidasCorporalesComponent } from './medidas-corporales/medidas-corporales.component';
 
 const routes: Routes = [
   { path: '', component: AdminLayoutComponent, canActivate: [AuthGuard],
@@ -86,6 +87,14 @@ const routes: Routes = [
                                                                   leftButtonUrl: '/notificaciones',
                                                                   backButtonUrl: ''
                                                                 }},
+      /********** Medidas corporales *************/
+      { path: 'medidas-corporales', component: MedidasCorporalesComponent, data: {
+                                                                simpleHeader: false,
+                                                                titulo: 'Medidas corporales',
+                                                                leftButtonIcon: 'notifications-outline',
+                                                                leftButtonUrl: '/notificaciones',
+                                                                backButtonUrl: ''
+                                                              }},
       /********** Perfil *************/
       { path: 'perfil', component: PerfilComponent, data: {
                                                                 simpleHeader: false,
