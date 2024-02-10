@@ -18,14 +18,14 @@ import { AlimentosBarcodeScannerComponent } from './alimentos-barcode-scanner/al
     AlimentosListComponent,
     RegistroAlimentoFormComponent,
     AlimentoFormComponent,
-    AlimentosBarcodeScannerComponent
+    AlimentosBarcodeScannerComponent,
   ],
   exports: [
     AlimentosViewComponent,
     AlimentosListComponent,
     RegistroAlimentoFormComponent,
     AlimentoFormComponent,
-    AlimentosBarcodeScannerComponent
+    AlimentosBarcodeScannerComponent,
   ],
   imports: [
     IonicModule,

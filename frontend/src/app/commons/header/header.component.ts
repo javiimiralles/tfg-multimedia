@@ -39,7 +39,9 @@ export class HeaderComponent  implements OnInit {
     const url: string = this.router.url;
     if(url.includes('/alimentos/form')) {
       const uid: string = this.getUid(url);
-      if(uid !== 'nuevo') {
+      if(uid === 'capturado') {
+        this.titulo = 'Alimento capturado';
+      } else if(uid !== 'nuevo') {
         this.titulo = 'Editar alimento';
         this.diariosService.idAlimentoActual = uid;
         this.backButtonUrl = '/alimentos/registro';

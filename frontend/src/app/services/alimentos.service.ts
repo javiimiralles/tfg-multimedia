@@ -11,6 +11,7 @@ import { getHeaders } from '../utils/headers.utils';
 export class AlimentosService {
 
   idUsuario: string = this.usuariosService.uid;
+  alimentoCapturado: Alimento;
 
   constructor(private http: HttpClient, private usuariosService: UsuariosService) {}
 

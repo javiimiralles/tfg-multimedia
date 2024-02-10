@@ -9,6 +9,8 @@
     "strictPropertyInitialization": false,
     "strictFunctionTypes": false,
     "noImplicitOverride": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
     "noPropertyAccessFromIndexSignature": false,
     "noImplicitReturns": false,
     "noFallthroughCasesInSwitch": true,

@@ -87,7 +87,6 @@ export class AlimentosBarcodeScannerComponent  implements OnInit {
     this.router.navigateByUrl('/alimentos/list');
   }
 
-
   filterAlimentosData(foodData: any) {
     const nutrientes = foodData.nutriments;
     this.alimento = new Alimento('', foodData.product_name, foodData.brands, 100, 'gramos', nutrientes['energy-kcal_100g'],

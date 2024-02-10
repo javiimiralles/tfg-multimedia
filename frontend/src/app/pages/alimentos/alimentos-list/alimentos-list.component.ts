@@ -6,6 +6,9 @@ import { DiariosService } from 'src/app/services/diarios.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { UsuariosService } from 'src/app/services/usuarios.service';
 import { getAbrebiaturaUnidadMedida } from 'src/app/utils/unidad-medida.utils';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import * as tf from '@tensorflow/tfjs';
+import food_data from '../../../../assets/food_data.json';
 
 @Component({
   selector: 'app-alimentos-list',
@@ -23,6 +26,16 @@ export class AlimentosListComponent  implements OnInit {
   noResultsFound: boolean = false;
   segmentActual: string = 'mis-alimentos';
 
+  // para la captura de alimentos
+  capturandoAlimento: boolean = false;
+  model: any;
+  predictions: any;
+  image: any;
+  labels_20 = [
+    'apple_pie','caesar_salad','cheesecake','chicken_curry','churros','donuts','escargots','fish_and_chips','french_fries','greek_salad','hamburguer','ice_cream','macarons','omelette','paella','pizza','ramen','spring_rolls','sushi','tacos'
+  ];
+  foodList: {nombre_pred: string, nombre: string, calorias: number, grasas: number, proteinas :number, carbohidratos :number}[] = food_data;
+
   constructor(private diariosService: DiariosService,
     private alimentosService: AlimentosService,
     private toastService: ToastService,
@@ -32,6 +45,7 @@ export class AlimentosListComponent  implements OnInit {
   ngOnInit() {
     this.categoria = this.diariosService.categoriaActual;
     this.idDiario = this.diariosService.idDiarioActual;
+    this.loadModel();
   }
 
   onSearchbarChange(event) {
@@ -107,6 +121,52 @@ export class AlimentosListComponent  implements OnInit {
   goToRegistroAlimento(idAlimento: string) {
     this.diariosService.idAlimentoActual = idAlimento;
     this.router.navigateByUrl('/alimentos/registro');
+  }
+
+  // logica para la captura de alimentos
+  async loadModel(){
+    this.model = await tf.loadLayersModel("../../../assets/modelos/modelo_vgg16/model.json");
+  }
+
+  async capturarAlimento() {
+    try {
+      const capturedPhoto = await Camera.getPhoto({
+        resultType: CameraResultType.DataUrl,
+        source: CameraSource.Camera,
+        quality: 100
+      });
+      this.image = capturedPhoto.dataUrl;
+      this.predict();
+    } catch (error) {
+      if (error.message === 'User cancelled photos app') {
+        console.log('El usuario cerró la cámara sin usarla.');
+      } else {
+        console.error('Ocurrió un error inesperado:', error);
+      }
+    }
+  }
+
+
+  async predict() {
+    this.capturandoAlimento = true;
+    tf.tidy(() => {
+      const imgObject = new Image();
+      imgObject.src = this.image;
+      imgObject.crossOrigin = "anonymus";
+      imgObject.onload = () => {
+        let img = tf.browser.fromPixels(imgObject).resizeBilinear([224,224]);
+        img = img.reshape([1,224,224,3]);
+        img = tf.cast(img, 'float32');
+        const output = this.model.predict(img) as any;
+        this.predictions = Array.from(output.dataSync());
+        const predictedMax =  this.predictions.indexOf(Math.max(...this.predictions));
+        const foodData = this.foodList[predictedMax];
+        this.alimentosService.alimentoCapturado = new Alimento('', foodData.nombre, null, 100, 'gramos', foodData.calorias,
+                                      foodData.carbohidratos, foodData.proteinas, foodData.grasas, this.usuariosService.uid);
+        this.router.navigateByUrl('/alimentos/form/capturado');
+        this.capturandoAlimento = false;
+      }
+    });
   }
 
 }

@@ -34,7 +34,9 @@ export class AlimentoFormComponent  implements OnInit {
 
   ngOnInit() {
     this.idAlimento = this.activatedRoute.snapshot.params['uid'];
-    if(this.idAlimento !== 'nuevo') {
+    if(this.idAlimento === 'capturado') {
+      this.fillForm(this.alimentosService.alimentoCapturado);
+    } else if(this.idAlimento !== 'nuevo') {
       this.alimentosService.cargarAlimentoPorId(this.idAlimento).subscribe(res => {
         this.fillForm(res['alimento']);
       }, (err) => {
@@ -72,7 +74,7 @@ export class AlimentoFormComponent  implements OnInit {
       const alimento = new Alimento(null, this.nombreInput, this.marcaInput, this.cantidadInput, unidad, this.caloriasInput,
         this.carbosInput, this.proteinasInput, this.grasasInput);
 
-      if(this.idAlimento === 'nuevo') {
+      if(this.idAlimento === 'nuevo' || this.idAlimento === 'capturado') {
         this.createAlimento(alimento);
       } else {
         this.updateAlimento(alimento);
