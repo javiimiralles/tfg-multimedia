@@ -74,7 +74,7 @@ const getAlimentosByUser = async(req, res = response) => {
 
         res.json({
             ok: true,
-            msg: 'getAlimentosByLoggedUser',
+            msg: 'getAlimentosByUser',
             alimentos,
             page: {
                 desde,
@@ -209,7 +209,7 @@ const deleteAlimento = async(req, res = response) => {
         
         const existeAlimento = await Alimento.findById(id);
 
-        // KO -> no existe un alimento con ese nombre para ese usuario
+        // KO -> no existe un alimento con ese id
         if(!existeAlimento) {
             return  res.status(400).json({
                 ok:false,

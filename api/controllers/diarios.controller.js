@@ -391,6 +391,7 @@ const deleteDiario = async(req, res = response) => {
 
         const diarioEliminado = await Diario.findByIdAndDelete(id);
 
+        // OK
         res.json({
             ok:true,
             msg:"deleteDiario",

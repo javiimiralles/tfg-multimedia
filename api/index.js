@@ -27,6 +27,8 @@ app.use('/api/alimentos', require('./routes/alimentos.router'));
 app.use('/api/registros-peso', require('./routes/registros-peso.router'));
 app.use('/api/diarios', require('./routes/diarios.router'));
 app.use('/api/medidas-corporales', require('./routes/medidas-corporales.router'));
+app.use('/api/actividades-fisicas', require('./routes/actividades-fisicas.router'));
+app.use('/api/actividades-realizadas', require('./routes/actividades-realizadas.router'));
 
 app.use('/api/open-food-facts', require('./external-services/open-food-facts.service'));
 
