@@ -115,7 +115,7 @@ const createActividadRealizada = async(req, res = response) => {
             const nuevoDiario = new Diario({ fecha, alimentosConsumidos: [], caloriasGastadas, idUsuario });
             await nuevoDiario.save();
         } else {
-            diario.caloriasGastadas += caloriasGastadas;
+            diario.caloriasGastadas += + parseInt(caloriasGastadas);
             await Diario.findByIdAndUpdate(diario._id, diario, { new: true });
         }
         
@@ -255,19 +255,7 @@ const deleteActividadRealizada = async(req, res = response) => {
         }
 
         // Tenemos que actualizar las calorias gastadas del diario
-        const idUsuario = existeActividadRealizada.idUsuario;
-        const fecha = existeActividadRealizada.fecha;
-        const fechaAnterior = new Date(fecha);
-        fechaAnterior.setHours(0, 0, 0, 0);
-        fechaAnterior.setDate(fechaAnterior.getDate());
-        const fechaSiguiente = new Date(fechaAnterior);
-        fechaSiguiente.setDate(fechaAnterior.getDate() + 1);
-        const diario = await Diario.findOne({ fecha: { $gte: fechaAnterior, $lt: fechaSiguiente }, idUsuario });
-
-        if(diario) {
-            diario.caloriasGastadas -= existeActividadRealizada.caloriasGastadas;
-            await Diario.findByIdAndUpdate(diario._id, diario, { new: true });
-        }
+        await restarCaloriasGastadas(existeActividadRealizada);
 
         const actividadRealizadaEliminada = await ActividadRealizada.findByIdAndDelete(id);
 
@@ -287,10 +275,27 @@ const deleteActividadRealizada = async(req, res = response) => {
     }
 }
 
+const restarCaloriasGastadas = async(actividadRealizada) => {
+    const idUsuario = actividadRealizada.idUsuario;
+    const fecha = new Date(actividadRealizada.fecha);
+    const fechaAnterior = new Date(fecha);
+    fechaAnterior.setHours(0, 0, 0, 0);
+    fechaAnterior.setDate(fechaAnterior.getDate());
+    const fechaSiguiente = new Date(fechaAnterior);
+    fechaSiguiente.setDate(fechaAnterior.getDate() + 1);
+    const diario = await Diario.findOne({ fecha: { $gte: fechaAnterior, $lt: fechaSiguiente }, idUsuario });
+
+    if(diario) {
+        diario.caloriasGastadas -= actividadRealizada.caloriasGastadas;
+        await Diario.findByIdAndUpdate(diario._id, diario, { new: true });
+    }
+}
+
 module.exports = {
     getActividadRealizadaById,
     getActividadesRealizadasByUser,
     createActividadRealizada,
     updateActividadRealizada,
-    deleteActividadRealizada
+    deleteActividadRealizada,
+    restarCaloriasGastadas,
 }

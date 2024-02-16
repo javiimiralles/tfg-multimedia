@@ -12,7 +12,8 @@ import { UsuariosService } from 'src/app/services/usuarios.service';
 })
 export class HomeComponent  implements OnInit {
 
-  loading: boolean = true;
+  loadingDiario: boolean = true;
+  loadingActividadFisica: boolean = true;
 
   diario: Diario;
   planUsuario = this.usuariosService.plan;
@@ -27,32 +28,36 @@ export class HomeComponent  implements OnInit {
     private usuariosService: UsuariosService) { }
 
   ngOnInit() {
-    this.loading = true;
-    // Cargamos el diario de hoy, si no existe se crea
+    this.loadingDiario = true;
+    this.cargarDiario();
+  }
+
+  // Cargamos el diario de hoy, si no existe se crea
+  cargarDiario() {
     this.diariosService.cargarDiarioPorFecha(new Date()).subscribe(res => {
       if(!res['diario']) {
         this.crearDiario();
       } else {
         this.diario = res['diario'];
-        this.loading = false;
+        this.loadingDiario = false;
       }
     }, (err) => {
       console.error(err);
       const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
       this.toastService.presentToast(msg, 'danger');
-      this.loading = false;
+      this.loadingDiario = false;
     });
   }
 
   crearDiario() {
     this.diariosService.crearDiario(new Date()).subscribe(res => {
       this.diario = res['diario'];
-      this.loading = false;
+      this.loadingDiario = false;
     }, (err) => {
       console.error(err);
       const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
       this.toastService.presentToast(msg, 'danger');
-      this.loading = false;
+      this.loadingDiario = false;
     });
   }
 

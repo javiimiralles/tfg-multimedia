@@ -3,6 +3,7 @@ const ActividadFisica = require('../models/actividad-fisica.model');
 const ActividadRealizada = require('../models/actividad-realizada.model');
 const { response } = require('express');
 const { infoToken } = require('../utils/infotoken');
+const { restarCaloriasGastadas } = require('./actividades-realizadas.controller');
 
 const getActividadFisicaById = async (req, res = response) => {
 
@@ -262,6 +263,13 @@ const deleteActividadFisica = async (req, res = response) => {
         const actividadEliminada = await ActividadFisica.findByIdAndDelete(id);
 
         // borramos las actividades realizadas asociadas a esta actividad
+        // y recalculamos las calorias gastadas del diario
+        const actividadesRealizadasABorrar = await ActividadRealizada.find({ idActividadFisica: id });
+        const promesas = actividadesRealizadasABorrar.map(async (actividad) => {
+            await restarCaloriasGastadas(actividad);
+        });
+        await Promise.all(promesas);
+
         await ActividadRealizada.deleteMany({ idActividadFisica: id });
 
         res.json({
