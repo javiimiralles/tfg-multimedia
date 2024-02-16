@@ -30,7 +30,6 @@ router.get('/usuario/:idUsuario', [
 router.post('/', [
     validarJWT,
     check('fecha','El argumento fecha es obligatorio').notEmpty(),
-    check('fecha','El argumento fecha desde debe ser una fecha').isDate(),
     check('caloriasGastadas','El argumento caloriasGastadas es obligatorio').trim().not().isEmpty(),
     check('caloriasGastadas','El argumento caloriasGastadas debe ser numérico').isNumeric(),
     check('duracion','El argumento duracion es obligatorio').trim().not().isEmpty(),
@@ -44,7 +43,6 @@ router.put('/:id', [
     validarJWT,
     check('id','El id de la actividad debe ser valido').isMongoId(),
     check('fecha','El argumento fecha es obligatorio').notEmpty(),
-    check('fecha','El argumento fecha desde debe ser una fecha').isDate(),
     check('caloriasGastadas','El argumento caloriasGastadas es obligatorio').trim().not().isEmpty(),
     check('caloriasGastadas','El argumento caloriasGastadas debe ser numérico').isNumeric(),
     check('duracion','El argumento duracion es obligatorio').trim().not().isEmpty(),

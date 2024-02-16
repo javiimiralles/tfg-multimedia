@@ -1,18 +1,19 @@
 const Usuario = require('../models/usuario.model');
 const ActividadFisica = require('../models/actividad-fisica.model');
+const ActividadRealizada = require('../models/actividad-realizada.model');
 const { response } = require('express');
 const { infoToken } = require('../utils/infotoken');
 
-const getActividadFisicaById = async(req, res = response) => {
+const getActividadFisicaById = async (req, res = response) => {
 
     const id = req.params.id;
 
     try {
 
-        const actividad = await ActividadFisica.findById(id);
+        const actividadFisica = await ActividadFisica.findById(id);
 
         // KO -> actividad no existe
-        if(!actividad) {
+        if (!actividadFisica) {
             return res.status(400).json({
                 ok: false,
                 msg: "No existe ninguna actividad para el id: " + id
@@ -23,7 +24,7 @@ const getActividadFisicaById = async(req, res = response) => {
         res.json({
             ok: true,
             msg: 'getActividadFisicaById',
-            actividad
+            actividadFisica
         });
 
     } catch (error) {
@@ -35,50 +36,51 @@ const getActividadFisicaById = async(req, res = response) => {
     }
 }
 
-const getActividadesFisicasByFilter = async(req, res = response) => {
+const getActividadesFisicas = async (req, res = response) => {
     const desde = Number(req.query.desde) || 0;
     const resultados = Number(req.query.resultados) || Number(process.env.DOCSPERPAGE);
     const texto = req.query.texto;
+    const idUsuario = req.query.idUsuario;
 
     let textoBusqueda = '';
     if (texto) {
         textoBusqueda = new RegExp(texto, 'i');
     }
 
-    const idUsuario = req.params.idUsuario;
-
     try {
-
-        const usuario = await Usuario.findById(idUsuario);
-
-        // KO -> usuario no existe
-        if(!usuario) {
-            return res.status(400).json({
-                ok:false,
-                msg:"No existe ningún usuario para el id: " + idUsuario
-            });
+        
+        if(idUsuario) {
+            const usuario = await Usuario.findById(idUsuario);
+    
+            if (!usuario) {
+                return res.status(400).json({
+                    ok: false,
+                    msg: "No existe ningún usuario para el id: " + idUsuario
+                });
+            }
         }
 
-        const filter = {
-            $or: [
-                { idUsuario: idUsuario },
-                { predeterminada: true }
-            ]
-        };
+        let filter = {};
+
+        if (idUsuario) {
+            filter.idUsuario = idUsuario;
+        } else {
+            filter.predeterminada = true;
+        }
 
         if (texto) {
-            filter.$or.push({ nombre: textoBusqueda });
+            filter.nombre = textoBusqueda;
         }
 
-        const [actividades, total] = await Promise.all([
+        const [actividadesFisicas, total] = await Promise.all([
             ActividadFisica.find(filter).skip(desde).limit(resultados),
             ActividadFisica.countDocuments(filter)
         ]);
 
         res.json({
             ok: true,
-            msg: 'getActividadesFisicasByFilter',
-            actividades,
+            msg: 'getActividadesFisicas',
+            actividadesFisicas,
             page: {
                 desde,
                 resultados,
@@ -95,7 +97,7 @@ const getActividadesFisicasByFilter = async(req, res = response) => {
     }
 }
 
-const createActividadFisica = async(req, res = response) => {
+const createActividadFisica = async (req, res = response) => {
 
     const { nombre, idUsuario, ...object } = req.body;
 
@@ -104,10 +106,10 @@ const createActividadFisica = async(req, res = response) => {
         const usuario = await Usuario.findById(idUsuario);
 
         // KO -> usuario no existe
-        if(!usuario) {
+        if (!usuario) {
             return res.status(400).json({
-                ok:false,
-                msg:"No existe ningún usuario para el id: " + idUsuario
+                ok: false,
+                msg: "No existe ningún usuario para el id: " + idUsuario
             });
         }
 
@@ -120,10 +122,10 @@ const createActividadFisica = async(req, res = response) => {
 
         // KO -> existe una actividad fisica con ese nombre
         // No mandamos status 400 porque queremos que siga funcionando
-        if(existeActividad) {
-            return  res.json({
-                ok:false,
-                msg:"Ya existe una actividad física con ese nombre",
+        if (existeActividad) {
+            return res.json({
+                ok: false,
+                msg: "Ya existe una actividad física con ese nombre",
                 alimento: existeActividad
             });
         }
@@ -131,15 +133,15 @@ const createActividadFisica = async(req, res = response) => {
         object.nombre = nombre;
         object.idUsuario = idUsuario;
         object.predeterminada = false; // un usuario nunca podra crear una predeterminada
-        const actividad = new ActividadFisica(object);
+        const actividadFisica = new ActividadFisica(object);
 
-        await actividad.save();
+        await actividadFisica.save();
 
         // OK
         res.json({
-            ok:true,
-            msg:"createActividadFisica",
-            actividad
+            ok: true,
+            msg: "createActividadFisica",
+            actividadFisica
         })
 
     } catch (error) {
@@ -152,7 +154,7 @@ const createActividadFisica = async(req, res = response) => {
 
 }
 
-const updateActividadFisica = async(req, res = response) => {
+const updateActividadFisica = async (req, res = response) => {
 
     const { nombre, idUsuario, ...object } = req.body;
     const id = req.params.id;
@@ -163,27 +165,27 @@ const updateActividadFisica = async(req, res = response) => {
         const usuario = await Usuario.findById(idUsuario);
 
         // KO -> usuario no existe
-        if(!usuario) {
+        if (!usuario) {
             return res.status(400).json({
-                ok:false,
-                msg:"No existe ningún usuario para el id: " + idUsuario
+                ok: false,
+                msg: "No existe ningún usuario para el id: " + idUsuario
             });
         }
 
         // KO -> se esta intentado editar un alimento de otro usuario
-        if(infoToken(token).uid != idUsuario) {
+        if (infoToken(token).uid != idUsuario) {
             return res.status(400).json({
-                ok:false,
-                msg:"No se pueden editar actividades de otro usuario"
+                ok: false,
+                msg: "No se pueden editar actividades de otro usuario"
             });
         }
 
         let existeActividad = await ActividadFisica.findById(id);
         // KO -> No se pueden editar actividades predeterminadas
-        if(existeActividad.predeterminada) {
+        if (existeActividad.predeterminada) {
             return res.status(400).json({
-                ok:false,
-                msg:"No se pueden editar actividades predeterminadas"
+                ok: false,
+                msg: "No se pueden editar actividades predeterminadas"
             });
         }
 
@@ -196,23 +198,23 @@ const updateActividadFisica = async(req, res = response) => {
 
         // KO -> existe una actividad fisica con ese nombre
         // No mandamos status 400 porque queremos que siga funcionando
-        if(existeActividad && existeActividad._id != id) {
+        if (existeActividad && existeActividad._id != id) {
             return res.json({
-                ok:false,
-                msg:"Ya existe una actividad física con ese nombre",
+                ok: false,
+                msg: "Ya existe una actividad física con ese nombre",
                 alimento: existeActividad
             });
         }
 
         object.nombre = nombre;
         object.idUsuario = idUsuario;
-        const actividad = await ActividadFisica.findByIdAndUpdate(id, object, { new: true });
+        const actividadFisica = await ActividadFisica.findByIdAndUpdate(id, object, { new: true });
 
-         // OK
+        // OK
         res.json({
-            ok:true,
-            msg:"updateActividadFisica",
-            actividad
+            ok: true,
+            msg: "updateActividadFisica",
+            actividadFisica
         });
 
     } catch (error) {
@@ -224,7 +226,7 @@ const updateActividadFisica = async(req, res = response) => {
     }
 }
 
-const deleteActividadFisica = async(req, res = response) => {
+const deleteActividadFisica = async (req, res = response) => {
 
     const id = req.params.id;
     const token = req.header('x-token');
@@ -234,42 +236,45 @@ const deleteActividadFisica = async(req, res = response) => {
         const existeActividad = await ActividadFisica.findById(id);
 
         // KO -> no existe ninguna actividad con ese id
-        if(!existeActividad) {
+        if (!existeActividad) {
             return res.status(400).json({
-                ok:false,
-                msg:"No existe ninguna actividad con ese id: " + id
+                ok: false,
+                msg: "No existe ninguna actividad con ese id: " + id
             });
         }
 
         // KO -> No se pueden borrar actividades predeterminadas
-        if(existeActividad.predeterminada) {
+        if (existeActividad.predeterminada) {
             return res.status(400).json({
-                ok:false,
-                msg:"No se pueden borrar actividades predeterminadas"
+                ok: false,
+                msg: "No se pueden borrar actividades predeterminadas"
             });
         }
 
         // KO -> se esta intentado eliminar una actividad de otro usuario
-        if(infoToken(token).uid != existeActividad.idUsuario) {
+        if (infoToken(token).uid != existeActividad.idUsuario) {
             return res.status(400).json({
-                ok:false,
-                msg:"No se pueden eliminar actividades de otro usuario"
+                ok: false,
+                msg: "No se pueden eliminar actividades de otro usuario"
             });
         }
 
         const actividadEliminada = await ActividadFisica.findByIdAndDelete(id);
 
+        // borramos las actividades realizadas asociadas a esta actividad
+        await ActividadRealizada.deleteMany({ idActividadFisica: id });
+
         res.json({
-            ok:true,
-            msg:"deleteActividadFisica",
+            ok: true,
+            msg: "deleteActividadFisica",
             actividadEliminada
         })
 
-    } catch(error){
+    } catch (error) {
         console.log(error);
-        return  res.json({
-            ok:false,
-            msg:'Error borrando actividad fisica'
+        return res.json({
+            ok: false,
+            msg: 'Error borrando actividad fisica'
         })
     }
 
@@ -277,7 +282,7 @@ const deleteActividadFisica = async(req, res = response) => {
 
 module.exports = {
     getActividadFisicaById,
-    getActividadesFisicasByFilter,
+    getActividadesFisicas,
     createActividadFisica,
     updateActividadFisica,
     deleteActividadFisica

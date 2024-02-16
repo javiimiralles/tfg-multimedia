@@ -1,6 +1,6 @@
 <div *ngIf="!capturandoAlimento">
   <!-- ======= Segments ======== -->
-  <ion-segment (ionChange)="onSegmentChange($event)" value="mis-alimentos">
+  <ion-segment (ionChange)="onSegmentChange($event)" [value]="segmentActual">
     <ion-segment-button value="mis-alimentos">
       <ion-label>Mis alimentos</ion-label>
     </ion-segment-button>
@@ -42,7 +42,7 @@
   <!-- ======= Fin Lista resultados ======== -->
 
   <!-- ======= Boton crear alimento ======== -->
-  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+  <ion-fab *ngIf="segmentActual === 'mis-alimentos'" slot="fixed" vertical="bottom" horizontal="end">
     <ion-fab-button color="secondary">
       <ion-icon name="add-outline"></ion-icon>
     </ion-fab-button>

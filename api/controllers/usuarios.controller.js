@@ -3,6 +3,8 @@ const RegistroPeso = require('../models/registro-peso.model');
 const Alimento = require('../models/alimento.model');
 const Diario = require('../models/diario.model');
 const MedidaCorporal = require('../models/medida-corporal.model');
+const ActividadFisica = require('../models/actividad-fisica.model');
+const ActividadRealizada = require('../models/actividad-realizada.model');
 const { response  }= require('express');
 const bcrypt = require('bcryptjs');
 const { createMedidasCorporalesDefault } = require('./medidas-corporales.controller');
@@ -250,6 +252,8 @@ const deleteUser = async(req, res = response) => {
         await RegistroPeso.deleteMany({ idUsuario: uid });
         await Diario.deleteMany({ idUsuario: uid });
         await MedidaCorporal.deleteMany({ idUsuario: uid });
+        await ActividadRealizada.deleteMany({ idUsuario: uid });
+        await ActividadFisica.deleteMany({ idUsuario: uid });
 
         // OK
         res.json({

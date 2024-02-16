@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ActivationEnd } from '@angular/router';
 import { Subscription, filter, map } from 'rxjs';
+import { ActividadesFisicasService } from 'src/app/services/actividades-fisicas.service';
 import { DiariosService } from 'src/app/services/diarios.service';
 
 @Component({
@@ -19,7 +20,10 @@ export class HeaderComponent  implements OnInit {
   withBackButton: boolean = false;
   backButtonUrl: string = '';
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute, private diariosService: DiariosService) { }
+  constructor(
+    private router: Router,
+    private diariosService: DiariosService,
+    private activatedRoute: ActivatedRoute) { }
 
   ngOnInit() {
     this.sub$ = this.getData().subscribe(data => {
@@ -30,7 +34,8 @@ export class HeaderComponent  implements OnInit {
       this.backButtonUrl = data['backButtonUrl'];
 
       // depende de si estamos en la edicion o creacion de algun formulario
-      // habra que cambiar dinamicamente el boton de volver atras
+      // habra que cambiar dinamicamente el boton de volver atras o el
+      // titulo del header
       this.updateBackButton();
     });
   }
@@ -46,6 +51,16 @@ export class HeaderComponent  implements OnInit {
         this.diariosService.idAlimentoActual = uid;
         this.backButtonUrl = '/alimentos/registro';
       }
+    } else if(url.includes('/actividad-fisica/registro-actividad-realizada')) {
+      let uid: string;
+      this.activatedRoute.queryParams.subscribe(params => {
+        uid = params['idActividadRealizada'];
+      });
+      if(uid !== 'nuevo') {
+        this.backButtonUrl = '/actividad-fisica';
+      }
+    } else if(url.includes('/actividad-fisica/form') && this.getUid(url) !== 'nuevo') {
+      this.titulo = 'Editar actividad';
     }
   }
 

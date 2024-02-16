@@ -5,7 +5,7 @@ const { validarCampos } = require('../middleware/validar-campos');
 
 const {
     getActividadFisicaById,
-    getActividadesFisicasByFilter,
+    getActividadesFisicas,
     createActividadFisica,
     updateActividadFisica,
     deleteActividadFisica
@@ -19,13 +19,13 @@ router.get('/:id', [
     validarCampos
 ], getActividadFisicaById);
 
-router.get('/filter/:idUsuario', [
+router.get('/', [
     validarJWT,
-    check('idUsuario','El idUsuario del alimento debe ser valido').isMongoId(),
+    check('idUsuario','El idUsuario del alimento debe ser valido').optional().isMongoId(),
     check('desde','El argumento desde debe ser numérico').optional().isNumeric(),
     check('resultados','El argumento desde debe ser numérico').optional().isNumeric(),
     validarCampos
-], getActividadesFisicasByFilter);
+], getActividadesFisicas);
 
 router.post('/', [
     validarJWT,

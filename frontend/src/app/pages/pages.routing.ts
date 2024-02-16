@@ -15,6 +15,9 @@ import { ConsumoAguaComponent } from './consumo-agua/consumo-agua.component';
 import { PerfilComponent } from './perfil/perfil-view/perfil.component';
 import { AlimentosBarcodeScannerComponent } from './alimentos/alimentos-barcode-scanner/alimentos-barcode-scanner.component';
 import { MedidasCorporalesComponent } from './medidas-corporales/medidas-corporales.component';
+import { ActividadFisicaListComponent } from './actividad-fisica/actividad-fisica-list/actividad-fisica-list.component';
+import { ActividadFisicaFormComponent } from './actividad-fisica/actividad-fisica-form/actividad-fisica-form.component';
+import { RegistroActividadRealizadaComponent } from './actividad-fisica/registro-actividad-realizada/registro-actividad-realizada.component';
 
 const routes: Routes = [
   { path: '', component: AdminLayoutComponent, canActivate: [AuthGuard],
@@ -51,7 +54,7 @@ const routes: Routes = [
                                                                   }},
       { path: 'alimentos/form/:uid', component: AlimentoFormComponent, data: {
                                                                     simpleHeader: true,
-                                                                    titulo: 'Crear alimento',
+                                                                    titulo: 'Nuevo alimento',
                                                                     leftButtonIcon: '',
                                                                     leftButtonUrl: '',
                                                                     backButtonUrl: '/alimentos/list'
@@ -78,6 +81,27 @@ const routes: Routes = [
                                                                   leftButtonIcon: 'notifications-outline',
                                                                   leftButtonUrl: '/notificaciones',
                                                                   backButtonUrl: ''
+                                                                }},
+      { path: 'actividad-fisica/list', component: ActividadFisicaListComponent, data: {
+                                                                  simpleHeader: true,
+                                                                  titulo: 'Listado de actividades',
+                                                                  leftButtonIcon: '',
+                                                                  leftButtonUrl: '',
+                                                                  backButtonUrl: '/actividad-fisica'
+                                                                }},
+      { path: 'actividad-fisica/registro-actividad-realizada', component: RegistroActividadRealizadaComponent, data: {
+                                                                  simpleHeader: true,
+                                                                  titulo: 'Actividad realizada',
+                                                                  leftButtonIcon: '',
+                                                                  leftButtonUrl: '',
+                                                                  backButtonUrl: '/actividad-fisica/list'
+                                                                }},
+      { path: 'actividad-fisica/form/:uid', component: ActividadFisicaFormComponent, data: {
+                                                                  simpleHeader: true,
+                                                                  titulo: 'Nueva actividad',
+                                                                  leftButtonIcon: '',
+                                                                  leftButtonUrl: '',
+                                                                  backButtonUrl: '/actividad-fisica/list'
                                                                 }},
       /********** Consumo agua *************/
       { path: 'consumo-agua', component: ConsumoAguaComponent, data: {

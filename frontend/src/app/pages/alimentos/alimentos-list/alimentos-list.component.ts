@@ -24,7 +24,7 @@ export class AlimentosListComponent  implements OnInit {
   textoBusqueda: string = '';
   resultados: number = 10;
   noResultsFound: boolean = false;
-  segmentActual: string = 'mis-alimentos';
+  segmentActual: 'mis-alimentos' | 'biblioteca' = 'mis-alimentos';
 
   // para la captura de alimentos
   capturandoAlimento: boolean = false;
@@ -67,6 +67,7 @@ export class AlimentosListComponent  implements OnInit {
           this.listaResultados = res['alimentos'];
           this.comprobarSiHayResultados();
         }, (err) => {
+          console.error(err);
           const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
           this.toastService.presentToast(msg, 'danger');
         });
@@ -75,6 +76,7 @@ export class AlimentosListComponent  implements OnInit {
           this.filterAlimentosData(res['searchResults']);
           this.comprobarSiHayResultados();
         }, (err) => {
+          console.error(err);
           const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
           this.toastService.presentToast(msg, 'danger');
         });
@@ -101,11 +103,7 @@ export class AlimentosListComponent  implements OnInit {
   }
 
   comprobarSiHayResultados() {
-    if(this.listaResultados.length == 0) {
-      this.noResultsFound = true;
-    } else {
-      this.noResultsFound = false;
-    }
+    this.noResultsFound = this.listaResultados.length == 0;
   }
 
   registrarAlimentoConsumido(alimento: Alimento) {

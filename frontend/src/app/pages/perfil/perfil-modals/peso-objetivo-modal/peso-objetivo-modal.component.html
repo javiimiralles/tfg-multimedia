@@ -22,11 +22,11 @@
 </ion-content>
 <ion-footer class="ion-padding ion-no-border">
   <ion-row>
-    <ion-col *ngIf="tieneObjetivo">
-      <ion-button expand="block" color="danger" (click)="confirm(true)">Eliminar objetivo</ion-button>
-    </ion-col>
     <ion-col>
       <ion-button expand="block" color="success" (click)="confirm(false)">Aceptar</ion-button>
+    </ion-col>
+    <ion-col *ngIf="tieneObjetivo">
+      <ion-button expand="block" color="danger" (click)="confirm(true)">Eliminar objetivo</ion-button>
     </ion-col>
   </ion-row>
 </ion-footer>
