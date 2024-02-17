@@ -22,7 +22,7 @@ router.get('/:id', [
 
 router.get('/usuario/:idUsuario', [
     validarJWT,
-    check('idUsuario','El idUsuario del alimento debe ser valido').isMongoId(),
+    check('idUsuario','El idUsuario del usuario debe ser valido').isMongoId(),
     check('fecha','El argumento fecha es obligatorio').notEmpty(),
     check('fecha','El argumento fecha desde debe ser una fecha').isDate(),
     validarCampos
