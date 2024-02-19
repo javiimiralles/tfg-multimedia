@@ -2,11 +2,11 @@ const { Schema, model } = require('mongoose');
 
 const Modelo3DSchema = Schema(
     {
-        url: {
+        nombre: {
             type: String,
             require: true
         },
-        idCloudinary: {
+        url: {
             type: String,
             require: true
         },

@@ -1,0 +1,9 @@
+<app-loader *ngIf="loadingModel" message="Cargando modelo 3D"></app-loader>
+
+<div *ngIf="!loadingModel && !existeModelo" class="no-model-container">
+  <ion-text class="ion-text-center" color="primary">
+    <h3>Aún no has cargado ningún modelo 3D</h3>
+  </ion-text>
+</div>
+
+<div id="modelo3D"></div>

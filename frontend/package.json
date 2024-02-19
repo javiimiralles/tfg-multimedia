@@ -40,6 +40,9 @@
     "ionicons": "^7.0.0",
     "ng-apexcharts": "^1.8.0",
     "rxjs": "~7.8.0",
+    "three": "^0.161.0",
+    "three-gltf-loader": "^1.111.0",
+    "three-orbitcontrols": "^2.110.3",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.2"
   },
@@ -56,6 +59,7 @@
     "@capacitor/cli": "5.5.1",
     "@ionic/angular-toolkit": "^9.0.0",
     "@types/jasmine": "~5.1.0",
+    "@types/three": "^0.161.2",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "eslint": "^7.26.0",

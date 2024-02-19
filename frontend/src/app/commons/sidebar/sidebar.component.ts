@@ -11,7 +11,6 @@ import { UsuariosService } from 'src/app/services/usuarios.service';
 })
 export class SidebarComponent implements OnInit {
 
-  private sub$: Subscription;
   simpleHeader: boolean = false;
 
   sidebarItems = [
@@ -21,7 +20,8 @@ export class SidebarComponent implements OnInit {
     { nombre: 'Actividad física', icono: 'walk', url: '/actividad-fisica' },
     { nombre: 'Consumo de agua', icono: 'water', url: '/consumo-agua' },
     { nombre: 'Fotos de progreso', icono: 'camera', url: '/fotos-progreso' },
-    { nombre: 'Medidas corporales', icono: 'body', url: '/medidas-corporales' },
+    { nombre: 'Medidas corporales', icono: 'analytics', url: '/medidas-corporales' },
+    { nombre: 'Modelo 3D', icono: 'body', url: '/modelo3d' },
     { nombre: 'Perfil', icono: 'person', url: '/perfil' },
     { nombre: 'Configuración', icono: 'settings', url: '/configuracion' },
   ]
@@ -29,7 +29,7 @@ export class SidebarComponent implements OnInit {
   constructor(private router: Router, private menuController: MenuController, private usuariosService: UsuariosService) { }
 
   ngOnInit() {
-    this.sub$ = this.getData().subscribe(data => {
+    this.getData().subscribe(data => {
       this.simpleHeader = data['simpleHeader']
     });
   }

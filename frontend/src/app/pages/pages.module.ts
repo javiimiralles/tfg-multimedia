@@ -14,19 +14,22 @@ import { ComponentsModule } from '../components/components.module';
 import { ConsumoAguaComponent } from './consumo-agua/consumo-agua.component';
 import { PerfilModule } from './perfil/perfil.module';
 import { MedidasCorporalesComponent } from './medidas-corporales/medidas-corporales.component';
+import { Modelo3dComponent } from './modelo3d/modelo3d.component';
 
 @NgModule({
   declarations: [
     AdminLayoutComponent,
     HomeComponent,
     ConsumoAguaComponent,
-    MedidasCorporalesComponent
+    MedidasCorporalesComponent,
+    Modelo3dComponent
   ],
   exports: [
     AdminLayoutComponent,
     HomeComponent,
     ConsumoAguaComponent,
-    MedidasCorporalesComponent
+    MedidasCorporalesComponent,
+    Modelo3dComponent
   ],
   imports: [
     IonicModule,

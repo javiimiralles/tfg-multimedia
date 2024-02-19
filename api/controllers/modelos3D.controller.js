@@ -1,7 +1,16 @@
-const cloudinary = require('cloudinary').v2;
 const { response } = require('express');
 const Modelo3D = require('../models/modelo3D.model');
 const fs = require('fs');
+const stream = require('stream');
+
+// inicializamos firebase
+const admin = require('firebase-admin');
+const serviceAccount = require('../database/firebase-credentials.json');
+
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET
+});
 
 const getUrlModelo3DById = async(req, res = response) => {
 
@@ -11,8 +20,9 @@ const getUrlModelo3DById = async(req, res = response) => {
 
         const modelo3D = await Modelo3D.findById(idModelo);
 
+        // No devolvemos status porque queremos que siga funcionando
         if (!modelo3D) {
-            return res.status(404).json({
+            return res.json({
                 ok: false,
                 msg: "Modelo 3D no encontrado."
             });
@@ -42,8 +52,9 @@ const getUrlModelo3DByUser = async(req, res = response) => {
 
         const modelo3D = await Modelo3D.findOne({ idUsuario });
 
+        // No devolvemos status porque queremos que siga funcionando
         if (!modelo3D) {
-            return res.status(404).json({
+            return res.json({
                 ok: false,
                 msg: "Modelo 3D no encontrado."
             });
@@ -84,77 +95,76 @@ const subirModelo3D = async(req, res = response) => {
         });
     }
 
-    // Definir la ruta temporal donde se guardará el archivo
-    const archivoModeloPath = `./uploadsModelos3D/${archivoModelo.name}`;
-
-    try {
-        // Mover el archivo al directorio temporal
-        await new Promise((resolve, reject) => {
-            archivoModelo.mv(archivoModeloPath, function(err) {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve();
-                }
+    // Comprobar si el usuario ya tiene un modelo asignado y borrarlo de Firebase
+    const existeModelo3D = await Modelo3D.findOne({ idUsuario });
+    if (existeModelo3D) {
+        try {
+            await bucket.file(existeModelo3D.nombre).delete();
+        } catch (error) {
+            return res.status(500).json({
+                ok: false,
+                msg: 'Error al eliminar el modelo 3D existente',
+                error
             });
+        }
+        await Modelo3D.findByIdAndDelete(existeModelo3D._id);
+    }
+
+    // Subir el nuevo archivo a Firebase
+    const nombreArchivo = `${idUsuario}_${Date.now()}_${archivoModelo.name}`;
+    const archivoModeloPath = `modelos3D/${nombreArchivo}`;
+    const bucket = admin.storage().bucket();
+
+    const blob = bucket.file(archivoModeloPath);
+    const blobStream = blob.createWriteStream({
+        metadata: {
+            contentType: archivoModelo.mimetype
+        }
+    });
+
+    blobStream.on('error', (error) => {
+        console.error('Error al subir el archivo:', error);
+        return res.status(500).json({
+            ok: false,
+            msg: 'Error al subir el archivo a Firebase Storage',
+            error
         });
+    });
 
-        // Subir el archivo a Cloudinary
-        cloudinary.uploader.upload(archivoModeloPath, {
-            resource_type: 'raw'
-        }, async function(error, result) {
-            if (error) {
-                console.log(error);
-                return res.status(400).json({
-                    ok: false,
-                    msg: "Error al cargar el archivo a Cloudinary"
-                });
-            }
-
-            // borramos el archivo temporal
-            fs.unlinkSync(archivoModeloPath);
-
-            // si el usuario ya tiene un modelo creado lo eliminamos
-            // tanto de la bd como de cloudinary
-            const existeModelo3D = await Modelo3D.findOne({ idUsuario });
-            if(existeModelo3D) {
-                await Modelo3D.findByIdAndDelete(existeModelo3D._id);
-                cloudinary.uploader.destroy(existeModelo3D.idCloudinary, { resource_type: 'raw' }, (error, result) => {
-                    if(error) {
-                        console.log(error);
-                        return res.status(400).json({
-                            ok: false,
-                            msg: 'Error al eliminar el modelo 3D ya existente',
-                        });
-                    }
-                })
-            }
-
-            // Crear un nuevo registro en la colección Modelo3D
-            const modelo3D = new Modelo3D({
-                url: result.secure_url,
-                idCloudinary: result.public_id,
-                idUsuario: idUsuario
-            });
-
-            await modelo3D.save();
+    blobStream.on('finish', async () => {
+        await blob.makePublic();
+        const publicUrl = blob.publicUrl();
+    
+        // Crear un nuevo registro en la base de datos con la URL pública
+        const nuevoModelo3D = new Modelo3D({
+            url: publicUrl,
+            nombre: nombreArchivo,
+            idUsuario: idUsuario
+        });
+    
+        try {
+            await nuevoModelo3D.save();
 
             // OK
             res.json({
                 ok: true,
-                msg: "Modelo 3D subido correctamente",
-                modelo3D
+                msg: 'Modelo 3D subido correctamente',
+                modelo3D: nuevoModelo3D
             });
-        });
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({
-            ok: false,
-            msg: 'Error interno al subir el modelo 3D'
-        });
-    }
-}
+        } catch (error) {
+            console.error('Error al guardar el modelo en la base de datos:', error);
+            return res.status(500).json({
+                ok: false,
+                msg: 'Error al guardar la información del modelo 3D en la base de datos',
+                error
+            });
+        }
+    });
 
+    const bufferStream = new stream.PassThrough();
+    bufferStream.end(archivoModelo.data);
+    bufferStream.pipe(blobStream);
+}
 
 module.exports = {
     getUrlModelo3DById,

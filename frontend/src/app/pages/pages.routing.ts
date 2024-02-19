@@ -18,6 +18,7 @@ import { MedidasCorporalesComponent } from './medidas-corporales/medidas-corpora
 import { ActividadFisicaListComponent } from './actividad-fisica/actividad-fisica-list/actividad-fisica-list.component';
 import { ActividadFisicaFormComponent } from './actividad-fisica/actividad-fisica-form/actividad-fisica-form.component';
 import { RegistroActividadRealizadaComponent } from './actividad-fisica/registro-actividad-realizada/registro-actividad-realizada.component';
+import { Modelo3dComponent } from './modelo3d/modelo3d.component';
 
 const routes: Routes = [
   { path: '', component: AdminLayoutComponent, canActivate: [AuthGuard],
@@ -117,6 +118,14 @@ const routes: Routes = [
                                                                 titulo: 'Medidas corporales',
                                                                 leftButtonIcon: 'notifications-outline',
                                                                 leftButtonUrl: '/notificaciones',
+                                                                backButtonUrl: ''
+                                                              }},
+      /********** Medidas corporales *************/
+      { path: 'modelo3d', component: Modelo3dComponent, data: {
+                                                                simpleHeader: false,
+                                                                titulo: 'Mi modelo 3D',
+                                                                leftButtonIcon: '',
+                                                                leftButtonUrl: '',
                                                                 backButtonUrl: ''
                                                               }},
       /********** Perfil *************/
