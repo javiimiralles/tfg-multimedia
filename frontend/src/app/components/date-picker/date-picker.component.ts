@@ -12,8 +12,8 @@ export class DatePickerComponent  implements OnInit {
   @ViewChild(IonModal) calendarModal: IonModal;
 
   @Input() mode: 'day' | 'period' = 'day';
+  @Input() startDate: Date;
   @Output() dateChange = new EventEmitter<any>();
-  startDate: Date;
   endDate: Date;
   formatedDate: string = '';
 
@@ -24,7 +24,7 @@ export class DatePickerComponent  implements OnInit {
 
   ngOnInit() {
     if(this.mode === 'day') {
-      this.startDate = new Date();
+      this.startDate = this.startDate != null ? this.startDate : new Date();
       this.endDate = null;
       this.formatedDate = this.formatSimpleDate();
     } else {

@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { LightboxModule } from 'ngx-lightbox';
 
 import { AdminLayoutComponent } from '../layouts/admin-layout/admin-layout.component';
 import { HomeComponent } from './home/home.component';
@@ -15,6 +16,7 @@ import { ConsumoAguaComponent } from './consumo-agua/consumo-agua.component';
 import { PerfilModule } from './perfil/perfil.module';
 import { MedidasCorporalesComponent } from './medidas-corporales/medidas-corporales.component';
 import { Modelo3dComponent } from './modelo3d/modelo3d.component';
+import { FotosProgresoComponent } from './fotos-progreso/fotos-progreso.component';
 
 @NgModule({
   declarations: [
@@ -22,14 +24,16 @@ import { Modelo3dComponent } from './modelo3d/modelo3d.component';
     HomeComponent,
     ConsumoAguaComponent,
     MedidasCorporalesComponent,
-    Modelo3dComponent
+    Modelo3dComponent,
+    FotosProgresoComponent
   ],
   exports: [
     AdminLayoutComponent,
     HomeComponent,
     ConsumoAguaComponent,
     MedidasCorporalesComponent,
-    Modelo3dComponent
+    Modelo3dComponent,
+    FotosProgresoComponent
   ],
   imports: [
     IonicModule,
@@ -37,13 +41,14 @@ import { Modelo3dComponent } from './modelo3d/modelo3d.component';
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
+    LightboxModule,
 
     AlimentosModule,
     PesosModule,
     ActividadFisicaModule,
     CommonsModule,
     ComponentsModule,
-    PerfilModule
+    PerfilModule,
   ]
 })
 export class PagesModule { }

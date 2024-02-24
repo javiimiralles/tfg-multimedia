@@ -19,6 +19,7 @@ import { ActividadFisicaListComponent } from './actividad-fisica/actividad-fisic
 import { ActividadFisicaFormComponent } from './actividad-fisica/actividad-fisica-form/actividad-fisica-form.component';
 import { RegistroActividadRealizadaComponent } from './actividad-fisica/registro-actividad-realizada/registro-actividad-realizada.component';
 import { Modelo3dComponent } from './modelo3d/modelo3d.component';
+import { FotosProgresoComponent } from './fotos-progreso/fotos-progreso.component';
 
 const routes: Routes = [
   { path: '', component: AdminLayoutComponent, canActivate: [AuthGuard],
@@ -108,6 +109,14 @@ const routes: Routes = [
       { path: 'consumo-agua', component: ConsumoAguaComponent, data: {
                                                                   simpleHeader: false,
                                                                   titulo: 'Consumo de agua',
+                                                                  leftButtonIcon: 'notifications-outline',
+                                                                  leftButtonUrl: '/notificaciones',
+                                                                  backButtonUrl: ''
+                                                                }},
+      /********** Fotos progreso *************/
+      { path: 'fotos-progreso', component: FotosProgresoComponent, data: {
+                                                                  simpleHeader: false,
+                                                                  titulo: 'Fotos del progreso',
                                                                   leftButtonIcon: 'notifications-outline',
                                                                   leftButtonUrl: '/notificaciones',
                                                                   backButtonUrl: ''

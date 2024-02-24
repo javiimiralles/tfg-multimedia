@@ -36,6 +36,11 @@ body {
   font-size: small !important;
 }
 
+.primer-plano {
+  z-index: 99999 !important;
+}
+
+
 /* Colores */
 .primary-color {
   color: var(--ion-color-primary);

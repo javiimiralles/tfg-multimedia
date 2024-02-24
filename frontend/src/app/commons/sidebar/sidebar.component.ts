@@ -19,7 +19,7 @@ export class SidebarComponent implements OnInit {
     { nombre: 'Registros de peso', icono: 'scale', url: '/registros-peso' },
     { nombre: 'Actividad física', icono: 'walk', url: '/actividad-fisica' },
     { nombre: 'Consumo de agua', icono: 'water', url: '/consumo-agua' },
-    { nombre: 'Fotos de progreso', icono: 'camera', url: '/fotos-progreso' },
+    { nombre: 'Fotos del progreso', icono: 'camera', url: '/fotos-progreso' },
     { nombre: 'Medidas corporales', icono: 'analytics', url: '/medidas-corporales' },
     { nombre: 'Modelo 3D', icono: 'body', url: '/modelo3d' },
     { nombre: 'Perfil', icono: 'person', url: '/perfil' },

@@ -34,6 +34,7 @@ app.use('/api/medidas-corporales', require('./routes/medidas-corporales.router')
 app.use('/api/actividades-fisicas', require('./routes/actividades-fisicas.router'));
 app.use('/api/actividades-realizadas', require('./routes/actividades-realizadas.router'));
 app.use('/api/modelos3D', require('./routes/modelos3D.router'));
+app.use('/api/fotos-progreso', require('./routes/fotos-progreso.router'));
 
 app.use('/api/open-food-facts', require('./external-services/open-food-facts.service'));
 
