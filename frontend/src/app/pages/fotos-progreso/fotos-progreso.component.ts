@@ -4,6 +4,7 @@ import { Lightbox, LightboxConfig } from 'ngx-lightbox';
 import { FotoProgreso } from 'src/app/models/foto-progreso.model';
 import { FotosProgresoService } from 'src/app/services/fotos-progreso.service';
 import { ToastService } from 'src/app/services/toast.service';
+import { Camera, CameraResultType, CameraSource, Photo } from '@capacitor/camera';
 
 @Component({
   selector: 'app-fotos-progreso',
@@ -12,10 +13,11 @@ import { ToastService } from 'src/app/services/toast.service';
 })
 export class FotosProgresoComponent  implements OnInit {
 
-  segmentActual: 'album' | 'comparaciones' = 'album';
   selectedDate: Date = new Date();
   fotosProgreso: FotoProgreso[] = [];
   album: any[] = [];
+
+  subiendoFoto: boolean = false;
 
   constructor(
     private toastService: ToastService,
@@ -34,10 +36,6 @@ export class FotosProgresoComponent  implements OnInit {
     this.cargarFotosProgreso();
   }
 
-  onSegmentChange(event) {
-    this.segmentActual = event.detail.value;
-  }
-
   onDateChange(dates: any) {
     this.selectedDate = dates.startDate;
     this.cargarFotosProgreso();
@@ -48,6 +46,19 @@ export class FotosProgresoComponent  implements OnInit {
       this.fotosProgreso = res['fotosProgreso'];
       this.album = this.fotosProgreso.map(foto => ({ src: foto.url }));
     }, (err) => {
+      console.error(err);
+      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
+      this.toastService.presentToast(msg, 'danger');
+    });
+  }
+
+  subirFotoProgreso(imagen: File) {
+    this.fotosProgresoService.subirFotoProgreso(imagen, this.selectedDate).subscribe(res => {
+      this.subiendoFoto = false;
+      this.cargarFotosProgreso();
+      this.toastService.presentToast('Foto subida correctamente', 'success');
+    }, (err) => {
+      this.subiendoFoto = false;
       console.error(err);
       const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
       this.toastService.presentToast(msg, 'danger');
@@ -87,6 +98,29 @@ export class FotosProgresoComponent  implements OnInit {
       const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
       this.toastService.presentToast(msg, 'danger');
     });
+  }
+
+  async uploadPhoto(fromGallery: boolean) {
+    try {
+      const foto: Photo = await Camera.getPhoto({
+        resultType: CameraResultType.DataUrl,
+        source: fromGallery ? CameraSource.Photos : CameraSource.Camera,
+        quality: 100
+      });
+      this.subiendoFoto = true;
+      // Convertir DataUrl a Blob
+      const response = await fetch(foto.dataUrl);
+      const blob = await response.blob();
+      // Crear un objeto File a partir del Blob
+      const file = new File([blob], "foto.jpg", { type: "image/jpeg" });
+      this.subirFotoProgreso(file);
+    } catch (error) {
+      if (error.message === 'User cancelled photos app') {
+        console.log('El usuario cerró la cámara sin usarla.');
+      } else {
+        console.error('Ocurrió un error inesperado:', error);
+      }
+    }
   }
 
   // Logica del lightbox
