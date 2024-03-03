@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ActivationEnd } from '@angular/router';
 import { Subscription, filter, map } from 'rxjs';
-import { ActividadesFisicasService } from 'src/app/services/actividades-fisicas.service';
 import { DiariosService } from 'src/app/services/diarios.service';
 
 @Component({
@@ -17,7 +16,6 @@ export class HeaderComponent  implements OnInit {
   titulo: string = '';
   leftButtonIcon: string = '';
   leftButtonUrl: string = '';
-  withBackButton: boolean = false;
   backButtonUrl: string = '';
 
   constructor(

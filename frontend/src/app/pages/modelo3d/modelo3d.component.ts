@@ -22,13 +22,13 @@ export class Modelo3dComponent  implements OnInit {
 
   ngOnInit() {
     this.getUrlModelo3D();
+    this.cargarModelo3D();
   }
 
   getUrlModelo3D() {
     this.modelos3dService.getUrlModelo3DByUser().subscribe(res => {
       if(res['url']) {
         this.urlModelo = res['url'];
-        console.log(this.urlModelo);
         this.cargarModelo3D();
       } else {
         this.loadingModel = false;
@@ -37,10 +37,12 @@ export class Modelo3dComponent  implements OnInit {
   }
 
   cargarModelo3D() {
+    this.loadingModel = true;
     this.motorGraficoService.init();
     this.loadingModel = !this.motorGraficoService.isLoaded;
 
-    this.motorGraficoService.loadModel(this.urlModelo, () => {
+    this.urlModelo = './assets/modelo3D/modelo3d.gltf';
+    this.motorGraficoService.loadModel('./assets/modelo3D/light.hdr', this.urlModelo, () => {
       if(!this.motorGraficoService.isLoaded) {
         this.loadingModel = false;
         this.existeModelo = true;

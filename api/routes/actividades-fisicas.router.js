@@ -23,7 +23,7 @@ router.get('/', [
     validarJWT,
     check('idUsuario','El idUsuario del alimento debe ser valido').optional().isMongoId(),
     check('desde','El argumento desde debe ser numérico').optional().isNumeric(),
-    check('resultados','El argumento desde debe ser numérico').optional().isNumeric(),
+    check('resultados','El argumento resultados debe ser numérico').optional().isNumeric(),
     validarCampos
 ], getActividadesFisicas);
 

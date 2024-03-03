@@ -30,7 +30,7 @@ const getActividadFisicaById = async (req, res = response) => {
 
     } catch (error) {
         console.log(error);
-        res.json({
+        return res.status(500).json({
             ok: false,
             msg: 'Error obteniendo actividad por id'
         });
@@ -91,7 +91,7 @@ const getActividadesFisicas = async (req, res = response) => {
 
     } catch (error) {
         console.log(error);
-        res.json({
+        return res.status(500).json({
             ok: false,
             msg: 'Error obteniendo actividades por filtro'
         });

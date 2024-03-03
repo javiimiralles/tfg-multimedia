@@ -264,7 +264,7 @@ const deleteUser = async(req, res = response) => {
 
     } catch(error){
         console.log(error);
-        return res.json({
+        return res.status(500).json({
             ok: false,
             msg: 'Error borrando usuario'
         })
