@@ -18,6 +18,7 @@ import {
   ApexTitleSubtitle,
   ApexAnnotations,
 } from 'ng-apexcharts';
+import { ExceptionsService } from 'src/app/services/exceptions.service';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -67,7 +68,8 @@ export class PesosViewComponent  implements OnInit {
     private pesosService: PesosService,
     private modalController: ModalController,
     private usuariosService: UsuariosService,
-    private alertController: AlertController) { }
+    private alertController: AlertController,
+    private exceptionsService: ExceptionsService) { }
 
   ngOnInit() {
     const today = new Date();
@@ -124,8 +126,7 @@ export class PesosViewComponent  implements OnInit {
         this.updateChartData();
       }
     }, (err) => {
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
     });
   }
 
@@ -216,8 +217,7 @@ export class PesosViewComponent  implements OnInit {
       this.cargarRegistrosDePeso();
       this.updateInfoUser();
     }, (err) => {
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
     });
   }
 

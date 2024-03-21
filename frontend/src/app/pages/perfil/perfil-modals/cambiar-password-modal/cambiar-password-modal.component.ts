@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
+import { ExceptionsService } from 'src/app/services/exceptions.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { UsuariosService } from 'src/app/services/usuarios.service';
 
@@ -21,7 +22,8 @@ export class CambiarPasswordModalComponent {
     private modalController: ModalController,
     private usuariosService: UsuariosService,
     private formBuilder: FormBuilder,
-    private toastService: ToastService) { }
+    private toastService: ToastService,
+    private exceptionsService: ExceptionsService) { }
 
   close() {
     this.modalController.dismiss();
@@ -40,9 +42,7 @@ export class CambiarPasswordModalComponent {
         this.modalController.dismiss();
       }
     }, (err) => {
-      console.error(err);
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
     })
   }
 

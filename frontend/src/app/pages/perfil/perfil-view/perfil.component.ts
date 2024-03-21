@@ -8,6 +8,7 @@ import { DistribucionComidasModalComponent } from '../perfil-modals/distribucion
 import { CambiarPasswordModalComponent } from '../perfil-modals/cambiar-password-modal/cambiar-password-modal.component';
 import { CambiarPlanModalComponent } from '../perfil-modals/cambiar-plan-modal/cambiar-plan-modal.component';
 import { Router } from '@angular/router';
+import { ExceptionsService } from 'src/app/services/exceptions.service';
 
 @Component({
   selector: 'app-perfil',
@@ -37,7 +38,8 @@ export class PerfilComponent implements OnInit {
     private toastService: ToastService,
     private modalController: ModalController,
     private router: Router,
-    private alertController: AlertController) {}
+    private alertController: AlertController,
+    private exceptionsService: ExceptionsService) {}
 
   ngOnInit() {
     this.setData();
@@ -70,9 +72,7 @@ export class PerfilComponent implements OnInit {
       this.updateInfoUser();
       this.toastService.presentToast('Perfil actualizado', 'success');
     }, (err) => {
-      console.error(err);
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
     })
   }
 
@@ -84,9 +84,7 @@ export class PerfilComponent implements OnInit {
       this.borrandoCuenta = false;
     }, (err) => {
       this.borrandoCuenta = false;
-      console.error(err);
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
     });
   }
 

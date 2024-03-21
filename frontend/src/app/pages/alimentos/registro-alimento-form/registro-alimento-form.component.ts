@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { NutritionalInfoInterface } from 'src/app/interfaces/nutritional-info.interface';
 import { Alimento } from 'src/app/models/alimento.model';
 import { AlimentosService } from 'src/app/services/alimentos.service';
 import { DiariosService } from 'src/app/services/diarios.service';
+import { ExceptionsService } from 'src/app/services/exceptions.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { getAbrebiaturaUnidadMedida } from 'src/app/utils/unidad-medida.utils';
 
@@ -37,7 +38,8 @@ export class RegistroAlimentoFormComponent  implements OnInit {
     private router: Router,
     private alimentosService: AlimentosService,
     private toastService: ToastService,
-    private diariosService: DiariosService) { }
+    private diariosService: DiariosService,
+    private exceptionsService: ExceptionsService) { }
 
   ngOnInit() {
     const idAlimento: string = this.diariosService.idAlimentoActual;
@@ -57,9 +59,8 @@ export class RegistroAlimentoFormComponent  implements OnInit {
         this.infoNutricional[3].valorReferencia = this.alimento.grasas;
       }
     }, (err) => {
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
       this.router.navigateByUrl('/alimentos');
+      this.exceptionsService.throwError(err);
     })
   }
 
@@ -97,9 +98,8 @@ export class RegistroAlimentoFormComponent  implements OnInit {
       this.router.navigateByUrl('/alimentos');
       this.toastService.presentToast('Alimento añadido', 'success');
     }, (err) => {
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
       this.router.navigateByUrl('/alimentos');
+      this.exceptionsService.throwError(err);
     })
   }
 

@@ -13,7 +13,7 @@ export class Modelos3DService {
 
   constructor(private http: HttpClient, private usuariosService: UsuariosService) {}
 
-  getUrlModelos3DByUser() {
+  getModelos3DByUser() {
     return this.http.get(`${environment.base_url}/modelos3D/usuario/${this.idUsuario}`, getHeaders());
   }
 

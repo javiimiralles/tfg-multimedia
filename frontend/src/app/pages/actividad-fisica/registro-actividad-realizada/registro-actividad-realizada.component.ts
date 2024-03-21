@@ -5,6 +5,7 @@ import { ActividadFisica } from 'src/app/models/actividad-fisica.model';
 import { ActividadRealizada } from 'src/app/models/actividad-realizada.model';
 import { ActividadesFisicasService } from 'src/app/services/actividades-fisicas.service';
 import { ActividadesRealizadasService } from 'src/app/services/actividades-realizadas.service';
+import { ExceptionsService } from 'src/app/services/exceptions.service';
 import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
@@ -33,7 +34,8 @@ export class RegistroActividadRealizadaComponent  implements OnInit {
     private actividadesRealizadasService: ActividadesRealizadasService,
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private exceptionsService: ExceptionsService
   ) { }
 
   ngOnInit() {
@@ -72,9 +74,7 @@ export class RegistroActividadRealizadaComponent  implements OnInit {
         this.caloriasGastadas = this.actividadFisicaPadre.calorias;
       }
     }, (err) => {
-      console.error(err);
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
     });
   }
 
@@ -89,9 +89,7 @@ export class RegistroActividadRealizadaComponent  implements OnInit {
       this.idActividadFisicaPadre = actividadPadreAux._id;
       this.cargarActividadFisicaPadre();
     }, (err) => {
-      console.error(err);
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
     });
   }
 
@@ -103,9 +101,7 @@ export class RegistroActividadRealizadaComponent  implements OnInit {
       this.router.navigateByUrl('/actividad-fisica');
       this.toastService.presentToast('Nueva actividad realizada', 'success');
     }, (err) => {
-      console.error(err);
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
     });
   }
 
@@ -122,9 +118,7 @@ export class RegistroActividadRealizadaComponent  implements OnInit {
       this.router.navigateByUrl('/actividad-fisica');
       this.toastService.presentToast('Actividad editada', 'success');
     }, (err) => {
-      console.error(err);
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
     });
   }
 
@@ -133,9 +127,7 @@ export class RegistroActividadRealizadaComponent  implements OnInit {
       this.router.navigateByUrl('/actividad-fisica');
       this.toastService.presentToast('Actividad eliminada', 'success');
     }, (err) => {
-      console.error(err);
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
     });
   }
 

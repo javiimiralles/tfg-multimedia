@@ -4,7 +4,7 @@ import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
 import { Alimento } from 'src/app/models/alimento.model';
 import { AlimentosService } from 'src/app/services/alimentos.service';
 import { DiariosService } from 'src/app/services/diarios.service';
-import { ToastService } from 'src/app/services/toast.service';
+import { ExceptionsService } from 'src/app/services/exceptions.service';
 import { UsuariosService } from 'src/app/services/usuarios.service';
 
 @Component({
@@ -20,9 +20,9 @@ export class AlimentosBarcodeScannerComponent  implements OnInit {
   constructor(
     private router: Router,
     private alimentosService: AlimentosService,
-    private toastService: ToastService,
     private usuariosService: UsuariosService,
-    private diariosService: DiariosService) {}
+    private diariosService: DiariosService,
+    private exceptionsService: ExceptionsService) {}
 
   ngOnInit() {
     this.scanBarcode();
@@ -52,18 +52,14 @@ export class AlimentosBarcodeScannerComponent  implements OnInit {
               this.router.navigateByUrl('/alimentos/registro');
             }, (err) => {
               this.stopScan();
-              console.error(err);
               this.router.navigateByUrl('/alimentos/list');
-              const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-              this.toastService.presentToast(msg, 'danger');
+              this.exceptionsService.throwError(err);
             })
           // }
         }, (err) => {
           this.stopScan();
-          console.error(err);
           this.router.navigateByUrl('/alimentos/list');
-          const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-          this.toastService.presentToast(msg, 'danger');
+          this.exceptionsService.throwError(err);
         })
       }
     } else {

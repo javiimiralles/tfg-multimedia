@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { Diario } from 'src/app/models/diario.model';
 import { DiariosService } from 'src/app/services/diarios.service';
+import { ExceptionsService } from 'src/app/services/exceptions.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { UsuariosService } from 'src/app/services/usuarios.service';
 
@@ -23,7 +24,8 @@ export class ConsumoAguaComponent  implements OnInit {
     private diariosService: DiariosService,
     private toastService: ToastService,
     private usuariosService: UsuariosService,
-    private alertController: AlertController) { }
+    private alertController: AlertController,
+    private exceptionsService: ExceptionsService) { }
 
   ngOnInit() {
     this.cargarDiarioPorFecha(this.selectedDate);
@@ -42,9 +44,7 @@ export class ConsumoAguaComponent  implements OnInit {
         this.diario = res['diario'];
       }
     }, (err) => {
-      console.error(err);
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
     });
   }
 
@@ -52,9 +52,7 @@ export class ConsumoAguaComponent  implements OnInit {
     this.diariosService.crearDiario(date).subscribe(res => {
       this.diario = res['diario'];
     }, (err) => {
-      console.error(err);
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
     });
   }
 
@@ -67,9 +65,7 @@ export class ConsumoAguaComponent  implements OnInit {
       this.toastService.presentToast('Cantidad editada', 'success');
       this.cargarDiarioPorFecha(this.selectedDate);
     }, (err) => {
-      console.error(err);
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
     })
   }
 

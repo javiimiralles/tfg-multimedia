@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Diario } from 'src/app/models/diario.model';
 import { DiariosService } from 'src/app/services/diarios.service';
-import { ToastService } from 'src/app/services/toast.service';
+import { ExceptionsService } from 'src/app/services/exceptions.service';
 import { UsuariosService } from 'src/app/services/usuarios.service';
 
 @Component({
@@ -24,8 +24,8 @@ export class HomeComponent  implements OnInit {
   constructor(
     private router: Router,
     private diariosService: DiariosService,
-    private toastService: ToastService,
-    private usuariosService: UsuariosService) { }
+    private usuariosService: UsuariosService,
+    private exceptionsService: ExceptionsService) { }
 
   ngOnInit() {
     this.loadingDiario = true;
@@ -42,10 +42,8 @@ export class HomeComponent  implements OnInit {
         this.loadingDiario = false;
       }
     }, (err) => {
-      console.error(err);
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
       this.loadingDiario = false;
+      this.exceptionsService.throwError(err);
     });
   }
 
@@ -54,10 +52,8 @@ export class HomeComponent  implements OnInit {
       this.diario = res['diario'];
       this.loadingDiario = false;
     }, (err) => {
-      console.error(err);
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
       this.loadingDiario = false;
+      this.exceptionsService.throwError(err);
     });
   }
 

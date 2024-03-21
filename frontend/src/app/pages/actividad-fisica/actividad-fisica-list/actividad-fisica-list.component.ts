@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { ActividadFisica } from 'src/app/models/actividad-fisica.model';
 import { ActividadesFisicasService } from 'src/app/services/actividades-fisicas.service';
+import { ExceptionsService } from 'src/app/services/exceptions.service';
 import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
@@ -22,7 +23,8 @@ export class ActividadFisicaListComponent  implements OnInit {
     private actividadesFisicasService: ActividadesFisicasService,
     private toastService: ToastService,
     private router: Router,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private exceptionsService: ExceptionsService
   ) { }
 
   ngOnInit() {
@@ -46,9 +48,7 @@ export class ActividadFisicaListComponent  implements OnInit {
       this.actividadesFisicas = res['actividadesFisicas'];
       this.comprobarSiHayResultados();
     }, (err) => {
-      console.error(err);
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
       this.comprobarSiHayResultados();
     });
   }
@@ -58,9 +58,7 @@ export class ActividadFisicaListComponent  implements OnInit {
       this.toastService.presentToast('Actividad eliminada', 'success');
       this.cargarActividadesFisicas(false);
     }, (err) => {
-      console.error(err);
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
     });
   }
 

@@ -2,7 +2,6 @@ const { response } = require('express');
 const Usuario = require('../models/usuario.model');
 const Modelo3D = require('../models/modelo3D.model');
 const { v4: uuidv4 } = require('uuid');
-const fs = require('fs');
 
 const getModelo3DById = async (req, res = response) => {
 

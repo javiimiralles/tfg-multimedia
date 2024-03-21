@@ -14,6 +14,7 @@ import {
   ApexGrid,
   ApexPlotOptions
 } from 'ng-apexcharts';
+import { ExceptionsService } from 'src/app/services/exceptions.service';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -53,7 +54,8 @@ export class AlimentosViewComponent  implements OnInit {
     private diariosService: DiariosService,
     private toastService: ToastService,
     private usuariosService: UsuariosService,
-    private alertController: AlertController) { }
+    private alertController: AlertController,
+    private exceptionsService: ExceptionsService) { }
 
   ngOnInit() {
     this.loading = true;
@@ -112,9 +114,7 @@ export class AlimentosViewComponent  implements OnInit {
         this.cargarDatosIniciales();
       }
     }, (err) => {
-      console.error(err);
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
       this.loading = false;
     });
   }
@@ -124,9 +124,7 @@ export class AlimentosViewComponent  implements OnInit {
       this.diario = res['diario'];
       this.cargarDatosIniciales();
     }, (err) => {
-      console.error(err);
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
       this.loading = false;
     });
   }
@@ -209,8 +207,7 @@ export class AlimentosViewComponent  implements OnInit {
       this.toastService.presentToast('Alimento editado', 'success');
       this.cargarDiarioPorFecha(this.selectedDate);
     }, (err) => {
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
     });
   }
 
@@ -219,8 +216,7 @@ export class AlimentosViewComponent  implements OnInit {
       this.toastService.presentToast('Alimento borrado', 'success');
       this.cargarDiarioPorFecha(this.selectedDate);
     }, (err) => {
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
     });
   }
 

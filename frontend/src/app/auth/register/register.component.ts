@@ -6,6 +6,7 @@ import { UsuariosService } from 'src/app/services/usuarios.service';
 import { AlertController, ItemReorderEventDetail } from '@ionic/angular';
 import { Usuario } from 'src/app/models/usuario.model';
 import { Router } from '@angular/router';
+import { ExceptionsService } from 'src/app/services/exceptions.service';
 
 @Component({
   selector: 'app-register',
@@ -47,7 +48,8 @@ export class RegisterComponent {
     private usuariosService: UsuariosService,
     private toastService: ToastService,
     private alertController: AlertController,
-    private router: Router) {}
+    private router: Router,
+    private exceptionsService: ExceptionsService) {}
 
   nextStep() {
     if (this.currentStep < this.totalSteps) {
@@ -200,9 +202,7 @@ export class RegisterComponent {
         this.nextStep();
       }
     }, (err) => {
-      console.log(err);
-      const msg: string = err.error.msg || err.error.errores.email.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
     })
   }
 
@@ -221,15 +221,12 @@ export class RegisterComponent {
         this.realizandoRegistro = false;
         this.router.navigateByUrl('/home');
       }, (err) => {
-        console.log(err);
         this.realizandoRegistro = false;
-        const msg: string = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-        this.toastService.presentToast(msg, 'danger');
+        this.exceptionsService.throwError(err);
       })
     }, (err) => {
       this.realizandoRegistro = false;
-      const msg: string = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
     })
   }
 

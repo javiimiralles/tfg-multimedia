@@ -3,12 +3,12 @@ import { Router } from '@angular/router';
 import { Alimento } from 'src/app/models/alimento.model';
 import { AlimentosService } from 'src/app/services/alimentos.service';
 import { DiariosService } from 'src/app/services/diarios.service';
-import { ToastService } from 'src/app/services/toast.service';
 import { UsuariosService } from 'src/app/services/usuarios.service';
 import { getAbrebiaturaUnidadMedida } from 'src/app/utils/unidad-medida.utils';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import * as tf from '@tensorflow/tfjs';
 import food_data from '../../../../assets/food_data.json';
+import { ExceptionsService } from 'src/app/services/exceptions.service';
 
 @Component({
   selector: 'app-alimentos-list',
@@ -38,9 +38,9 @@ export class AlimentosListComponent  implements OnInit {
 
   constructor(private diariosService: DiariosService,
     private alimentosService: AlimentosService,
-    private toastService: ToastService,
     private router: Router,
-    private usuariosService: UsuariosService) {}
+    private usuariosService: UsuariosService,
+    private exceptionsService: ExceptionsService) {}
 
   ngOnInit() {
     this.categoria = this.diariosService.categoriaActual;
@@ -67,18 +67,14 @@ export class AlimentosListComponent  implements OnInit {
           this.listaResultados = res['alimentos'];
           this.comprobarSiHayResultados();
         }, (err) => {
-          console.error(err);
-          const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-          this.toastService.presentToast(msg, 'danger');
+          this.exceptionsService.throwError(err);
         });
       } else {
         this.alimentosService.cargarAlimentosOpenFoodFacts(this.resultados, this.textoBusqueda).subscribe(res => {
           this.filterAlimentosData(res['searchResults']);
           this.comprobarSiHayResultados();
         }, (err) => {
-          console.error(err);
-          const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-          this.toastService.presentToast(msg, 'danger');
+          this.exceptionsService.throwError(err);
         });
       }
     }

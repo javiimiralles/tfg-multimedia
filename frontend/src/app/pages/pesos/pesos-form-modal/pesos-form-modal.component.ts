@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
 import { RegistroPeso } from 'src/app/models/registro-peso.model';
+import { ExceptionsService } from 'src/app/services/exceptions.service';
 import { PesosService } from 'src/app/services/pesos.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { UsuariosService } from 'src/app/services/usuarios.service';
@@ -25,7 +26,8 @@ export class PesosFormModalComponent  implements OnInit {
     private alertController: AlertController,
     private usuariosService: UsuariosService,
     private pesosService: PesosService,
-    private toastService: ToastService) { }
+    private toastService: ToastService,
+    private exceptionsService: ExceptionsService) { }
 
   ngOnInit() {
     if(!this.registroEdicion) {
@@ -63,8 +65,7 @@ export class PesosFormModalComponent  implements OnInit {
         this.toastService.presentToast('Registro de peso creado', 'success');
       }
     }, (err) => {
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
     })
   }
 
@@ -75,8 +76,7 @@ export class PesosFormModalComponent  implements OnInit {
         this.toastService.presentToast('Registro de peso editado', 'success');
       }
     }, (err) => {
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
     })
   }
 

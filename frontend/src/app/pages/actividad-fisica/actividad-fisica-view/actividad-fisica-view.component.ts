@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { ActividadFisica } from 'src/app/models/actividad-fisica.model';
 import { ActividadRealizada } from 'src/app/models/actividad-realizada.model';
 import { ActividadesRealizadasService } from 'src/app/services/actividades-realizadas.service';
-import { ToastService } from 'src/app/services/toast.service';
+import { ExceptionsService } from 'src/app/services/exceptions.service';
 
 @Component({
   selector: 'app-actividad-fisica-view',
@@ -19,8 +19,8 @@ export class ActividadFisicaViewComponent  implements OnInit {
 
   constructor(
     private actividadesRealizadasService: ActividadesRealizadasService,
-    private toastService: ToastService,
-    private router: Router
+    private router: Router,
+    private exceptionsService: ExceptionsService
   ) { }
 
   ngOnInit() {
@@ -43,9 +43,7 @@ export class ActividadFisicaViewComponent  implements OnInit {
         this.caloriasGastadas += actividad.caloriasGastadas;
       });
     }, (err) => {
-      console.error(err);
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
     });
   }
 

@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Alimento } from 'src/app/models/alimento.model';
 import { AlimentosService } from 'src/app/services/alimentos.service';
 import { DiariosService } from 'src/app/services/diarios.service';
+import { ExceptionsService } from 'src/app/services/exceptions.service';
 import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
@@ -30,7 +31,8 @@ export class AlimentoFormComponent  implements OnInit {
     private router: Router,
     private alimentosService: AlimentosService,
     private toastService: ToastService,
-    private diariosService: DiariosService) { }
+    private diariosService: DiariosService,
+    private exceptionsService: ExceptionsService) { }
 
   ngOnInit() {
     this.idAlimento = this.activatedRoute.snapshot.params['uid'];
@@ -40,8 +42,7 @@ export class AlimentoFormComponent  implements OnInit {
       this.alimentosService.cargarAlimentoPorId(this.idAlimento).subscribe(res => {
         this.fillForm(res['alimento']);
       }, (err) => {
-        const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-        this.toastService.presentToast(msg, 'danger');
+        this.exceptionsService.throwError(err);
       });
     }
   }
@@ -93,8 +94,7 @@ export class AlimentoFormComponent  implements OnInit {
       this.toastService.presentToast('Alimento creado', 'success');
     }, (err) => {
       this.router.navigateByUrl('/alimentos/list');
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
     });
   }
 
@@ -105,8 +105,7 @@ export class AlimentoFormComponent  implements OnInit {
       this.toastService.presentToast('Alimento editado', 'success');
     }, (err) => {
       this.router.navigateByUrl('/alimentos/list');
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
     });
   }
 

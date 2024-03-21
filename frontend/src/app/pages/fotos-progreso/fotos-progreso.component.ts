@@ -5,6 +5,7 @@ import { FotoProgreso } from 'src/app/models/foto-progreso.model';
 import { FotosProgresoService } from 'src/app/services/fotos-progreso.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { Camera, CameraResultType, CameraSource, Photo } from '@capacitor/camera';
+import { ExceptionsService } from 'src/app/services/exceptions.service';
 
 @Component({
   selector: 'app-fotos-progreso',
@@ -24,7 +25,8 @@ export class FotosProgresoComponent  implements OnInit {
     private fotosProgresoService: FotosProgresoService,
     private lightbox: Lightbox,
     private lightboxConfig: LightboxConfig,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private exceptionsService: ExceptionsService
   ) {
     this.lightboxConfig.fadeDuration = 0.5;
     this.lightboxConfig.centerVertically = true;
@@ -46,9 +48,7 @@ export class FotosProgresoComponent  implements OnInit {
       this.fotosProgreso = res['fotosProgreso'];
       this.album = this.fotosProgreso.map(foto => ({ src: foto.url }));
     }, (err) => {
-      console.error(err);
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
     });
   }
 
@@ -61,9 +61,7 @@ export class FotosProgresoComponent  implements OnInit {
       },
       error: (err) => {
         this.subiendoFoto = false;
-        console.error(err);
-        const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-        this.toastService.presentToast(msg, 'danger');
+        this.exceptionsService.throwError(err);
       }
     })
   }
@@ -97,9 +95,7 @@ export class FotosProgresoComponent  implements OnInit {
       this.fotosProgreso.splice(index, 1);
       this.toastService.presentToast('Foto eliminada', 'success');
     }, (err) => {
-      console.error(err);
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
     });
   }
 

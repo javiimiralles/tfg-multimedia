@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AlertController, IonModal } from '@ionic/angular';
 import { MedidaCorporal } from 'src/app/models/medida-corporal.model';
+import { ExceptionsService } from 'src/app/services/exceptions.service';
 import { MedidasCorporalesService } from 'src/app/services/medidas-corporales.service';
 import { ToastService } from 'src/app/services/toast.service';
 
@@ -24,7 +25,8 @@ export class MedidasCorporalesComponent  implements OnInit {
   constructor(
     private medidasCorporalesService: MedidasCorporalesService,
     private toastService: ToastService,
-    private alertController: AlertController) { }
+    private alertController: AlertController,
+    private exceptionsService: ExceptionsService) { }
 
   ngOnInit() {
     this.cargarMedidasCorporales();
@@ -40,9 +42,7 @@ export class MedidasCorporalesComponent  implements OnInit {
 
       }
     }, (err) => {
-      console.error(err);
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
     });
   }
 
@@ -60,9 +60,7 @@ export class MedidasCorporalesComponent  implements OnInit {
       this.toastService.presentToast('Medida creada', 'success');
       this.resetForm();
     }, (err) => {
-      console.error(err);
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
     });
   }
 
@@ -79,9 +77,7 @@ export class MedidasCorporalesComponent  implements OnInit {
         this.cambiosDetectados[medida.uid].medida2 = false;
       }
     }, (err) => {
-      console.error(err);
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
     });
   }
 
@@ -90,9 +86,7 @@ export class MedidasCorporalesComponent  implements OnInit {
       this.cargarMedidasCorporales();
       this.toastService.presentToast('Medida eliminada', 'success');
     }, (err) => {
-      console.error(err);
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
     });
   }
 

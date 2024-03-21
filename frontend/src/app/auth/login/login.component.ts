@@ -3,6 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { UsuariosService } from 'src/app/services/usuarios.service';
 import { Router } from '@angular/router';
 import { ToastService } from 'src/app/services/toast.service';
+import { ExceptionsService } from 'src/app/services/exceptions.service';
 
 @Component({
   selector: 'app-login',
@@ -24,7 +25,7 @@ export class LoginComponent  implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private usuariosService: UsuariosService,
-    private toastService: ToastService) { }
+    private exceptionsService: ExceptionsService) { }
 
   ngOnInit() {}
 
@@ -44,9 +45,7 @@ export class LoginComponent  implements OnInit {
         this.waiting = false;
         this.router.navigateByUrl('/home');
       }, (err) => {
-        console.error(err);
-        const msg: string = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-        this.toastService.presentToast(msg, 'danger');
+        this.exceptionsService.throwError(err);
         this.waiting = false;
       });
   }

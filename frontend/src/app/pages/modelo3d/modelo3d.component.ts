@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ExceptionsService } from 'src/app/services/exceptions.service';
 import { Modelos3DService } from 'src/app/services/modelos3D.service';
 import { MotorGraficoService } from 'src/app/services/motor-grafico.service';
 import { ToastService } from 'src/app/services/toast.service';
@@ -17,23 +18,24 @@ export class Modelo3dComponent  implements OnInit {
   constructor(
     private modelos3dService: Modelos3DService,
     private motorGraficoService: MotorGraficoService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private exceptionsService: ExceptionsService
   ) { }
 
   ngOnInit() {
-    this.getUrlModelo3D();
+    this.getModelos3D();
     this.cargarModelo3D();
   }
 
-  getUrlModelo3D() {
-    // this.modelos3dService.getUrlModelos3DByUser().subscribe(res => {
-    //   if(res['url']) {
-    //     this.urlModelo = res['url'];
-    //     this.cargarModelo3D();
-    //   } else {
-    //     this.loadingModel = false;
-    //   }
-    // });
+  getModelos3D() {
+    this.modelos3dService.getModelos3DByUser().subscribe({
+      next: (res) => {
+
+      },
+      error: (err) => {
+        this.exceptionsService.throwError(err);
+      }
+    })
   }
 
   cargarModelo3D() {

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ActividadFisica } from 'src/app/models/actividad-fisica.model';
 import { ActividadesFisicasService } from 'src/app/services/actividades-fisicas.service';
+import { ExceptionsService } from 'src/app/services/exceptions.service';
 import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
@@ -26,6 +27,7 @@ export class ActividadFisicaFormComponent  implements OnInit {
     private toastService: ToastService,
     private activatedRoute: ActivatedRoute,
     private router: Router,
+    private exceptionsService: ExceptionsService
   ) { }
 
   ngOnInit() {
@@ -47,9 +49,7 @@ export class ActividadFisicaFormComponent  implements OnInit {
       this.actividadFisica = res ['actividadFisica'];
       this.fillForm();
     }, (err) => {
-      console.error(err);
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
     });
   }
 
@@ -59,9 +59,7 @@ export class ActividadFisicaFormComponent  implements OnInit {
       this.router.navigateByUrl('/actividad-fisica/list');
       this.toastService.presentToast('Actividad creada', 'success');
     }, (err) => {
-      console.error(err);
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
     });
   }
 
@@ -73,9 +71,7 @@ export class ActividadFisicaFormComponent  implements OnInit {
       this.router.navigateByUrl('/actividad-fisica/list');
       this.toastService.presentToast('Actividad editada', 'success');
     }, (err) => {
-      console.error(err);
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
+      this.exceptionsService.throwError(err);
     });
   }
 
