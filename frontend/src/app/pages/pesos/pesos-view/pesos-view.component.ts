@@ -50,6 +50,10 @@ export class PesosViewComponent  implements OnInit {
   pesoObjetivo: number = this.usuariosService.pesoObjetivo || null;
   objetivoUsuario: string = this.usuariosService.plan.tipo;
 
+  imc: number = 0;
+  imcColor: string = 'success';
+  nivelPeso: string = 'Normal';
+
   pesoMaximo: number = this.usuariosService.pesoHistorico.pesoMaximo;
   pesoMinimo: number = this.usuariosService.pesoHistorico.pesoMinimo;
   pesoMedio: number = this.usuariosService.pesoHistorico.pesoMedio;
@@ -69,6 +73,9 @@ export class PesosViewComponent  implements OnInit {
     const today = new Date();
     this.startDate = new Date(today.getFullYear(), today.getMonth(), 1);
     this.endDate = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+
+    this.calcularIMC();
+
     this.cargarRegistrosDePeso();
   }
 
@@ -159,6 +166,25 @@ export class PesosViewComponent  implements OnInit {
     }
 
     return clase;
+  }
+
+  calcularIMC() {
+    const alturaMetros: number = Number((this.usuariosService.altura/100).toFixed(2));
+    this.imc = Number((this.usuariosService.pesoActual/(alturaMetros*alturaMetros)).toFixed(2));
+
+    if(this.imc < 18.5) {
+      this.imcColor = 'secondary';
+      this.nivelPeso = 'Bajo peso'
+    } else if(this.imc >= 18.5 && this.imc < 25) {
+      this.imcColor = 'success';
+      this.nivelPeso = 'Normal';
+    } else if(this.imc >= 25 && this.imc < 30) {
+      this.imcColor = 'warning';
+      this.nivelPeso = 'Sobrepeso';
+    } else {
+      this.imcColor = 'danger';
+      this.nivelPeso = 'Obesidad';
+    }
   }
 
   async presentAlert(registro: RegistroPeso) {

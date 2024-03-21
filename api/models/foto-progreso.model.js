@@ -4,20 +4,20 @@ const FotoProgresoSchema = Schema(
     {
         fecha: {
             type: Date,
-            require: true
+            required: true
         },
         url: {
             type: String,
-            require: true
+            required: true
         },
         idCloudinary: {
             type: String,
-            require: true
+            required: true
         },
         idUsuario: {
             type: Schema.Types.ObjectId,
             ref: 'Usuario',
-            require: true
+            required: true
         }
     }, { collection: 'fotos_progreso' }
 );

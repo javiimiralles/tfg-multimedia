@@ -26,14 +26,14 @@ export class Modelo3dComponent  implements OnInit {
   }
 
   getUrlModelo3D() {
-    this.modelos3dService.getUrlModelo3DByUser().subscribe(res => {
-      if(res['url']) {
-        this.urlModelo = res['url'];
-        this.cargarModelo3D();
-      } else {
-        this.loadingModel = false;
-      }
-    });
+    // this.modelos3dService.getUrlModelos3DByUser().subscribe(res => {
+    //   if(res['url']) {
+    //     this.urlModelo = res['url'];
+    //     this.cargarModelo3D();
+    //   } else {
+    //     this.loadingModel = false;
+    //   }
+    // });
   }
 
   cargarModelo3D() {
@@ -41,7 +41,7 @@ export class Modelo3dComponent  implements OnInit {
     this.motorGraficoService.init();
     this.loadingModel = !this.motorGraficoService.isLoaded;
 
-    this.urlModelo = './assets/modelo3D/modelo3d.gltf';
+    this.urlModelo = './assets/modelo3D/Model.obj';
     this.motorGraficoService.loadModel('./assets/modelo3D/light.hdr', this.urlModelo, () => {
       if(!this.motorGraficoService.isLoaded) {
         this.loadingModel = false;

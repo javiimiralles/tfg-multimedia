@@ -53,16 +53,19 @@ export class FotosProgresoComponent  implements OnInit {
   }
 
   subirFotoProgreso(imagen: File) {
-    this.fotosProgresoService.subirFotoProgreso(imagen, this.selectedDate).subscribe(res => {
-      this.subiendoFoto = false;
-      this.cargarFotosProgreso();
-      this.toastService.presentToast('Foto subida correctamente', 'success');
-    }, (err) => {
-      this.subiendoFoto = false;
-      console.error(err);
-      const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
-      this.toastService.presentToast(msg, 'danger');
-    });
+    this.fotosProgresoService.subirFotoProgreso(imagen, this.selectedDate).subscribe({
+      next: () => {
+        this.subiendoFoto = false;
+        this.cargarFotosProgreso();
+        this.toastService.presentToast('Foto subida correctamente', 'success');
+      },
+      error: (err) => {
+        this.subiendoFoto = false;
+        console.error(err);
+        const msg = err.error.msg || 'Ha ocurrido un error, inténtelo de nuevo';
+        this.toastService.presentToast(msg, 'danger');
+      }
+    })
   }
 
   async presentDeletePhotoAlert(index: number, uid: string) {

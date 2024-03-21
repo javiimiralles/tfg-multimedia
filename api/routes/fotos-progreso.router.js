@@ -26,7 +26,7 @@ router.get('/usuario/:idUsuario', [
 
 router.post('/', [
     validarJWT,
-    check('idUsuario','El idUsuario debe ser valido').isMongoId(),
+    // check('idUsuario','El idUsuario debe ser valido').isMongoId(),
     validarCampos
 ], uploadFotoProgreso);
 

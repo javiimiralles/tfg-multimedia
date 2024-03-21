@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { NgApexchartsModule } from 'ng-apexcharts';
 
 import { AlimentosViewComponent } from './alimentos-view/alimentos-view.component';
 import { ComponentsModule } from 'src/app/components/components.module';
@@ -33,6 +34,7 @@ import { AlimentosBarcodeScannerComponent } from './alimentos-barcode-scanner/al
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
+    NgApexchartsModule,
 
     ComponentsModule,
     CommonsModule

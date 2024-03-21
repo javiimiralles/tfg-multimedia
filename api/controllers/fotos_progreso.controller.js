@@ -75,6 +75,7 @@ const getFotosProgresoByUser = async(req, res = response) => {
 
 const uploadFotoProgreso = async(req, res = response) => {
 
+    console.log('entra');
     if(!req.files || Object.keys(req.files).length === 0){
         return res.status(400).json({
             ok: false,

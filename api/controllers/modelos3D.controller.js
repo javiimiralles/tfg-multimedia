@@ -1,18 +1,10 @@
 const { response } = require('express');
+const Usuario = require('../models/usuario.model');
 const Modelo3D = require('../models/modelo3D.model');
+const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
-const stream = require('stream');
 
-// inicializamos firebase
-const admin = require('firebase-admin');
-const serviceAccount = require('../database/firebase-credentials.json');
-
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    storageBucket: process.env.FIREBASE_STORAGE_BUCKET
-});
-
-const getUrlModelo3DById = async(req, res = response) => {
+const getModelo3DById = async (req, res = response) => {
 
     const idModelo = req.params.id;
 
@@ -31,8 +23,8 @@ const getUrlModelo3DById = async(req, res = response) => {
         // OK
         res.json({
             ok: true,
-            msg: "getUrlModelo3DById",
-            url: modelo3D.url
+            msg: "getModelo3DById",
+            modelo3D
         });
 
     } catch (error) {
@@ -44,16 +36,26 @@ const getUrlModelo3DById = async(req, res = response) => {
     }
 }
 
-const getUrlModelo3DByUser = async(req, res = response) => {
+const getModelos3DByUser = async (req, res = response) => {
 
     const idUsuario = req.params.idUsuario;
 
     try {
 
-        const modelo3D = await Modelo3D.findOne({ idUsuario });
+        const usuario = await Usuario.findById(idUsuario);
+
+        // KO -> usuario no existe
+        if (!usuario) {
+            return res.status(400).json({
+                ok: false,
+                msg: "No existe ningún usuario para el id: " + idUsuario
+            });
+        }
+
+        const modelos3D = await Modelo3D.find({ idUsuario });
 
         // No devolvemos status porque queremos que siga funcionando
-        if (!modelo3D) {
+        if (!modelos3D) {
             return res.json({
                 ok: false,
                 msg: "Modelo 3D no encontrado."
@@ -63,20 +65,22 @@ const getUrlModelo3DByUser = async(req, res = response) => {
         // OK
         res.json({
             ok: true,
-            msg: "getUrlModelo3DByUser",
-            url: modelo3D.url
+            msg: "getModelos3DByUser",
+            modelos3D
         });
 
     } catch (error) {
         console.log(error);
         res.status(500).json({
             ok: false,
-            msg: 'Error interno al obtener el modelo 3D'
+            msg: 'Error interno al obtener los modelos 3D'
         });
     }
 }
 
-const subirModelo3D = async(req, res = response) => {
+const subirModelo3D = async (req, res = response) => {
+    const { idUsuario, fecha, ...object } = req.body;
+
     if (!req.files || !req.files.archivoModelo) {
         return res.status(400).json({
             ok: false,
@@ -84,90 +88,88 @@ const subirModelo3D = async(req, res = response) => {
         });
     }
 
-    const archivoModelo = req.files.archivoModelo;
-    const idUsuario = req.body.idUsuario;
-
-    // Comprobar el tipo de archivo por mimetype
-    if (!['model/gltf+json', 'model/gltf-binary'].includes(archivoModelo.mimetype)) {
+    if(req.files.archivoModelo.truncated){
         return res.status(400).json({
             ok: false,
-            msg: "El archivo debe ser un modelo GLTF o GLB."
+            msg: `El tamaño máximo permitido es de ${process.env.MAXSIZEUPLOAD}MB`,
         });
     }
 
-    // Comprobar si el usuario ya tiene un modelo asignado y borrarlo de Firebase
-    const existeModelo3D = await Modelo3D.findOne({ idUsuario });
-    if (existeModelo3D) {
-        try {
-            await bucket.file(existeModelo3D.nombre).delete();
-        } catch (error) {
-            return res.status(500).json({
-                ok: false,
-                msg: 'Error al eliminar el modelo 3D existente',
-                error
-            });
-        }
-        await Modelo3D.findByIdAndDelete(existeModelo3D._id);
-    }
+    const extensionesValidas = ['gltf', 'glb'];
+    const archivoModelo = req.files.archivoModelo;
+    const nombrePartido = archivoModelo.name.split('.');
+    const extension = nombrePartido[nombrePartido.length - 1];
 
-    // Subir el nuevo archivo a Firebase
-    const nombreArchivo = `${idUsuario}_${Date.now()}_${archivoModelo.name}`;
-    const archivoModeloPath = `modelos3D/${nombreArchivo}`;
-    const bucket = admin.storage().bucket();
-
-    const blob = bucket.file(archivoModeloPath);
-    const blobStream = blob.createWriteStream({
-        metadata: {
-            contentType: archivoModelo.mimetype
-        }
-    });
-
-    blobStream.on('error', (error) => {
-        console.error('Error al subir el archivo:', error);
-        return res.status(500).json({
+    if(!extensionesValidas.includes(extension)) {
+        return res.status(400).json({
             ok: false,
-            msg: 'Error al subir el archivo a Firebase Storage',
-            error
+            msg: `Los formatos permitidos son: GLTF y GLB. Puedes usar Blender para exportar el modelo`,
         });
-    });
+    }
 
-    blobStream.on('finish', async () => {
-        await blob.makePublic();
-        const publicUrl = blob.publicUrl();
-    
-        // Crear un nuevo registro en la base de datos con la URL pública
-        const nuevoModelo3D = new Modelo3D({
-            url: publicUrl,
-            nombre: nombreArchivo,
-            idUsuario: idUsuario
-        });
-    
-        try {
-            await nuevoModelo3D.save();
+    const nombreArchivo = `${uuidv4()}.${extension}`;
+    const path = `${process.env.PATH_UPLOAD}/${nombreArchivo}`;
 
-            // OK
-            res.json({
-                ok: true,
-                msg: 'Modelo 3D subido correctamente',
-                modelo3D: nuevoModelo3D
+    const moveFile = () => {
+        return new Promise((resolve, reject) => {
+            archivoModelo.mv(path, (err) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
             });
-        } catch (error) {
-            console.error('Error al guardar el modelo en la base de datos:', error);
-            return res.status(500).json({
+        });
+    };
+
+    try {
+        const usuario = await Usuario.findById(idUsuario);
+        if (!usuario) {
+            return res.status(400).json({
                 ok: false,
-                msg: 'Error al guardar la información del modelo 3D en la base de datos',
-                error
+                msg: "No existe ningún usuario para el id: " + idUsuario
             });
         }
-    });
 
-    const bufferStream = new stream.PassThrough();
-    bufferStream.end(archivoModelo.data);
-    bufferStream.pipe(blobStream);
+        const fechaActual = new Date(fecha);
+        fechaActual.setHours(0, 0, 0, 0);
+        const fechaSiguiente = new Date(fecha);
+        fechaSiguiente.setDate(fechaActual.getDate() + 1);
+        const existeModelo = await Modelo3D.find({ idUsuario, fecha: { $gte: fechaActual, $lt: fechaSiguiente } });
+        if(existeModelo && existeModelo.length > 0) {
+            return res.status(400).json({
+                ok: false,
+                msg: 'Ya hay un modelo subido para esta fecha'
+            });
+        }
+
+        await moveFile();
+
+        object.nombre = nombreArchivo;
+        object.url = path;
+        object.idUsuario = idUsuario;
+        object.fecha = fecha;
+        const modelo3D = new Modelo3D(object);
+
+        await modelo3D.save();
+
+        res.json({
+            ok: true,
+            msg: "subirModelo3D",
+            modelo3D
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Error interno al subir el modelo 3D'
+        });
+    }
 }
 
 module.exports = {
-    getUrlModelo3DById,
-    getUrlModelo3DByUser,
+    getModelo3DById,
+    getModelos3DByUser,
     subirModelo3D
 }

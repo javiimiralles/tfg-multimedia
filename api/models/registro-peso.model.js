@@ -4,16 +4,16 @@ const RegistroPesoSchema = Schema(
     {
         fecha: {
             type: Date,
-            require: true
+            required: true
         },
         peso: {
             type: Number,
-            require: true
+            required: true
         },
         idUsuario: {
             type: Schema.Types.ObjectId,
             ref: 'Usuario',
-            require: true
+            required: true
         }
     }, { collection: 'registros_peso' }
 );

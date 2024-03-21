@@ -4,39 +4,39 @@ const AlimentoSchema = Schema(
     {
         nombre: {
             type: String,
-            require: true
+            required: true
         },
         marca: {
             type: String,
         },
         cantidadReferencia: {
             type: Number,
-            require: true
+            required: true
         },
         unidadMedida: {
             type: String,
-            require: true
+            required: true
         },
         calorias: {
             type: Number,
-            require: true
+            required: true
         },
         carbohidratos: {
             type: Number,
-            require: true
+            required: true
         },
         proteinas: {
             type: Number,
-            require: true
+            required: true
         },
         grasas: {
             type: Number,
-            require: true
+            required: true
         },
         idUsuario: {
             type: Schema.Types.ObjectId,
             ref: 'Usuario',
-            require: true
+            required: true
         }
     }, { collection: 'alimentos' }
 );

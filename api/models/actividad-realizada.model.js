@@ -4,15 +4,15 @@ const ActividadRealizadaSchema = Schema(
     {
         fecha: {
             type: Date,
-            require: true
+            required: true
         },
         caloriasGastadas: {
             type: Number,
-            require: true
+            required: true
         },
         duracion: {
             type: Number,
-            require: true
+            required: true
         },
         notas: {
             type: String,
@@ -20,12 +20,12 @@ const ActividadRealizadaSchema = Schema(
         idActividadFisica: {
             type: Schema.Types.ObjectId,
             ref: 'ActividadFisica',
-            require: true
+            required: true
         },
         idUsuario: {
             type: Schema.Types.ObjectId,
             ref: 'Usuario',
-            require: true
+            required: true
         }
     }, { collection: 'actividades_realizadas' }
 );

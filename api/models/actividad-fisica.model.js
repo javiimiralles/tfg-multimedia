@@ -4,15 +4,15 @@ const ActividadFisicaSchema = Schema(
     {
         nombre: {
             type: String,
-            require: true
+            required: true
         },
         calorias: {
             type: Number,
-            require: true
+            required: true
         },
         tiempoReferencia: {
             type: Number,
-            require: true
+            required: true
         },
         predeterminada: {
             type: Boolean,
@@ -21,7 +21,7 @@ const ActividadFisicaSchema = Schema(
         idUsuario: {
             type: Schema.Types.ObjectId,
             ref: 'Usuario',
-            require: true
+            required: true
         }
     }, { collection: 'actividades_fisicas' }
 );

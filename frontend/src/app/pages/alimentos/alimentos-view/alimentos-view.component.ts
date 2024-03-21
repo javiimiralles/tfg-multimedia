@@ -6,6 +6,25 @@ import { DiariosService } from 'src/app/services/diarios.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { UsuariosService } from 'src/app/services/usuarios.service';
 import { getAbrebiaturaUnidadMedida } from 'src/app/utils/unidad-medida.utils';
+import {
+  ApexAxisChartSeries,
+  ApexChart,
+  ApexXAxis,
+  ApexYAxis,
+  ApexGrid,
+  ApexPlotOptions
+} from 'ng-apexcharts';
+
+export type ChartOptions = {
+  series: ApexAxisChartSeries;
+  labels: string[];
+  chart: ApexChart;
+  colors: string[];
+  xaxis: ApexXAxis;
+  yaxis: ApexYAxis;
+  grid: ApexGrid;
+  plotOptions: ApexPlotOptions
+};
 
 @Component({
   selector: 'app-alimentos-view',
@@ -15,15 +34,19 @@ import { getAbrebiaturaUnidadMedida } from 'src/app/utils/unidad-medida.utils';
 export class AlimentosViewComponent  implements OnInit {
 
   selectedDate: Date = new Date();
+  segmentActual: 'diario' | 'estadisticas' = 'diario';
 
   loading: boolean = true;
 
   diario: any = new Diario('');
   planUsuario = this.usuariosService.plan;
 
-  distribucionComidas = this.usuariosService.distribucionComidas;
+  distribucionComidas: string[] = this.usuariosService.distribucionComidas;
   categoriasAlimentos: string[] = [];
   caloriasTotalesPorCategoria: number[] = [];
+
+  chartOptionsMacros: Partial<ChartOptions>;
+  chartOptionsCalorias: Partial<ChartOptions>;
 
   constructor(
     private router: Router,
@@ -48,7 +71,7 @@ export class AlimentosViewComponent  implements OnInit {
 
   // Crea un array de number, donde cada numero corresponde a las calorias
   // totales de la comida que ocupa su posicion en distribucionComidas
-  calcularCaloriasTotalesPorCategoria() {
+  calcularMacrosTotalesPorCategoria() {
     this.caloriasTotalesPorCategoria = [];
     const restoComidas: any[] = []; // son alimentos que no pertenecen a ninguna categoria
     let caloriasRestoComidas: number = 0;
@@ -74,6 +97,10 @@ export class AlimentosViewComponent  implements OnInit {
   onDateChange(dates: any) {
     this.selectedDate = dates.startDate;
     this.cargarDiarioPorFecha(this.selectedDate);
+  }
+
+  onSegmentChange(event) {
+    this.segmentActual = event.detail.value;
   }
 
   cargarDiarioPorFecha(date: Date) {
@@ -107,7 +134,8 @@ export class AlimentosViewComponent  implements OnInit {
   cargarDatosIniciales() {
     this.loading = false;
     this.getCategorias();
-    this.calcularCaloriasTotalesPorCategoria();
+    this.calcularMacrosTotalesPorCategoria();
+    this.updateChartData();
   }
 
   getSubtituloAlimento(alimento: any): string {
@@ -200,6 +228,66 @@ export class AlimentosViewComponent  implements OnInit {
     this.diariosService.idDiarioActual = this.diario.uid;
     this.diariosService.categoriaActual = categoria;
     this.router.navigateByUrl('/alimentos/list');
+  }
+
+  updateChartData() {
+    // Grafico de calorias
+    const data = [];
+    const goalsValue = Math.round(this.planUsuario.caloriasDiarias/this.distribucionComidas.length);
+    for(let i = 0; i < this.distribucionComidas.length; i++) {
+      data.push({
+        x: this.distribucionComidas[i],
+        y: this.caloriasTotalesPorCategoria[i],
+        goals: [
+          {
+            value: goalsValue,
+            strokeColor: '#4F3422'
+          }
+        ]
+      });
+    }
+    this.chartOptionsCalorias = {
+      series: [{ data }],
+      chart: {
+        type: 'bar',
+        height: 250,
+        toolbar: {
+          show: false
+        },
+        dropShadow: {
+          enabled: true,
+        },
+        zoom: {
+          enabled: false
+        }
+      },
+      plotOptions: {
+        bar: {
+          horizontal: true
+        }
+      },
+      grid: {
+        show: false,
+      },
+      colors: ['#C0A091'],
+    }
+
+    // Grafico de macronutrientes
+    this.chartOptionsMacros = {
+      series: [this.diario.carbosConsumidos, this.diario.proteinasConsumidas, this.diario.grasasConsumidas],
+      labels: ['Carbohidratos', 'Proteínas', 'Grasas'],
+      chart: {
+        height: 250,
+        type: "pie",
+        dropShadow: {
+          enabled: true,
+        },
+        zoom: {
+          enabled: false
+        }
+      },
+      colors: ['#A694F5', '#ED7E1C', '#FFCE5C']
+    };
   }
 
 }

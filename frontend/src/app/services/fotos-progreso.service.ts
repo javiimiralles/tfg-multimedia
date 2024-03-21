@@ -20,7 +20,7 @@ export class FotosProgresoService {
   }
 
   subirFotoProgreso(imagen: File, date: Date) {
-    const data: FormData = new FormData;
+    const data = new FormData();
     data.append('imagen', imagen);
     data.append('fecha', date.toISOString());
     data.append('idUsuario', this.idUsuario);

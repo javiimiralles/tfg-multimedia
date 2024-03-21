@@ -4,11 +4,11 @@ const MedidaCorporalSchema = Schema(
     {
         nombre: {
             type: String,
-            require: true
+            required: true
         },
         bilateral: {
             type: Boolean,
-            require: true
+            required: true
         },
         medida1: {
             type: Number,
@@ -19,7 +19,7 @@ const MedidaCorporalSchema = Schema(
         idUsuario: {
             type: Schema.Types.ObjectId,
             ref: 'Usuario',
-            require: true
+            required: true
         }
     }, { collection: 'medidas_corporales' }
 );

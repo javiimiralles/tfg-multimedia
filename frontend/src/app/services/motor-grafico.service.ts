@@ -28,7 +28,7 @@ export class MotorGraficoService {
   constructor() {
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(45, this.aspectRatio, 0.1, 500);
+    this.camera = new THREE.PerspectiveCamera(45, this.width/600, 0.1, 1000);
     this.gltfLoader = new GLTFLoader();
     this.rgbeLoader = new RGBELoader();
     this.mouse = new THREE.Vector2();
@@ -39,7 +39,7 @@ export class MotorGraficoService {
     const elemento = document.getElementById("modelo3D");
     elemento.appendChild(this.renderer.domElement);
     this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.camera.position.set(1.5, 0, 2);
+    this.camera.position.set(1, 1, 1);
     this.orbitControls.update();
     this.orbitControls.enableZoom = true;
     this.orbitControls.minPolarAngle = 1.5;
@@ -64,7 +64,7 @@ export class MotorGraficoService {
         // Llamamos al callback para notificar que la carga ha terminado
         callback();
         this.isLoaded = true;
-      });
+      }, null, (error) => { console.log(error); });
     });
 
     this.renderer.domElement.addEventListener("click", (event: any) => {

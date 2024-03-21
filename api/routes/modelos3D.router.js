@@ -2,25 +2,27 @@ const { Router } = require('express');
 const { check } = require('express-validator');
 const { validarJWT } = require('../middleware/validar-jwt');
 const { validarCampos } = require('../middleware/validar-campos');
-const { getUrlModelo3DById, getUrlModelo3DByUser, subirModelo3D } = require('../controllers/modelos3D.controller');
+const { getModelo3DById, getModelos3DByUser, subirModelo3D } = require('../controllers/modelos3D.controller');
 const router = Router();
 
 router.get('/:id', [
     validarJWT,
-    check('id','El id del modelo debe ser valido').isMongoId(),
+    check('id', 'El id del modelo debe ser valido').isMongoId(),
     validarCampos
-], getUrlModelo3DById);
+], getModelo3DById);
 
 router.get('/usuario/:idUsuario', [
     validarJWT,
-    check('idUsuario','El idUsuario del usuario debe ser valido').isMongoId(),
+    check('idUsuario', 'El idUsuario del usuario debe ser valido').isMongoId(),
     validarCampos
-], getUrlModelo3DByUser);
+], getModelos3DByUser);
 
 router.post('/', [
     validarJWT,
-    check('idUsuario','El idUsuario del usuario debe ser valido').isMongoId(),
-    validarCampos
+    check('idUsuario', 'El idUsuario del usuario debe ser valido').isMongoId(),
+    check('fecha', 'La fecha es obligatoria').notEmpty(),
+    check('fecha', 'La fecha debe ser válida').isDate(),
+    validarCampos,
 ], subirModelo3D);
 
 module.exports = router;

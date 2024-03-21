@@ -4,40 +4,40 @@ const UsuarioSchema = Schema(
     {
         nombre: {
             type: String,
-            require: true
+            required: true
         },
         email: {
             type: String,
-            require: true,
+            required: true,
             unique: true
         },
         password: {
             type: String,
-            require: true
+            required: true
         },
         sexo: {
             type: String,
-            require: true
+            required: true
         },
         altura: {
             type: Number,
-            require: true
+            required: true
         },
         edad: {
             type: Number,
-            require: true
+            required: true
         },
         pesoInicial: {
             type: Number,
-            require: true
+            required: true
         },
         pesoObjetivo: {
             type: Number,
-            require: true
+            required: true
         },
         pesoActual: {
             type: Number,
-            require: true
+            required: true
         },
         pesoHistorico: {
             pesoMedio: {
@@ -53,7 +53,7 @@ const UsuarioSchema = Schema(
         plan: {
             tipo: {
                 type: String,
-                require: true
+                required: true
             },
             caloriasDiarias: {
                 type: Number,

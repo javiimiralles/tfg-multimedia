@@ -4,16 +4,20 @@ const Modelo3DSchema = Schema(
     {
         nombre: {
             type: String,
-            require: true
+            required: true
+        },
+        fecha: {
+            type: Date,
+            required: true
         },
         url: {
             type: String,
-            require: true
+            required: true
         },
         idUsuario: {
             type: Schema.Types.ObjectId,
             ref: 'Usuario',
-            require: true
+            required: true
         }
     }, { collection: 'modelos3D' }
 );

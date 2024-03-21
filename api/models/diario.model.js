@@ -59,7 +59,7 @@ const DiarioSchema = Schema(
         idUsuario: {
             type: Schema.Types.ObjectId,
             ref: 'Usuario',
-            require: true
+            required: true
         }
     }, { collection: 'diarios' }
 );

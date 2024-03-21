@@ -37,6 +37,7 @@
     "@ionic/pwa-elements": "^3.2.2",
     "@tensorflow/tfjs": "^4.17.0",
     "apexcharts": "^3.45.1",
+    "form-data": "^4.0.0",
     "ionicons": "^7.0.0",
     "ng-apexcharts": "^1.8.0",
     "ngx-lightbox": "^3.0.0",
