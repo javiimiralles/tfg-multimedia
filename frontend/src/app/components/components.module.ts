@@ -11,6 +11,7 @@ import { ProgressBarComponent } from './progress-bar/progress-bar.component';
 import { DatePickerComponent } from './date-picker/date-picker.component';
 import { NumberPickerComponent } from './number-picker/number-picker.component';
 import { LoaderComponent } from './loader/loader.component';
+import { UploadFormComponent } from './upload-form/upload-form.component';
 
 @NgModule({
   declarations: [
@@ -18,12 +19,14 @@ import { LoaderComponent } from './loader/loader.component';
     DatePickerComponent,
     NumberPickerComponent,
     LoaderComponent,
+    UploadFormComponent
   ],
   exports: [
     ProgressBarComponent,
     DatePickerComponent,
     NumberPickerComponent,
-    LoaderComponent
+    LoaderComponent,
+    UploadFormComponent
   ],
   imports: [
     IonicModule,

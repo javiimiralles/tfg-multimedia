@@ -17,6 +17,7 @@ import { PerfilModule } from './perfil/perfil.module';
 import { MedidasCorporalesComponent } from './medidas-corporales/medidas-corporales.component';
 import { Modelo3dComponent } from './modelo3d/modelo3d.component';
 import { FotosProgresoComponent } from './fotos-progreso/fotos-progreso.component';
+import { Modelo3dFormModalComponent } from './modelo3d/modelo3d-form-modal/modelo3d-form-modal.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { FotosProgresoComponent } from './fotos-progreso/fotos-progreso.componen
     ConsumoAguaComponent,
     MedidasCorporalesComponent,
     Modelo3dComponent,
+    Modelo3dFormModalComponent,
     FotosProgresoComponent
   ],
   exports: [

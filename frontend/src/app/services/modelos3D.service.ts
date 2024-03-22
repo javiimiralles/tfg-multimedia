@@ -17,5 +17,13 @@ export class Modelos3DService {
     return this.http.get(`${environment.base_url}/modelos3D/usuario/${this.idUsuario}`, getHeaders());
   }
 
+  subirModelo3D(fecha: Date, archivoModelo: File) {
+    const data: FormData = new FormData();
+    data.append('fecha', formatDate(fecha));
+    data.append('archivoModelo', archivoModelo);
+    data.append('idUsuario', this.idUsuario);
+    return this.http.post(`${environment.base_url}/modelos3D`, data, getHeaders());
+  }
+
 
 }

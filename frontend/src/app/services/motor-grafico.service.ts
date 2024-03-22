@@ -39,11 +39,18 @@ export class MotorGraficoService {
     const elemento = document.getElementById("modelo3D");
     elemento.appendChild(this.renderer.domElement);
     this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.camera.position.set(1, 1, 1);
+    this.camera.position.set(1.5, 0, 2);
     this.orbitControls.update();
     this.orbitControls.enableZoom = true;
     this.orbitControls.minPolarAngle = 1.5;
     this.orbitControls.maxPolarAngle = 1.5;
+  }
+
+  reset() {
+    this.isLoaded = false;
+    if(this.model) {
+      this.scene.remove(this.model);
+    }
   }
 
   loadModel(lightUrl: string, modelUrl: string, callback: () => void) {
@@ -64,7 +71,7 @@ export class MotorGraficoService {
         // Llamamos al callback para notificar que la carga ha terminado
         callback();
         this.isLoaded = true;
-      }, null, (error) => { console.log(error); });
+      }, null, (error) => { console.error(error); });
     });
 
     this.renderer.domElement.addEventListener("click", (event: any) => {

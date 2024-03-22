@@ -27,7 +27,8 @@ export class PesosFormModalComponent  implements OnInit {
     private usuariosService: UsuariosService,
     private pesosService: PesosService,
     private toastService: ToastService,
-    private exceptionsService: ExceptionsService) { }
+    private exceptionsService: ExceptionsService
+  ) { }
 
   ngOnInit() {
     if(!this.registroEdicion) {

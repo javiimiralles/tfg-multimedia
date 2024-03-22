@@ -2,6 +2,7 @@ const { response } = require('express');
 const Usuario = require('../models/usuario.model');
 const Modelo3D = require('../models/modelo3D.model');
 const { v4: uuidv4 } = require('uuid');
+const { subirArchivo } = require('./uploads.controller');
 
 const getModelo3DById = async (req, res = response) => {
 
@@ -51,7 +52,7 @@ const getModelos3DByUser = async (req, res = response) => {
             });
         }
 
-        const modelos3D = await Modelo3D.find({ idUsuario });
+        const modelos3D = await Modelo3D.find({ idUsuario }).sort({ fecha: 1 });
 
         // No devolvemos status porque queremos que siga funcionando
         if (!modelos3D) {
@@ -109,18 +110,6 @@ const subirModelo3D = async (req, res = response) => {
     const nombreArchivo = `${uuidv4()}.${extension}`;
     const path = `${process.env.PATH_UPLOAD}/${nombreArchivo}`;
 
-    const moveFile = () => {
-        return new Promise((resolve, reject) => {
-            archivoModelo.mv(path, (err) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve();
-                }
-            });
-        });
-    };
-
     try {
         const usuario = await Usuario.findById(idUsuario);
         if (!usuario) {
@@ -142,7 +131,7 @@ const subirModelo3D = async (req, res = response) => {
             });
         }
 
-        await moveFile();
+        await subirArchivo(archivoModelo, path);
 
         object.nombre = nombreArchivo;
         object.url = path;
